@@ -5,7 +5,7 @@ dotenv.config();
 const app = express();
 
 app.get('/api', (req, res) => {
-  res.send('<h1>All clear</h1>');
+  res.json({ message: 'Hello world!' });
 });
 
 export default app;
