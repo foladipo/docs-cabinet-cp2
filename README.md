@@ -2,7 +2,9 @@
 This is a brand new project, and there are no features implemented yet.
  However, there are a lot of great things in the pipeline. Head over
  to [this link](https://www.pivotaltracker.com/n/projects/2034565)
- to see our roadmap for implementing features.
+ to see our roadmap for implementing features. You can also check
+ [this branch](https://github.com/andela-foladipo/docs-cabinet-cp2/tree/develop)
+ for the latest features that actually have been implemented.
 
 You can also tell us about anything you think we should add by tweeting at
  the [Lead Developer](https://google.com/search?q=folusho+oladipo), [Folusho Oladipo](https://twitter.com/folushooladipo).
