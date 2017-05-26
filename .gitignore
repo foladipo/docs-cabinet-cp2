@@ -1,0 +1,11 @@
+.env
+.dev
+*.DS_STORE
+node_modules
+npm-debug.log
+privateFiles
+.nyc_output
+coverage
+.coveralls.yml
+client/dist/scripts
+client/dist/stylesheets
