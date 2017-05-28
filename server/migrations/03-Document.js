@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      accessRule: {
+      access: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -41,6 +41,7 @@ module.exports = {
       createdBy: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        onUpdate: 'CASCADE',
         references: {
           model: 'User',
           key: 'id'

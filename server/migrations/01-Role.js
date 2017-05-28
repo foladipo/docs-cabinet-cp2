@@ -8,13 +8,8 @@ module.exports = {
         unique: true,
         primaryKey: true
       },
-      title: {
+      roleName: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-      },
-      roleCode: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         unique: true
       },
