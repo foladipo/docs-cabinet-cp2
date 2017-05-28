@@ -43,9 +43,11 @@
     "babel-register": "^6.24.1",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
+    "path": "^0.12.7",
     "pg": "^6.2.3",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.30.4",
+    "sequelize-cli": "^2.7.0",
     "webpack": "^2.6.1"
   }
 }
