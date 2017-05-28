@@ -47,6 +47,8 @@ module.exports = {
           key: 'id'
         }
       }
+    }, {
+      freezeTableName: true
     }),
   down: queryInterface => queryInterface.dropTable('Document')
 };
