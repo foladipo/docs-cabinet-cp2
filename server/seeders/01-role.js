@@ -2,7 +2,7 @@ module.exports = {
   up: (queryInterface) => {
     const now = new Date();
     const timeStamp = now.toISOString();
-    queryInterface.bulkInsert('Role', [
+    return queryInterface.bulkInsert('Role', [
       {
         id: 0,
         roleName: 'regular',
