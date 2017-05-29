@@ -34,10 +34,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
       createdBy: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -46,9 +42,15 @@ module.exports = {
           model: 'User',
           key: 'id'
         }
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
       }
-    }, {
-      freezeTableName: true
     }),
   down: queryInterface => queryInterface.dropTable('Document')
 };

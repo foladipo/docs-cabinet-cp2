@@ -21,8 +21,6 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false
       }
-    }, {
-      freezeTableName: true
     }),
   down: queryInterface =>
     queryInterface.dropTable('Role'),

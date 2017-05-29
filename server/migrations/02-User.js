@@ -18,7 +18,8 @@ module.exports = {
       },
       username: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       password: {
         type: Sequelize.STRING,
@@ -33,7 +34,7 @@ module.exports = {
           key: 'id',
         }
       },
-      signUpDate: {
+      createdAt: {
         type: Sequelize.DATE,
         allowNull: false
       },
@@ -41,8 +42,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, {
-      freezeTableName: true
     });
   },
   down: queryInterface =>
