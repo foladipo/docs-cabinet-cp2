@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import Sequelize from 'sequelize';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from './models/user';
@@ -13,30 +12,23 @@ const now = new Date();
 
 app.use(bodyParser.json());
 
-app.get('/api', (req, res) => {
-  sequelize
-    .authenticate()
+app.get('/api/users', (req, res) => {
+  sequelize.authenticate()
     .then(() => {
-      const Test = sequelize.define('test80', {
-        firstName: {
-          type: Sequelize.STRING
-        },
-        lastName: {
-          type: Sequelize.STRING
-        }
-      });
-
-      Test.sync()
+      User.sync()
         .then(() => {
-          // Table created
-          const testUser = {
-            firstName: 'John',
-            lastName: 'Hancock'
-          };
-          Test.create(testUser)
-            .then(() => {
-              res.json({ message: `User ${testUser.toString()} was created.` });
+          User.findAll()
+          .then((users) => {
+            res.json({
+              users
             });
+          })
+          .catch((err) => {
+            res.json({ message: err.toString() });
+          });
+        })
+        .catch((err) => {
+          res.json({ message: err.toString() });
         });
     })
     .catch((err) => {
