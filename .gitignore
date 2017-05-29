@@ -9,3 +9,4 @@ coverage
 .coveralls.yml
 client/dist/scripts
 client/dist/stylesheets
+todo.txt
