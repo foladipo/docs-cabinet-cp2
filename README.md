@@ -1,3 +1,11 @@
+[![Build Status](https://travis-ci.org/andela-foladipo/docs-cabinet-cp2.svg?branch=develop)](https://travis-ci.org/andela-foladipo/docs-cabinet-cp2)
+[![Code Climate](https://codeclimate.com/github/andela-foladipo/docs-cabinet-cp2//badges/gpa.svg)](https://codeclimate.com/github/andela-foladipo/docs-cabinet-cp2/)
+
+
+## UPDATE: The Backend is coming...
+We are making a lot of progress in setting up the backend of this project. So,
+we should soon have something for you to play with and hack. Stay tuned!
+
 # Welcome to Docs Cabinet
 This is a brand new project, and there are no features implemented yet.
  However, there are a lot of great things in the pipeline. Head over
