@@ -16,11 +16,17 @@ module.exports = {
       docContent: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       access: {
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+          // will only allow letters
+          is: ['[a-z]', 'i'],
+          isIn: {
+            args: [['public', 'private', 'role']]
+          }
+        },
       },
 
       // Used Sequelize.STRING and not Sequelize.ARRAY to make this project
