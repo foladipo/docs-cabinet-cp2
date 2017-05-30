@@ -2,13 +2,14 @@
   "name": "docs-cabinet-cp2",
   "version": "0.0.1",
   "description": "A beautiful and fast document management system.",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "db:migrate": "./node_modules/.bin/sequelize db:migrate",
     "db:migrate:undo": "./node_modules/.bin/sequelize db:migrate:undo",
     "db:seed": "./node_modules/.bin/sequelize db:seed:all",
     "db:seed:undo": "./node_modules/.bin/sequelize db:seed:undo:all",
     "start": "./node_modules/.bin/babel-node server.js",
+    "start:dev": "./node_modules/.bin/nodemon server.js --exec babel-node --presets es2015,react,node6",
     "test": "npm run test:server",
     "test:server": "./node_modules/.bin/mocha --require babel-register server/tests/*[sS]pec.js"
   },
@@ -36,6 +37,7 @@
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
     "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
     "supertest": "^3.0.0"
   },
   "dependencies": {
