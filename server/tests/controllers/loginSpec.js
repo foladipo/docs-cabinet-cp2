@@ -1,9 +1,11 @@
 import supertest from 'supertest';
+import chai from 'chai';
 import JWT from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import app from '../../app';
 
 dotenv.config();
+const expect = chai.expect;
 
 const request = supertest(app);
 const loginEnpoint = '/api/users/login';
@@ -110,17 +112,18 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     firstName: 'Lagbaja',
     lastName: 'Anonymous'
   };
-  const token = JWT.sign(user, process.env.JWT_PRIVATE_KEY,
-   { expiresIn: '3d' });
-  it('should return a JWT token when the login details are correct', (done) => {
+  it('should return a JWT token a user\'s profile when the login details are correct', (done) => {
     request.post(loginEnpoint)
       .send(validLoginDetails)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        user,
-        token
-      }, done);
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body.token).to.not.equal(undefined);
+        expect(res.body.user).to.deep.equal(user);
+        done();
+      });
   });
 });
