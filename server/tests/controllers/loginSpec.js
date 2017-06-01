@@ -1,6 +1,5 @@
 import supertest from 'supertest';
 import chai from 'chai';
-import JWT from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import app from '../../app';
 
@@ -8,7 +7,7 @@ dotenv.config();
 const expect = chai.expect;
 
 const request = supertest(app);
-const loginEnpoint = '/api/users/login';
+const loginEndpoint = '/api/users/login';
 
 describe('When POST\'ed to, the /api/users/login endpoint', () => {
   const noUsernameNoPassword = {
@@ -16,7 +15,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     password: ''
   };
   it('should reject requests where the username and password are missing', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(noUsernameNoPassword)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -31,7 +30,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     password: 'something'
   };
   it('should reject requests where the username is missing', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(noUsername)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -46,7 +45,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     password: ''
   };
   it('should reject requests where the password is missing', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(noPassword)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -61,7 +60,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     password: 'something'
   };
   it('should validate the username as a valid email address', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(invalidUsername)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -76,7 +75,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     password: 'something'
   };
   it('should reject login attempts for a non-existent user', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(nonExistentUser)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -91,7 +90,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     password: 'incorrectPassword'
   };
   it('should reject login attempts with an incorrect password', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(incorrectPassword)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -113,7 +112,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     lastName: 'Anonymous'
   };
   it('should return a JWT token a user\'s profile when the login details are correct', (done) => {
-    request.post(loginEnpoint)
+    request.post(loginEndpoint)
       .send(validLoginDetails)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
