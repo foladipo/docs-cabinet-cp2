@@ -105,6 +105,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
   };
   const user = {
     userId: 0,
+    username: 'foo@example.com',
     roleId: 0,
     firstName: 'Lagbaja',
     lastName: 'Anonymous'
