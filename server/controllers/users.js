@@ -1,9 +1,105 @@
 import express from 'express';
+import JWT from 'jsonwebtoken';
+import bcryptjs from 'bcryptjs';
+import dotenv from 'dotenv';
+import User from '../models/User';
 
-const user = express();
+dotenv.config();
 
+const users = express();
+
+/**
+ * Tests a given string to see if it is a valid email address.
+ * @param {String} email - The string to test as being a valid email address.
+ * @return {Boolean} - Returns true if the string is a valid email address.
+ * Otherwise, it returns false.
+ */
+function isValidEmail(email) {
+  const emailFormat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$/;
+  return emailFormat.test(email);
+}
+
+/**
+ * Confirms that any user trying to login supplies the right login
+ * credentials. If so, it returns some info about the user's profile
+ * and a JWT token for the user to interact with other parts/endpoints of
+ * the app. Otherwise, it returns a response with a descriptive errror
+ * message e.g NonExistentUserError, InvalidUsernameError etc.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint.
+ * @param {Response} res - An express Response object that will contain
+ * the info this app will send back to the user e.g HTTP status codes,
+ * JSON responses etc.
+ * @return {void}
+ */
 function login(req, res) {
-  res.json({ yippee: 'Got here men!' });
+  const reqBody = req.body;
+  const username = reqBody.username;
+  const password = reqBody.password;
+  if (username) {
+    if (password) {
+      const lowerCaseUsername = username.toLowerCase();
+      const trimmedUsername = lowerCaseUsername.trim();
+      if (isValidEmail(trimmedUsername)) {
+        User.findOne({
+          where: {
+            username
+          }
+        }).then((user) => {
+          if (user) {
+            const storedPasswordHash = user.password;
+            const isCorrectPassword = bcryptjs.compareSync(password, storedPasswordHash);
+            if (isCorrectPassword) {
+              const userDetails = {
+                userId: user.id,
+                username: user.username,
+                roleId: user.roleId,
+                firstName: user.firstName,
+                lastName: user.lastName
+              };
+              const token = JWT.sign(userDetails, process.env.JWT_PRIVATE_KEY, { expiresIn: '3d' });
+              res.status(200).json({
+                user: userDetails,
+                token
+              });
+            } else {
+              res.status(400)
+                .json({
+                  error: 'IncorrectPasswordError'
+                });
+            }
+          } else {
+            res.status(400)
+              .json({
+                error: 'NonExistentUserError'
+              });
+          }
+        });
+      } else {
+        res.status(400)
+          .json({
+            error: 'InvalidUsernameError'
+          });
+      }
+    } else {
+      res.status(400)
+        .json({
+          error: 'MissingPasswordError'
+        });
+    }
+  } else {
+    if (!password) {
+      res.status(400)
+        .json({
+          error: 'MissingLoginDetailsError'
+        });
+      return;
+    }
+    res.status(400)
+      .json({
+        error: 'MissingUsernameError'
+      });
+  }
 }
 
 function logout(req, res) {
@@ -31,11 +127,11 @@ function findUsers(req, res) {
   res.json({ yippee: 'You want to know who else uses this app, no?' });
 }
 
-user.post('/login', login);
-user.post('/logout', logout);
-user.post('/', signUp);
-user.put('/', updateUserProfile);
-user.delete('/', deleteUser);
-user.get('/', findUsers);
+users.post('/login', login);
+users.post('/logout', logout);
+users.post('/', signUp);
+users.put('/', updateUserProfile);
+users.delete('/', deleteUser);
+users.get('/', findUsers);
 
-export default user;
+export default users;
