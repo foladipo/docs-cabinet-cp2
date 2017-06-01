@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import jsonWebToken from 'jsonwebtoken';
+import JWT from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import app from '../../app';
 
@@ -69,6 +69,21 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       }, done);
   });
 
+  const nonExistentUser = {
+    username: 'nonexistent@user.com',
+    password: 'something'
+  };
+  it('should reject login attempts for a non-existent user', (done) => {
+    request.post(loginEnpoint)
+      .send(nonExistentUser)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .expect({
+        error: 'NonExistentUserError'
+      }, done);
+  });
+
   const incorrectPassword = {
     username: 'foo@example.com',
     password: 'incorrectPassword'
@@ -94,7 +109,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     firstName: 'Lagbaja',
     lastName: 'Anonymous'
   };
-  const token = jsonWebToken.sign(user, process.env.JWT_PRIVATE_KEY,
+  const token = JWT.sign(user, process.env.JWT_PRIVATE_KEY,
    { expiresIn: '3d' });
   it('should return a JWT token when the login details are correct', (done) => {
     request.post(loginEnpoint)
