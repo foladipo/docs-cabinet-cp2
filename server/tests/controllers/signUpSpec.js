@@ -30,6 +30,23 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       }, done);
   });
 
+  const emptyFirstName = {
+    firstName: '',
+    lastName: 'Unbeknownst',
+    username: 'random@example.com',
+    password: '@FooBar007'
+  };
+  it('should reject requests where the first name is empty', (done) => {
+    request.post(signUpEndpoint)
+      .send(emptyFirstName)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .expect({
+        error: 'EmptyFirstNameError'
+      }, done);
+  });
+
   const invalidFirstName = {
     firstName: '2',
     lastName: 'Unbeknownst',
@@ -63,6 +80,23 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       }, done);
   });
 
+  const emptyLastName = {
+    firstName: 'Enygma',
+    lastName: '',
+    username: 'random@example.com',
+    password: '@FooBar007'
+  };
+  it('should reject requests where the last name is empty', (done) => {
+    request.post(signUpEndpoint)
+      .send(emptyLastName)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .expect({
+        error: 'EmptyLastNameError'
+      }, done);
+  });
+
   const invalidLastName = {
     firstName: 'Enygma',
     lastName: '2',
@@ -93,6 +127,23 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect(400)
       .expect({
         error: 'MissingUsernameError'
+      }, done);
+  });
+
+  const emptyUsername = {
+    firstName: 'Enygma',
+    lastName: 'Unbeknownst',
+    username: '',
+    password: '@FooBar007'
+  };
+  it('should reject requests where the username is empty', (done) => {
+    request.post(signUpEndpoint)
+      .send(emptyUsername)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .expect({
+        error: 'EmptyUsernameError'
       }, done);
   });
 
@@ -147,6 +198,23 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       }, done);
   });
 
+  const emptyPassword = {
+    firstName: 'Enygma',
+    lastName: 'Unbeknownst',
+    username: 'foo@example.com',
+    password: ''
+  };
+  it('should reject requests where the password is empty', (done) => {
+    request.post(signUpEndpoint)
+      .send(emptyPassword)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .expect({
+        error: 'EmptyPasswordError'
+      }, done);
+  });
+
   const invalidPassword = {
     firstName: 'Enygma',
     lastName: 'Unbeknownst',
@@ -181,6 +249,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
         if (err) return done(err);
 
         expect(res.body.token).to.not.equal(undefined);
+        expect(res.body.user.userId).to.equal(validNewUser.userId);
         expect(res.body.user.firstName).to.equal(validNewUser.firstName);
         expect(res.body.user.lastName).to.equal(validNewUser.lastName);
         expect(res.body.user.username).to.equal(validNewUser.username);
