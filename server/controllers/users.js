@@ -102,8 +102,54 @@ function login(req, res) {
   }
 }
 
+/**
+ * Logs a user out after confirming that he/she is currently
+ * logged in. If this isn't true because the user didnt supply a token,
+ * the token has expired etc, this function responds with a descriptive
+ * error message e.g MissingTokenError, ExpiredTokenError etc.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint.
+ * @param {Response} res - An express Response object that will contain
+ * the info this app will send back to the user e.g error messages.
+ * @return {void}
+ */
 function logout(req, res) {
-  res.json({ yippee: 'This is the logout function.' });
+  const token = req.headers['x-docs-cabinet-authentication'];
+  if (token === undefined) {
+    res.status(400)
+      .json({
+        error: 'MissingTokenError'
+      });
+    return;
+  }
+  if (token === '') {
+    res.status(400)
+      .json({
+        error: 'EmptyTokenError'
+      });
+    return;
+  }
+  try {
+    JWT.verify(token, process.env.JWT_PRIVATE_KEY);
+    res.status(200)
+      .json({
+        message: 'LogoutSucceeded'
+      });
+  } catch (err) {
+    const errorType = err.name;
+    console.log(errorType);
+    if (errorType === 'TokenExpiredError') {
+      res.status(401)
+        .json({
+          error: 'ExpiredTokenError'
+        });
+    } else {
+      res.status(401)
+      .json({
+        error: 'InvalidTokenError'
+      });
+    }
+  }
 }
 
 function signUp(req, res) {
