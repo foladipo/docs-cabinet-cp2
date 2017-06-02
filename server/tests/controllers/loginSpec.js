@@ -111,7 +111,8 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     firstName: 'Lagbaja',
     lastName: 'Anonymous'
   };
-  it('should return a JWT token a user\'s profile when the login details are correct', (done) => {
+  it('should return a JWT token and a user\'s profile when the login details' +
+    ' are correct', (done) => {
     request.post(loginEndpoint)
       .send(validLoginDetails)
       .set('Accept', 'application/json')
