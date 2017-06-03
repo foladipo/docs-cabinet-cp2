@@ -102,7 +102,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
 
   const validLoginDetails = {
     username: 'foo@example.com',
-    password: 'Very&&Hard$@'
+    password: '1Very&&Hard$@'
   };
   const user = {
     userId: 0,
