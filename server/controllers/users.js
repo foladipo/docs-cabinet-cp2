@@ -9,6 +9,27 @@ dotenv.config();
 const users = express();
 
 /**
+ * Tests a given string to see if it is a valid name by this app's standards.
+ * This means that it must:
+ * - be a string.
+ * - have more than two (2) characters.
+ * - not contain any whitespace character.
+ * @param {String} name - The string to test as being a valid name.
+ * @return {Boolean} - Returns true if the string is a valid name. Otherwise,
+ * it returns false.
+ */
+function isValidName(name) {
+  if (typeof name === 'string' && name.length > 1) {
+    const whitespaceCharacters = /\s/;
+    if (whitespaceCharacters.test(name)) {
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+/**
  * Tests a given string to see if it is a valid email address.
  * @param {String} email - The string to test as being a valid email address.
  * @return {Boolean} - Returns true if the string is a valid email address.
@@ -17,6 +38,31 @@ const users = express();
 function isValidEmail(email) {
   const emailFormat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$/;
   return emailFormat.test(email);
+}
+
+/**
+ * Tests a given string to see if it is a valid password by this app's standards.
+ * This means that it must:
+ * - be a string.
+ * - have more than eight (8) characters.
+ * - have at least one lower case letter.
+ * - have at least one upper case letter.
+ * - have at least one number.
+ * - have at least one symbol.
+ * @param {String} password - The string to test as being a valid password.
+ * @return {Boolean} - Returns true if the string is a valid password. Otherwise,
+ * it returns false.
+ */
+function isValidPassword(password) {
+  if (typeof password === 'string') {
+    if (password.length < 8) {
+      return false;
+    }
+    const passwordFormat =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(){};':"|,./<>?`~])/;
+    return passwordFormat.test(password);
+  }
+  return false;
 }
 
 /**
@@ -153,7 +199,131 @@ function logout(req, res) {
 }
 
 function signUp(req, res) {
-  res.json({ yippee: 'You want to sign up? Fantastic!' });
+  const reqBody = req.body;
+
+  const firstName = reqBody.firstName;
+  if (firstName) {
+    if (!isValidName(firstName)) {
+      res.status(400)
+        .json({
+          error: 'InvalidFirstNameError'
+        });
+      return;
+    }
+  } else {
+    let errorType = 'MissingFirstNameError';
+    if (firstName === '') {
+      errorType = 'EmptyFirstNameError';
+    }
+    res.status(400)
+      .json({
+        error: errorType
+      });
+    return;
+  }
+
+  const lastName = reqBody.lastName;
+  if (lastName) {
+    if (!isValidName(lastName)) {
+      res.status(400)
+        .json({
+          error: 'InvalidLastNameError'
+        });
+      return;
+    }
+  } else {
+    let errorType = 'MissingLastNameError';
+    if (lastName === '') {
+      errorType = 'EmptyLastNameError';
+    }
+    res.status(400)
+      .json({
+        error: errorType
+      });
+    return;
+  }
+
+  const username = reqBody.username;
+  if (username) {
+    if (!isValidEmail(username)) {
+      res.status(400)
+        .json({
+          error: 'InvalidUsernameError'
+        });
+      return;
+    }
+  } else {
+    let errorType = 'MissingUsernameError';
+    if (username === '') {
+      errorType = 'EmptyUsernameError';
+    }
+    res.status(400)
+      .json({
+        error: errorType
+      });
+    return;
+  }
+
+  const password = reqBody.password;
+  if (password) {
+    if (!isValidPassword(password)) {
+      res.status(400)
+        .json({
+          error: 'InvalidPasswordError'
+        });
+      return;
+    }
+  } else {
+    let errorType = 'MissingPasswordError';
+    if (password === '') {
+      errorType = 'EmptyPasswordError';
+    }
+    res.status(400)
+      .json({
+        error: errorType
+      });
+    return;
+  }
+
+  const roleId = Number.parseInt(process.env.DEFAULT_ROLE, 10);
+  User
+    .findOne({
+      where: {
+        username
+      }
+    })
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        res.status(400)
+        .json({
+          error: 'UserExistsError'
+        });
+      } else {
+        User
+          .create({
+            firstName,
+            lastName,
+            username,
+            password,
+            roleId
+          })
+          .then((createdUser) => {
+            const userDetails = {
+              userId: createdUser.id,
+              username: createdUser.username,
+              roleId: createdUser.roleId,
+              firstName: createdUser.firstName,
+              lastName: createdUser.lastName
+            };
+            const token = JWT.sign(userDetails, process.env.JWT_PRIVATE_KEY, { expiresIn: '3d' });
+            res.status(200).json({
+              user: userDetails,
+              token
+            });
+          });
+      }
+    });
 }
 
 function updateUserProfile(req, res) {
