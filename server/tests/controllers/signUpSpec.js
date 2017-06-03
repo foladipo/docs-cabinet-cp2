@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import chai from 'chai';
 import dotenv from 'dotenv';
+import User from '../../models/User';
 import app from '../../app';
 
 dotenv.config();
@@ -9,15 +10,40 @@ const expect = chai.expect;
 const request = supertest(app);
 const signUpEndpoint = '/api/users';
 
-// TODO: Add before() and after() blocks that will use the DELETE HTTP verb
-// on the /api/users/<id> endpoint to remove the user below from this
-// application's DB before and after the tests are run, respectively.
-// For now, we'll do that manually.
 describe('When POST\'ed to, the /api/users endpoint', () => {
+  const newFirstName = 'Enygma';
+  const newLastName = 'Unbeknownst';
+  const newUsername = 'random@example.com';
+  const newPassword = '@FooBar007';
+
+  before('Remove the sample user used in this suite\'s specs', (done) => {
+    User
+      .destroy({
+        where: {
+          username: newUsername
+        }
+      })
+      .then(() => {
+        done();
+      });
+  });
+
+  after('Remove the sample user used in this suite\'s specs', (done) => {
+    User
+      .destroy({
+        where: {
+          username: newUsername
+        }
+      })
+      .then(() => {
+        done();
+      });
+  });
+
   const noFirstName = {
-    lastName: 'Unbeknownst',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    lastName: newLastName,
+    username: newUsername,
+    password: newPassword
   };
   it('should reject requests where the first name is missing', (done) => {
     request.post(signUpEndpoint)
@@ -32,9 +58,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
 
   const emptyFirstName = {
     firstName: '',
-    lastName: 'Unbeknownst',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    lastName: newLastName,
+    username: newUsername,
+    password: newPassword
   };
   it('should reject requests where the first name is empty', (done) => {
     request.post(signUpEndpoint)
@@ -49,9 +75,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
 
   const invalidFirstName = {
     firstName: '2',
-    lastName: 'Unbeknownst',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    lastName: newLastName,
+    username: newUsername,
+    password: newPassword
   };
   it('should reject requests where the first name is invalid', (done) => {
     request.post(signUpEndpoint)
@@ -65,9 +91,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const noLastName = {
-    firstName: 'Enygma',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    firstName: newFirstName,
+    username: newUsername,
+    password: newPassword
   };
   it('should reject requests where the last name is missing', (done) => {
     request.post(signUpEndpoint)
@@ -81,10 +107,10 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const emptyLastName = {
-    firstName: 'Enygma',
+    firstName: newFirstName,
     lastName: '',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    username: newUsername,
+    password: newPassword
   };
   it('should reject requests where the last name is empty', (done) => {
     request.post(signUpEndpoint)
@@ -98,10 +124,10 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const invalidLastName = {
-    firstName: 'Enygma',
+    firstName: newFirstName,
     lastName: '2',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    username: newUsername,
+    password: newPassword
   };
   it('should reject requests where the last name is invalid', (done) => {
     request.post(signUpEndpoint)
@@ -115,9 +141,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const noUsername = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
-    password: '@FooBar007'
+    firstName: newFirstName,
+    lastName: newLastName,
+    password: newPassword
   };
   it('should reject requests where the username is missing', (done) => {
     request.post(signUpEndpoint)
@@ -131,10 +157,10 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const emptyUsername = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
+    firstName: newFirstName,
+    lastName: newLastName,
     username: '',
-    password: '@FooBar007'
+    password: newPassword
   };
   it('should reject requests where the username is empty', (done) => {
     request.post(signUpEndpoint)
@@ -148,10 +174,10 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const invalidUsername = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
+    firstName: newFirstName,
+    lastName: newLastName,
     username: '@example',
-    password: '@FooBar007'
+    password: newPassword
   };
   it('should reject requests where the username is NOT a valid email' +
     ' address', (done) => {
@@ -183,9 +209,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const noPassword = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
-    username: 'foo@example.com',
+    firstName: newFirstName,
+    lastName: newLastName,
+    username: newUsername,
   };
   it('should reject requests where the password is missing', (done) => {
     request.post(signUpEndpoint)
@@ -199,9 +225,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const emptyPassword = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
-    username: 'foo@example.com',
+    firstName: newFirstName,
+    lastName: newLastName,
+    username: newUsername,
     password: ''
   };
   it('should reject requests where the password is empty', (done) => {
@@ -216,9 +242,9 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const invalidPassword = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
-    username: 'foo@example.com',
+    firstName: newFirstName,
+    lastName: newLastName,
+    username: newUsername,
     password: '2'
   };
   it('should prevent the use of a weak password', (done) => {
@@ -233,10 +259,10 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   });
 
   const validNewUser = {
-    firstName: 'Enygma',
-    lastName: 'Unbeknownst',
-    username: 'random@example.com',
-    password: '@FooBar007'
+    firstName: newFirstName,
+    lastName: newLastName,
+    username: newUsername,
+    password: newPassword
   };
   it('should return a JWT token and a user\'s profile when supplied with' +
     ' complete and valid data', (done) => {
