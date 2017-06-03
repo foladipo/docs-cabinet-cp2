@@ -169,7 +169,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     firstName: 'Lagbaja',
     lastName: 'Anonymous',
     username: 'foo@example.com',
-    password: 'Very&&Hard$@'
+    password: '1Very&&Hard$@3'
   };
   it('should reject the use of one username for multiple accounts', (done) => {
     request.post(signUpEndpoint)
@@ -235,7 +235,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
   const validNewUser = {
     firstName: 'Enygma',
     lastName: 'Unbeknownst',
-    username: 'foo@example.com',
+    username: 'random@example.com',
     password: '@FooBar007'
   };
   it('should return a JWT token and a user\'s profile when supplied with' +
@@ -249,7 +249,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
         if (err) return done(err);
 
         expect(res.body.token).to.not.equal(undefined);
-        expect(res.body.user.userId).to.equal(validNewUser.userId);
+        expect(res.body.user.userId).to.not.equal(undefined);
         expect(res.body.user.firstName).to.equal(validNewUser.firstName);
         expect(res.body.user.lastName).to.equal(validNewUser.lastName);
         expect(res.body.user.username).to.equal(validNewUser.username);
