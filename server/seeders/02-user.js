@@ -9,8 +9,8 @@ module.exports = {
         lastName: 'Anonymous',
         username: 'foo@example.com',
 
-        // Output, by bcryptjs, of hashSync('Very&&Hard$@', 10).
-        password: '$2a$10$jk5F81NcjzUp/F51qShkjus4qUfRSMTFlkMx4l62EPp7teNoVaOyO',
+        // Output, by bcryptjs, of hashSync('1Very&&Hard$@', 10).
+        password: '$2a$10$ygpgO9WFB3Qf7AEdgDmYe.DfwcI2Ve63NHkqNdgpFID9u0hQTufvu',
         roleId: 0,
         createdAt: timeStamp,
         updatedAt: timeStamp
