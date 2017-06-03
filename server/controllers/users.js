@@ -317,12 +317,14 @@ function signUp(req, res) {
           error: 'UserExistsError'
         });
       } else {
+        const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
+        const hashedPassword = bcryptjs.hashSync(password, saltLength);
         User
           .create({
             firstName,
             lastName,
             username,
-            password,
+            password: hashedPassword,
             roleId
           })
           .then((createdUser) => {
