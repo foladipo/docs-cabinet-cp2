@@ -198,6 +198,23 @@ function logout(req, res) {
   }
 }
 
+/**
+ * Ensures that a user trying to create a new account supplies all necessary
+ * data. It also enforces some standards e.g the length and composition of the
+ * password, whether the username is a valid email address, whether the
+ * username hasn't been used to register before etc. If all these checks are
+ * passed, this function creates a new user in this app's database and returns
+ * a JWT token for the user to interact with other parts/endpoints of the app,
+ * along with some info about the user's profile. Otherwise, it returns a response
+ * with a descriptive errror message e.g InvalidPasswordError, InvalidUsernameError
+ * etc.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint.
+ * @param {Response} res - An express Response object that will contain
+ * the info this app will send back to the user e.g error messages, JWT tokens,
+ * HTTP status codes etc.
+ * @return {void}
+ */
 function signUp(req, res) {
   const reqBody = req.body;
 
