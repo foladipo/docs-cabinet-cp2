@@ -183,7 +183,6 @@ function logout(req, res) {
       });
   } catch (err) {
     const errorType = err.name;
-    console.log(errorType);
     if (errorType === 'TokenExpiredError') {
       res.status(401)
         .json({
@@ -310,7 +309,6 @@ function signUp(req, res) {
       }
     })
     .then((user) => {
-      console.log(user);
       if (user) {
         res.status(400)
         .json({
