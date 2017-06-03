@@ -343,8 +343,111 @@ function signUp(req, res) {
     });
 }
 
+/**
+ * Updates the profile of a user stored in this app's database. Before
+ * performing the update, this function checks that the request:
+ * - includes a token.
+ * - includes a valid token signed by this app.
+ * - includes the id of the user whose profile is to be updated, and
+ * that the id is numeric.
+ * - includes the id of an existing user account and not that of an
+ * account that has not been created yet.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint.
+ * @param {Response} res - An express Response object that will contain
+ * the info this app will send back to the user e.g error messages for
+ * failed updates etc.
+ * @return {void}
+ */
 function updateUserProfile(req, res) {
-  res.json({ yippee: 'What\'s new, dear user?' });
+  const token = req.headers['x-docs-cabinet-authentication'];
+  if (token === undefined) {
+    res.status(400)
+      .json({
+        error: 'MissingTokenError'
+      });
+    return;
+  }
+  if (token === '') {
+    res.status(400)
+      .json({
+        error: 'EmptyTokenError'
+      });
+    return;
+  }
+  let userProfile;
+  try {
+    userProfile = JWT.verify(token, process.env.JWT_PRIVATE_KEY);
+  } catch (err) {
+    const errorType = err.name;
+    if (errorType === 'TokenExpiredError') {
+      res.status(401)
+        .json({
+          error: 'ExpiredTokenError'
+        });
+    } else {
+      res.status(401)
+      .json({
+        error: 'InvalidTokenError'
+      });
+    }
+    return;
+  }
+
+  const userIdString = req.query.userId;
+  if (userIdString === undefined) {
+    res.status(400)
+      .json({
+        error: 'UserIdNotSuppliedError'
+      });
+    return;
+  }
+
+  const userId = Number.parseInt(userIdString, 10);
+  if (Number.isNaN(userId)) {
+    res.status(400)
+      .json({
+        error: 'InvalidUserIdError'
+      });
+    return;
+  }
+
+  const newProfile = {};
+  if (userProfile.firstName) {
+    newProfile.firstName = userProfile.firstName;
+  }
+  if (userProfile.lastName) {
+    newProfile.lastName = userProfile.lastName;
+  }
+  if (userProfile.username) {
+    newProfile.username = userProfile.username;
+  }
+  if (userProfile.password) {
+    const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
+    newProfile.password = bcryptjs.hashSync(userProfile.password, saltLength);
+  }
+
+  User.update(
+    newProfile,
+    {
+      where: { id: userId },
+      returning: true
+    }
+  )
+  .then((rows) => {
+    const rowsAffected = rows[0];
+    if (rowsAffected > 0) {
+      res.status(200)
+      .json({
+        message: 'UpdateSucceeded'
+      });
+    } else {
+      res.status(404)
+      .json({
+        error: 'UserNotFoundError'
+      });
+    }
+  });
 }
 
 function deleteUser(req, res) {
