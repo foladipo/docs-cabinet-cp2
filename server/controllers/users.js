@@ -394,7 +394,7 @@ function updateUserProfile(req, res) {
     return;
   }
 
-  const userIdString = req.query.userId;
+  const userIdString = req.path.split('/')[1];
   if (userIdString === undefined) {
     res.status(400)
       .json({
@@ -505,7 +505,7 @@ function deleteUser(req, res) {
     return;
   }
 
-  const targetUserIdString = req.query.userId;
+  const targetUserIdString = req.path.split('/')[1];
   if (targetUserIdString === undefined) {
     res.status(400)
       .json({
@@ -599,9 +599,9 @@ function findUsers(req, res) {
 
 users.post('/login', login);
 users.post('/logout', logout);
-users.post('/', signUp);
-users.put('/', updateUserProfile);
-users.delete('/', deleteUser);
-users.get('/', findUsers);
+users.post('/*', signUp);
+users.put('/*', updateUserProfile);
+users.delete('/*', deleteUser);
+users.get('/*', findUsers);
 
 export default users;
