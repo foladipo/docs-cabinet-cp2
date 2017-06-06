@@ -450,8 +450,142 @@ function updateUserProfile(req, res) {
   });
 }
 
+/**
+ * Deletes a user identified by his/her id in the database after performing
+ * various checks. These checks include ensuring:
+ * - that the request was made with a valid token.
+ * - that the id of the user to be deleted was stated as a query string for
+ * the request.
+ * - that, after decoding the token for its payload, it deletes a user only if
+ * the user id from the token is the same as that supplied in the request. In
+ * other words, a user is trying to delete his/her own account.
+ * - that, otherwise, a user A trying to delete another user B has a higher
+ * role than the doomed user. So, for example, an admin might want to delete
+ * a regular user for breaking the Terms and Conditions of this app.
+ * - that it only returns a success message IF a user was actually deleted.
+ * Else, it returns a descriptive error message.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint e.g query parameters, headers.
+ * @param {Response} res - An express Response object that with
+ * the info this app will send back to the user e.g error messages.
+ * @return {void}
+ */
 function deleteUser(req, res) {
-  res.json({ yippee: 'Awww... We are sorry to see you go...' });
+  const token = req.headers['x-docs-cabinet-authentication'];
+  if (token === undefined) {
+    res.status(400)
+      .json({
+        error: 'MissingTokenError'
+      });
+    return;
+  }
+  if (token === '') {
+    res.status(400)
+      .json({
+        error: 'EmptyTokenError'
+      });
+    return;
+  }
+  let userProfile;
+  try {
+    userProfile = JWT.verify(token, process.env.JWT_PRIVATE_KEY);
+  } catch (err) {
+    const errorType = err.name;
+    if (errorType === 'TokenExpiredError') {
+      res.status(401)
+        .json({
+          error: 'ExpiredTokenError'
+        });
+    } else {
+      res.status(401)
+      .json({
+        error: 'InvalidTokenError'
+      });
+    }
+    return;
+  }
+
+  const targetUserIdString = req.query.userId;
+  if (targetUserIdString === undefined) {
+    res.status(400)
+      .json({
+        error: 'UserIdNotSuppliedError'
+      });
+    return;
+  }
+
+  const targetUserId = Number.parseInt(targetUserIdString, 10);
+  if (Number.isNaN(targetUserId)) {
+    res.status(400)
+      .json({
+        error: 'InvalidUserIdError'
+      });
+    return;
+  }
+
+  if (targetUserId === userProfile.userId) {
+    User
+      .destroy({
+        where: {
+          id: targetUserId
+        }
+      })
+      .then((userCount) => {
+        if (userCount > 0) {
+          res.status(200)
+            .json({
+              message: 'UserDeletionSucceeded'
+            });
+        } else {
+          res.status(404)
+            .json({
+              error: 'UserNotFoundError'
+            });
+        }
+      });
+  } else {
+    User
+      .findOne({
+        where: {
+          id: targetUserId
+        }
+      })
+      .then((user) => {
+        if (user) {
+          if (userProfile.roleId > user.roleId) {
+            User
+              .destroy({
+                where: {
+                  id: targetUserId
+                }
+              })
+              .then((userCount) => {
+                if (userCount > 0) {
+                  res.status(200)
+                    .json({
+                      message: 'UserDeletionSucceeded'
+                    });
+                } else {
+                  res.status(404)
+                    .json({
+                      error: 'UserNotFoundError'
+                    });
+                }
+              });
+          } else {
+            res.status(403)
+              .json({
+                error: 'ForbiddenOperationError'
+              });
+          }
+        } else {
+          res.status(404)
+            .json({
+              error: 'UserNotFoundError'
+            });
+        }
+      });
+  }
 }
 
 /* Four use cases:
