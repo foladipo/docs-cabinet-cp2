@@ -3,7 +3,7 @@ import JWT from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from '../models/User';
-import validateToken from '../middlewares/validateToken';
+import validateToken from '../middleware/validateToken';
 
 dotenv.config();
 
