@@ -3,6 +3,7 @@ import JWT from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from '../models/User';
+import validateToken from '../middlewares/validateToken';
 
 dotenv.config();
 
@@ -149,10 +150,7 @@ function login(req, res) {
 }
 
 /**
- * Logs a user out after confirming that he/she is currently
- * logged in. If this isn't true because the user didnt supply a token,
- * the token has expired etc, this function responds with a descriptive
- * error message e.g MissingTokenError, ExpiredTokenError etc.
+ * Logs out any user that has a validated token.
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint.
  * @param {Response} res - An express Response object that will contain
@@ -160,41 +158,10 @@ function login(req, res) {
  * @return {void}
  */
 function logout(req, res) {
-  const token = req.headers['x-docs-cabinet-authentication'];
-  if (token === undefined) {
-    res.status(400)
-      .json({
-        error: 'MissingTokenError'
-      });
-    return;
-  }
-  if (token === '') {
-    res.status(400)
-      .json({
-        error: 'EmptyTokenError'
-      });
-    return;
-  }
-  try {
-    JWT.verify(token, process.env.JWT_PRIVATE_KEY);
-    res.status(200)
-      .json({
-        message: 'LogoutSucceeded'
-      });
-  } catch (err) {
-    const errorType = err.name;
-    if (errorType === 'TokenExpiredError') {
-      res.status(401)
-        .json({
-          error: 'ExpiredTokenError'
-        });
-    } else {
-      res.status(401)
-      .json({
-        error: 'InvalidTokenError'
-      });
-    }
-  }
+  res.status(200)
+    .json({
+      message: 'LogoutSucceeded'
+    });
 }
 
 /**
@@ -344,14 +311,12 @@ function signUp(req, res) {
 }
 
 /**
- * Updates the profile of a user stored in this app's database. Before
- * performing the update, this function checks that the request:
- * - includes a token.
- * - includes a valid token signed by this app.
- * - includes the id of the user whose profile is to be updated, and
- * that the id is numeric.
- * - includes the id of an existing user account and not that of an
- * account that has not been created yet.
+ * Updates the profile of a user in this app's database. Before performing
+ * the update, this function checks that:
+ * - the request includes the id of the user whose profile is to be updated.
+ * - the included id belongs to an existing user of this app. In other
+ * words, the given id must not belong to a user account that has not been
+ * created or that has been deleted.
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint.
  * @param {Response} res - An express Response object that will contain
@@ -360,39 +325,7 @@ function signUp(req, res) {
  * @return {void}
  */
 function updateUserProfile(req, res) {
-  const token = req.headers['x-docs-cabinet-authentication'];
-  if (token === undefined) {
-    res.status(400)
-      .json({
-        error: 'MissingTokenError'
-      });
-    return;
-  }
-  if (token === '') {
-    res.status(400)
-      .json({
-        error: 'EmptyTokenError'
-      });
-    return;
-  }
-  let userProfile;
-  try {
-    userProfile = JWT.verify(token, process.env.JWT_PRIVATE_KEY);
-  } catch (err) {
-    const errorType = err.name;
-    if (errorType === 'TokenExpiredError') {
-      res.status(401)
-        .json({
-          error: 'ExpiredTokenError'
-        });
-    } else {
-      res.status(401)
-      .json({
-        error: 'InvalidTokenError'
-      });
-    }
-    return;
-  }
+  const userProfile = req.decodedUserProfile;
 
   const userIdString = req.path.split('/')[1];
   if (userIdString === undefined) {
@@ -453,15 +386,15 @@ function updateUserProfile(req, res) {
 /**
  * Deletes a user identified by his/her id in the database after performing
  * various checks. These checks include ensuring:
- * - that the request was made with a valid token.
  * - that the id of the user to be deleted was stated as a query string for
- * the request.
- * - that, after decoding the token for its payload, it deletes a user only if
- * the user id from the token is the same as that supplied in the request. In
- * other words, a user is trying to delete his/her own account.
- * - that, otherwise, a user A trying to delete another user B has a higher
- * role than the doomed user. So, for example, an admin might want to delete
- * a regular user for breaking the Terms and Conditions of this app.
+ * the HTTP request.
+ * - it deletes a user only if the user id from the (previously) decoded
+ * token is the same as that supplied in the HTTP request's query string. In
+ * other words, if a user is trying to delete his/her own account, this
+ * function does that for him/her.
+ * - that, otherwise, a user Janet trying to delete another user Lucy has a
+ * higher role than the doomed user. So, for example, an admin might want to
+ * delete a regular user for disobeying the Terms and Conditions of this app.
  * - that it only returns a success message IF a user was actually deleted.
  * Else, it returns a descriptive error message.
  * @param {Request} req - An express Request object with data about the
@@ -471,39 +404,7 @@ function updateUserProfile(req, res) {
  * @return {void}
  */
 function deleteUser(req, res) {
-  const token = req.headers['x-docs-cabinet-authentication'];
-  if (token === undefined) {
-    res.status(400)
-      .json({
-        error: 'MissingTokenError'
-      });
-    return;
-  }
-  if (token === '') {
-    res.status(400)
-      .json({
-        error: 'EmptyTokenError'
-      });
-    return;
-  }
-  let userProfile;
-  try {
-    userProfile = JWT.verify(token, process.env.JWT_PRIVATE_KEY);
-  } catch (err) {
-    const errorType = err.name;
-    if (errorType === 'TokenExpiredError') {
-      res.status(401)
-        .json({
-          error: 'ExpiredTokenError'
-        });
-    } else {
-      res.status(401)
-      .json({
-        error: 'InvalidTokenError'
-      });
-    }
-    return;
-  }
+  const userProfile = req.decodedUserProfile;
 
   const targetUserIdString = req.path.split('/')[1];
   if (targetUserIdString === undefined) {
@@ -598,10 +499,10 @@ function findUsers(req, res) {
 }
 
 users.post('/login', login);
-users.post('/logout', logout);
+users.post('/logout', validateToken, logout);
 users.post('/*', signUp);
-users.put('/*', updateUserProfile);
-users.delete('/*', deleteUser);
+users.put('/*', validateToken, updateUserProfile);
+users.delete('/*', validateToken, deleteUser);
 users.get('/*', findUsers);
 
 export default users;
