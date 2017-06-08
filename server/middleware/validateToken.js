@@ -12,8 +12,8 @@ import User from '../models/User';
  * but the user subsequently deleted his/her account. This function ensures
  * that in such an event, the previously generated token is not accepted as valid.
  * @param {Request} req - An express Request object with data about the
- * original request sent to this endpoint e.g query parameters, headers the decoded
- * payload of the JWT token etc.
+ * original request sent to this endpoint e.g query parameters, headers, the
+ * decoded payload of the JWT token etc.
  * @param {Response} res - An express Response object with the info this app
  * will send back to the user e.g error messages like MissingTokenError,
  * EmptyTokenError etc.
