@@ -3,7 +3,10 @@ import JWT from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from '../models/User';
+import Document from '../models/Document';
+import adminsOnly from '../middleware/adminsOnly';
 import validateToken from '../middleware/validateToken';
+import getLimitAndOffset from '../util/getLimitAndOffset';
 
 dotenv.config();
 
@@ -371,14 +374,14 @@ function updateUserProfile(req, res) {
     const rowsAffected = rows[0];
     if (rowsAffected > 0) {
       res.status(200)
-      .json({
-        message: 'UpdateSucceeded'
-      });
+        .json({
+          message: 'UpdateSucceeded'
+        });
     } else {
       res.status(404)
-      .json({
-        error: 'UserNotFoundError'
-      });
+        .json({
+          error: 'UserNotFoundError'
+        });
     }
   });
 }
@@ -489,13 +492,172 @@ function deleteUser(req, res) {
   }
 }
 
-/* Four use cases:
-GET /users/ - Find matching instances of user.
-GET /users/?limit={integer}&offset={integer} - Pagination for users.
-GET /users/<id> - Find user.
-GET /users/<id>/documents - Find all documents belonging to the user.*/
-function findUsers(req, res) {
-  res.json({ yippee: 'You want to know who else uses this app, no?' });
+/**
+ * Returns all the documents for the user identified by a certain id. Some
+ * details about this function's behaviour are:
+ * - if a user id isn't supplied in the request's path or this isn't a
+ * request for the documents path, this function calls the next middleware
+ * function in the callback stack.
+ * - if the id is not a valid integer, it returns an InvalidUserIdError
+ * response.
+ * - if the id is valid but the path after it isn't 'documents', it returns
+ * a UnrecognizedPathError response. That is, the request must be made to
+ * `/api/users/<id>/documents`.
+ * - if the user with the given id hasn't created any documents or the given
+ * id belongs to a non-existing user, it returns a response with an empty
+ * array of documents.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint e.g query parameters, headers etc.
+ * @param {Response} res - An express Response object with the info this app
+ * will send back to the user e.g a list of a user's documents, error,
+ * messages like InvalidUserIdError, UnrecognizedPathError etc.
+ * @param {Function} next - The next function or middleware in the callback stack
+ * of express.
+ * @return {void}
+ */
+function getUserDocuments(req, res, next) {
+  const pathInfo = req.path.split('/');
+  const userIdString = pathInfo[1];
+  const documentPath = pathInfo[2];
+
+  if (!(userIdString && documentPath)) {
+    next();
+    return;
+  }
+
+  const userId = Number.parseInt(userIdString, 10);
+  if (Number.isNaN(userId)) {
+    res.status(400)
+      .json({
+        error: 'InvalidUserIdError'
+      });
+    return;
+  }
+
+  if (documentPath !== 'documents') {
+    res.status(400)
+      .json({
+        error: 'UnrecognizedPathError'
+      });
+    return;
+  }
+
+  Document
+    .findAll({
+      where: {
+        createdBy: userId
+      }
+    })
+    .then((docs) => {
+      res.status(200)
+        .json({
+          userDocuments: docs
+        });
+    });
+}
+
+/**
+ * Returns the profile of the user with a particular id. Other details about this
+ * function's behaviour are:
+ * - if a user id isn't supplied in the request's path, this function calls
+ * the next middleware function in the callback stack.
+ * - if the id is not a valid integer, it returns an InvalidUserIdError
+ * response.
+ * - if the id belongs to a non-existing user, it returns a UserNotFoundError.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint e.g query parameters, headers etc.
+ * @param {Response} res - An express Response object with the info this app
+ * will send back to the user e.g a user's profile, error messages like
+ * UserNotFoundError, InvalidUserIdError etc.
+ * @param {Function} next - The next function or middleware in the callback stack
+ * of express.
+ * @return {void}
+ */
+function getUser(req, res, next) {
+  const pathInfo = req.path.split('/');
+  const userIdString = pathInfo[1];
+
+  if (!userIdString) {
+    next();
+    return;
+  }
+
+  const userId = Number.parseInt(userIdString, 10);
+  if (Number.isNaN(userId)) {
+    res.status(400)
+      .json({
+        error: 'InvalidUserIdError'
+      });
+    return;
+  }
+
+  User
+    .findOne({
+      where: {
+        id: userId
+      }
+    })
+    .then((foundUser) => {
+      if (foundUser) {
+        const profile = {
+          userId: foundUser.id,
+          username: foundUser.username,
+          firstName: foundUser.firstName,
+          lastName: foundUser.lastName,
+          roleId: foundUser.roleId
+        };
+        res.status(200)
+          .json(profile);
+      } else {
+        res.status(404)
+          .json({
+            error: 'UserNotFoundError'
+          });
+      }
+    });
+}
+
+/**
+ * Returns a list of the users of this app. In the query parameters of your
+ * HTTP request, you can specify a limit (number of users returned for each
+ * request) and an offset (e.g if there are 50 users and an offset of 5 is
+ * given, then the list of returned users will start from the 6th user in
+ * the database). The default limit is 30 and the default offset is 0. These
+ * defaults can be customized by specifying DEFAULT_LIMIT_OF_RESULTS and
+ * DEFAULT_OFFSET_OF_RESULTS in your `.env` file.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint e.g query parameters, headers etc.
+ * @param {Response} res - An express Response object with the info this app
+ * will send back to the user e.g a list of users etc.
+ * @return {void}
+ */
+function getAllUsers(req, res) {
+  const resultsLimitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
+  const resultsLimit = resultsLimitAndOffset.limit;
+  const offset = resultsLimitAndOffset.offset;
+
+  const currentUserId = req.decodedUserProfile.userId;
+  User
+    .findAll({
+      where: {
+        id: {
+          ne: currentUserId
+        }
+      },
+      limit: resultsLimit,
+      offset
+    })
+    .then((foundUsers) => {
+      const results = foundUsers.map(user => ({
+        userId: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roleId: user.roleId
+      }));
+      res.status(200)
+        .json(results);
+    });
 }
 
 users.post('/login', login);
@@ -503,6 +665,6 @@ users.post('/logout', validateToken, logout);
 users.post('/*', signUp);
 users.put('/*', validateToken, updateUserProfile);
 users.delete('/*', validateToken, deleteUser);
-users.get('/*', findUsers);
+users.get('/*', validateToken, adminsOnly, getUserDocuments, getUser, getAllUsers);
 
 export default users;
