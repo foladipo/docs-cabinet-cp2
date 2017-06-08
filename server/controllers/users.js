@@ -271,7 +271,7 @@ function signUp(req, res) {
     return;
   }
 
-  const roleId = Number.parseInt(process.env.DEFAULT_ROLE, 10);
+  const roleId = Number(process.env.DEFAULT_ROLE);
   User
     .findOne({
       where: {
@@ -285,7 +285,7 @@ function signUp(req, res) {
           error: 'UserExistsError'
         });
       } else {
-        const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
+        const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
         const hashedPassword = bcryptjs.hashSync(password, saltLength);
         User
           .create({
@@ -339,7 +339,7 @@ function updateUserProfile(req, res) {
     return;
   }
 
-  const userId = Number.parseInt(userIdString, 10);
+  const userId = Number(userIdString);
   if (Number.isNaN(userId)) {
     res.status(400)
       .json({
@@ -359,7 +359,7 @@ function updateUserProfile(req, res) {
     newProfile.username = userProfile.username;
   }
   if (userProfile.password) {
-    const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
+    const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
     newProfile.password = bcryptjs.hashSync(userProfile.password, saltLength);
   }
 
@@ -418,7 +418,7 @@ function deleteUser(req, res) {
     return;
   }
 
-  const targetUserId = Number.parseInt(targetUserIdString, 10);
+  const targetUserId = Number(targetUserIdString);
   if (Number.isNaN(targetUserId)) {
     res.status(400)
       .json({
@@ -525,7 +525,7 @@ function getUserDocuments(req, res, next) {
     return;
   }
 
-  const userId = Number.parseInt(userIdString, 10);
+  const userId = Number(userIdString);
   if (Number.isNaN(userId)) {
     res.status(400)
       .json({
@@ -582,7 +582,7 @@ function getUser(req, res, next) {
     return;
   }
 
-  const userId = Number.parseInt(userIdString, 10);
+  const userId = Number(userIdString);
   if (Number.isNaN(userId)) {
     res.status(400)
       .json({

@@ -20,14 +20,14 @@ export default function getLimitAndOffset(someLimit, someOffset) {
   let limit;
   let offset;
   if (someLimit) {
-    limit = Number.parseInt(someLimit, 10);
+    limit = Number(someLimit);
   } else {
-    limit = Number.parseInt(defaultNumberOfResults, 10);
+    limit = Number(defaultNumberOfResults);
   }
   if (someOffset) {
-    offset = Number.parseInt(someOffset, 10);
+    offset = Number(someOffset);
   } else {
-    offset = Number.parseInt(defaultOffset, 10);
+    offset = Number(defaultOffset);
   }
 
   limit = Number.isNaN(limit) ? 30 : limit;
