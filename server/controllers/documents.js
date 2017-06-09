@@ -150,6 +150,8 @@ function getAllDocuments(req, res) {
 
   Document
     .findAll({
+      // TODO: Add restrictions for 'role' and admin access of private
+      // files, using hasMany(), belongsTo() etc.
       where: {
         $or: [
           { access: 'public' },
