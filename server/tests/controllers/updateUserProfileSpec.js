@@ -155,7 +155,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(404)
       .expect({
-        error: 'UserNotFoundError'
+        error: 'TargetUserNotFoundError'
       }, done);
   });
 

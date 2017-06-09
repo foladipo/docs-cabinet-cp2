@@ -320,6 +320,9 @@ function signUp(req, res) {
  * - the included id belongs to an existing user of this app. In other
  * words, the given id must not belong to a user account that has not been
  * created or that has been deleted.
+ * - the person performing this account is trying to update his/her own
+ * account or is an admin. If not, it sends a ForbiddenOperationError
+ * response.
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint.
  * @param {Response} res - An express Response object that will contain
@@ -328,10 +331,10 @@ function signUp(req, res) {
  * @return {void}
  */
 function updateUserProfile(req, res) {
-  const userProfile = req.decodedUserProfile;
-
-  const userIdString = req.path.split('/')[1];
-  if (userIdString === undefined) {
+  const profileOfUpdater = req.decodedUserProfile;
+  const newProfile = req.body;
+  const targetUserIdString = req.path.split('/')[1];
+  if (targetUserIdString === undefined || targetUserIdString === '') {
     res.status(400)
       .json({
         error: 'UserIdNotSuppliedError'
@@ -339,8 +342,8 @@ function updateUserProfile(req, res) {
     return;
   }
 
-  const userId = Number(userIdString);
-  if (Number.isNaN(userId)) {
+  const targetUserId = Number(targetUserIdString);
+  if (Number.isNaN(targetUserId)) {
     res.status(400)
       .json({
         error: 'InvalidUserIdError'
@@ -348,25 +351,34 @@ function updateUserProfile(req, res) {
     return;
   }
 
-  const newProfile = {};
-  if (userProfile.firstName) {
-    newProfile.firstName = userProfile.firstName;
+  if (targetUserId !== profileOfUpdater.userId
+    && profileOfUpdater.roleId < 1) {
+    res.status(403)
+      .json({
+        error: 'ForbiddenOperationError'
+      });
+    return;
   }
-  if (userProfile.lastName) {
-    newProfile.lastName = userProfile.lastName;
+
+  const profile = {};
+  if (newProfile.firstName) {
+    profile.firstName = newProfile.firstName;
   }
-  if (userProfile.username) {
-    newProfile.username = userProfile.username;
+  if (newProfile.lastName) {
+    profile.lastName = newProfile.lastName;
   }
-  if (userProfile.password) {
+  if (newProfile.username) {
+    profile.username = newProfile.username;
+  }
+  if (newProfile.password) {
     const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
-    newProfile.password = bcryptjs.hashSync(userProfile.password, saltLength);
+    profile.password = bcryptjs.hashSync(newProfile.password, saltLength);
   }
 
   User.update(
-    newProfile,
+    profile,
     {
-      where: { id: userId },
+      where: { id: targetUserId },
       returning: true
     }
   )
@@ -380,7 +392,7 @@ function updateUserProfile(req, res) {
     } else {
       res.status(404)
         .json({
-          error: 'UserNotFoundError'
+          error: 'TargetUserNotFoundError'
         });
     }
   });
@@ -410,7 +422,7 @@ function deleteUser(req, res) {
   const userProfile = req.decodedUserProfile;
 
   const targetUserIdString = req.path.split('/')[1];
-  if (targetUserIdString === undefined) {
+  if (targetUserIdString === undefined || targetUserIdString === '') {
     res.status(400)
       .json({
         error: 'UserIdNotSuppliedError'
@@ -443,7 +455,7 @@ function deleteUser(req, res) {
         } else {
           res.status(404)
             .json({
-              error: 'UserNotFoundError'
+              error: 'TargetUserNotFoundError'
             });
         }
       });
@@ -472,7 +484,7 @@ function deleteUser(req, res) {
                 } else {
                   res.status(404)
                     .json({
-                      error: 'UserNotFoundError'
+                      error: 'TargetUserNotFoundError'
                     });
                 }
               });
@@ -485,7 +497,7 @@ function deleteUser(req, res) {
         } else {
           res.status(404)
             .json({
-              error: 'UserNotFoundError'
+              error: 'TargetUserNotFoundError'
             });
         }
       });
@@ -563,12 +575,12 @@ function getUserDocuments(req, res, next) {
  * the next middleware function in the callback stack.
  * - if the id is not a valid integer, it returns an InvalidUserIdError
  * response.
- * - if the id belongs to a non-existing user, it returns a UserNotFoundError.
+ * - if the id belongs to a non-existing user, it returns a TargetUserNotFoundError.
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint e.g query parameters, headers etc.
  * @param {Response} res - An express Response object with the info this app
  * will send back to the user e.g a user's profile, error messages like
- * UserNotFoundError, InvalidUserIdError etc.
+ * TargetUserNotFoundError, InvalidUserIdError etc.
  * @param {Function} next - The next function or middleware in the callback stack
  * of express.
  * @return {void}
@@ -611,7 +623,7 @@ function getUser(req, res, next) {
       } else {
         res.status(404)
           .json({
-            error: 'UserNotFoundError'
+            error: 'TargetUserNotFoundError'
           });
       }
     });
