@@ -1,6 +1,8 @@
 import express from 'express';
 import Document from '../models/Document';
+import User from '../models/User';
 import validateToken from '../middleware/validateToken';
+import getLimitAndOffset from '../util/getLimitAndOffset';
 
 const documents = express();
 
@@ -9,7 +11,7 @@ const documents = express();
  * is recognized by this app.
  * @param {String} someAccess - a string containing a possibly valid access
  * type for a document.
- * @returns {Boolean} - returns true if this is an access type recognized
+ * @return {Boolean} - returns true if this is an access type recognized
  * by this app and false if otherwise.
  */
 function isValidAccessType(someAccess) {
@@ -25,8 +27,111 @@ function isValidAccessType(someAccess) {
   return true;
 }
 
+/**
+ * Sends an authenticated user a document identified by a particular id.
+ * Other details include:
+ * - if an id is not given as part of the path of the HTTP request, it
+ * calls next().
+ * - if the specified id is invalid, it sends an InvalidDocumentIdError
+ * response. The id is invalid if it cannot be parsed to an integer.
+ * - if the requested document has an access type that does not fit the
+ * role of user making this request, this function sends a
+ * ForbiddenOperationError response.
+ * - if the document belongs to a user that no longer exists, this function
+ * sends an OrphanedDocumentError response.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint.
+ * @param {Response} res - An express Response object that will contain
+ * the identified document, error messages, HTTP status codes etc.
+ * @param {Function} next - The next function or middleware in the callback
+ * stack of express.
+ * @return {void}
+ */
 function getDocument(req, res, next) {
-  next();
+  const pathInfo = req.path.split('/');
+  const documentIdString = pathInfo[1];
+
+  if (!documentIdString) {
+    next();
+    return;
+  }
+
+  const documentId = Number(documentIdString);
+  if (Number.isNaN(documentId)) {
+    res.status(400)
+      .json({
+        error: 'InvalidDocumentIdError'
+      });
+    return;
+  }
+
+  const userId = req.decodedUserProfile.userId;
+  const roleId = req.decodedUserProfile.roleId;
+
+  Document
+    .findOne({
+      where: {
+        id: documentId
+      }
+    })
+    .then((foundDocument) => {
+      if (foundDocument) {
+        if (foundDocument.access === 'public') {
+          res.status(200)
+            .json(foundDocument);
+          return;
+        }
+
+        if (foundDocument.access === 'private') {
+          if (userId === foundDocument.createdBy || roleId > 0) {
+            res.status(200)
+              .json(foundDocument);
+          } else {
+            res.status(403)
+              .json({
+                error: 'ForbiddenOperationError'
+              });
+          }
+          return;
+        }
+
+        if (foundDocument.access === 'role') {
+          User
+            .findOne({
+              where: {
+                id: foundDocument.createdBy
+              },
+              attributes: ['id', 'roleId']
+            })
+            .then((foundAuthor) => {
+              // TODO: This is a hotfix. There should be a default action
+              // for documents whose author has unregistered/been deleted.
+              // Probably make delete them all.
+              if (foundAuthor) {
+                if (foundAuthor.roleId === roleId) {
+                  res.status(200)
+                    .json(foundDocument);
+                } else {
+                  res.status(403)
+                    .json({
+                      error: 'ForbiddenOperationError'
+                    });
+                }
+              } else {
+                res.status()
+                  .json({
+                    error: 'OrphanedDocumentError'
+                  });
+              }
+            });
+        }
+      } else {
+        res.status(404)
+          .json({
+            error: 'NoDocumentsFoundError'
+          });
+      }
+    });
 }
 
 /**
@@ -34,14 +139,29 @@ function getDocument(req, res, next) {
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint.
  * @param {Response} res - An express Response object that will contain
- * the list of documents available and other data e.g HTTP status codes,
- * JSON responses etc.
+ * the list of documents available and other data e.g HTTP status codes etc.
  * @return {void}
  */
 function getAllDocuments(req, res) {
-  res.status(200)
-    .json({
-      yippee: 'Here are all the documents.'
+  const limitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
+  const limit = limitAndOffset.limit;
+  const offset = limitAndOffset.offset;
+  const userId = req.decodedUserProfile.userId;
+
+  Document
+    .findAll({
+      where: {
+        $or: [
+          { access: 'public' },
+          { createdBy: userId },
+        ]
+      },
+      limit,
+      offset
+    })
+    .then((foundDocuments) => {
+      res.status(200)
+        .json(foundDocuments);
     });
 }
 
@@ -49,7 +169,7 @@ function getAllDocuments(req, res) {
  * Creates a new document for a particular user. Some other details include:
  * - if the title, document content, access type, tags or categories of the new
  * document are not specified, it sends an error response that appropriately
- * describes what went wrong.
+ * describes which field/info is missing.
  * - if the access type specified is not a value recognized by this app,
  * it sends an InvalidAccessTypeError response.
  * - if the user making this request has previously created a document with
@@ -164,15 +284,12 @@ function createDocument(req, res) {
 }
 
 /*
-GET /documents/
-GET /documents/?limit={integer}&offset={integer}
-GET /documents/<id>
 PUT /documents/<id>
 DELETE /documents/<id>
-
 */
+
 // TODO: Use app.all('/*', validateToken)?
-// documents.get('/*', validateToken, getDocument, getAllDocuments);
+documents.get('/*', validateToken, getDocument, getAllDocuments);
 documents.post('/*', validateToken, createDocument);
 
 export default documents;
