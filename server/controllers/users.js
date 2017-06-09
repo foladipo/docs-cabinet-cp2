@@ -320,7 +320,7 @@ function signUp(req, res) {
  * - the included id belongs to an existing user of this app. In other
  * words, the given id must not belong to a user account that has not been
  * created or that has been deleted.
- * - the person performing this account is trying to update his/her own
+ * - the person performing this request is trying to update his/her own
  * account or is an admin. If not, it sends a ForbiddenOperationError
  * response.
  * @param {Request} req - An express Request object with data about the

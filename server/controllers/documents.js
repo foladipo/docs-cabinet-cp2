@@ -28,6 +28,124 @@ function isValidAccessType(someAccess) {
 }
 
 /**
+ * Creates a new document for a particular user. Some other details include:
+ * - if the title, document content, access type, tags or categories of the new
+ * document are not specified, it sends an error response that appropriately
+ * describes which field/info is missing.
+ * - if the access type specified is not a value recognized by this app,
+ * it sends an InvalidAccessTypeError response.
+ * - if the user making this request has previously created a document with
+ * the same title, it sends a DocumentExistsError response.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint e.g document title, content etc.
+ * @param {Response} res - An express Response object that will contain
+ * the info this app will send back to the user e.g success or error
+ * messages.
+ * @return {void}
+ */
+function createDocument(req, res) {
+  const reqBody = req.body;
+
+  let title;
+  if (reqBody.title) {
+    title = reqBody.title;
+  } else {
+    res.status(400)
+      .json({
+        error: 'MissingTitleError'
+      });
+    return;
+  }
+
+  let docContent;
+  if (reqBody.docContent) {
+    docContent = reqBody.docContent;
+  } else {
+    res.status(400)
+      .json({
+        error: 'MissingDocContentError'
+      });
+    return;
+  }
+
+  let access;
+  if (reqBody.access) {
+    access = reqBody.access.toLowerCase();
+  } else {
+    res.status(400)
+      .json({
+        error: 'MissingAccessError'
+      });
+    return;
+  }
+
+  if (!isValidAccessType(access)) {
+    res.status(400)
+      .json({
+        error: 'InvalidAccessTypeError'
+      });
+    return;
+  }
+
+  let categories;
+  if (reqBody.categories) {
+    categories = reqBody.categories;
+  } else {
+    res.status(400)
+      .json({
+        error: 'MissingCategoriesError'
+      });
+    return;
+  }
+
+  let tags;
+  if (reqBody.tags) {
+    tags = reqBody.tags;
+  } else {
+    res.status(400)
+      .json({
+        error: 'MissingTagsError'
+      });
+    return;
+  }
+
+  const createdBy = req.decodedUserProfile.userId;
+  Document
+    .findOne({
+      where: {
+        title,
+        createdBy,
+      }
+    })
+    .then((document) => {
+      if (document) {
+        res.status(409)
+          .json({
+            error: 'DocumentExistsError'
+          });
+        return;
+      }
+
+      const newDocument = {
+        title,
+        docContent,
+        access,
+        categories,
+        tags,
+        createdBy
+      };
+      Document
+        .create(newDocument)
+        .then(() => {
+          res.status(200)
+            .json({
+              message: 'DocumentCreationSucceeded'
+            });
+        });
+    });
+}
+
+/**
  * Sends an authenticated user a document identified by a particular id.
  * Other details include:
  * - if an id is not given as part of the path of the HTTP request, it
@@ -168,130 +286,99 @@ function getAllDocuments(req, res) {
 }
 
 /**
- * Creates a new document for a particular user. Some other details include:
- * - if the title, document content, access type, tags or categories of the new
- * document are not specified, it sends an error response that appropriately
- * describes which field/info is missing.
- * - if the access type specified is not a value recognized by this app,
- * it sends an InvalidAccessTypeError response.
- * - if the user making this request has previously created a document with
- * the same title, it sends a DocumentExistsError response.
+ * Updates a document's content, access type, categories or tags. Before
+ * performing the update, this function checks that:
+ * - the HTTP request includes the id of the document that is to be updated.
+ * Else, it sends a DocumentIdNotSuppliedError response.
+ * - the included document id is valid, else it sends an InvalidDocumentIdError
+ * response. A document id is invalid if it is not an integer.
+ * - the included document id belongs to an existing document in this app,
+ * else it sends a TargetDocumentNotFoundError response.
+ * - the person performing this request was the one who initially created the
+ * document. Else, it sends a ForbiddenOperationError response.
  * @param {Request} req - An express Request object with data about the
- * original request sent to this endpoint e.g document title, content etc.
+ * original request sent to this endpoint.
  * @param {Response} res - An express Response object that will contain
- * the info this app will send back to the user e.g success or error
- * messages.
+ * the info this app will send back to the user e.g error messages for
+ * failed updates etc.
  * @return {void}
  */
-function createDocument(req, res) {
-  const reqBody = req.body;
+function updateDocument(req, res) {
+  const userProfile = req.decodedUserProfile;
+  const updatedDocument = req.body;
 
-  let title;
-  if (reqBody.title) {
-    title = reqBody.title;
-  } else {
+  const documentIdString = req.path.split('/')[1];
+  if (documentIdString === undefined || documentIdString === '') {
     res.status(400)
       .json({
-        error: 'MissingTitleError'
+        error: 'DocumentIdNotSuppliedError'
       });
     return;
   }
 
-  let docContent;
-  if (reqBody.docContent) {
-    docContent = reqBody.docContent;
-  } else {
+  const documentId = Number(documentIdString);
+  if (Number.isNaN(documentId)) {
     res.status(400)
       .json({
-        error: 'MissingDocContentError'
+        error: 'InvalidDocumentIdError'
       });
     return;
   }
 
-  let access;
-  if (reqBody.access) {
-    access = reqBody.access.toLowerCase();
-  } else {
-    res.status(400)
-      .json({
-        error: 'MissingAccessError'
-      });
-    return;
-  }
-
-  if (!isValidAccessType(access)) {
-    res.status(400)
-      .json({
-        error: 'InvalidAccessTypeError'
-      });
-    return;
-  }
-
-  let categories;
-  if (reqBody.categories) {
-    categories = reqBody.categories;
-  } else {
-    res.status(400)
-      .json({
-        error: 'MissingCategoriesError'
-      });
-    return;
-  }
-
-  let tags;
-  if (reqBody.tags) {
-    tags = reqBody.tags;
-  } else {
-    res.status(400)
-      .json({
-        error: 'MissingTagsError'
-      });
-    return;
-  }
-
-  const createdBy = req.decodedUserProfile.userId;
   Document
-    .findOne({
-      where: {
-        title,
-        createdBy,
-      }
-    })
-    .then((document) => {
-      if (document) {
-        res.status(409)
-          .json({
-            error: 'DocumentExistsError'
-          });
-        return;
-      }
+    .findById(documentId)
+    .then((foundDocument) => {
+      if (foundDocument) {
+        const updaterId = userProfile.userId;
+        if (foundDocument.createdBy === updaterId) {
+          const document = {};
+          if (updatedDocument.docContent) {
+            document.docContent = updatedDocument.docContent;
+          }
+          if (updatedDocument.access) {
+            document.access = updatedDocument.access;
+          }
+          if (updatedDocument.categories) {
+            document.categories = updatedDocument.categories;
+          }
+          if (updatedDocument.tags) {
+            document.tags = updatedDocument.tags;
+          }
 
-      const newDocument = {
-        title,
-        docContent,
-        access,
-        categories,
-        tags,
-        createdBy
-      };
-      Document
-        .create(newDocument)
-        .then(() => {
-          res.status(200)
-            .json({
-              message: 'DocumentCreationSucceeded'
+          Document
+            .update(document, {
+              where: {
+                id: documentId
+              }
+            })
+            .then(() => {
+              res.status(200)
+                .json({
+                  message: 'DocumentUpdateSucceeded'
+                });
             });
-        });
+        } else {
+          res.status(403)
+            .json({
+              error: 'ForbiddenOperationError'
+            });
+        }
+      } else {
+        res.status(404)
+          .json({
+            error: 'TargetDocumentNotFoundError'
+          });
+      }
     });
 }
 
 /*
-PUT /documents/<id>
 DELETE /documents/<id>
 */
 
 // TODO: Use app.all('/*', validateToken)?
-documents.get('/*', validateToken, getDocument, getAllDocuments);
 documents.post('/*', validateToken, createDocument);
+documents.get('/*', validateToken, getDocument, getAllDocuments);
+documents.put('/*', validateToken, updateDocument);
 
 export default documents;
