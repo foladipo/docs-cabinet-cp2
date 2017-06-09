@@ -294,7 +294,7 @@ function getAllDocuments(req, res) {
  * response. A document id is invalid if it is not an integer.
  * - the included document id belongs to an existing document in this app,
  * else it sends a TargetDocumentNotFoundError response.
- * - the person performing this request was the one who initially created the
+ * - the person performing this request is the one who initially created the
  * document. Else, it sends a ForbiddenOperationError response.
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint.
@@ -372,13 +372,81 @@ function updateDocument(req, res) {
     });
 }
 
-/*
-DELETE /documents/<id>
-*/
+/**
+ * Delete a document. Before performing the update, this function checks
+ * that:
+ * - the HTTP request includes the id of the document that is to be deleted.
+ * Else, it sends a DocumentIdNotSuppliedError response.
+ * - the included document id is valid, else it sends an InvalidDocumentIdError
+ * response. A document id is invalid if it is not an integer.
+ * - the included document id belongs to an existing document in this app,
+ * else it sends a TargetDocumentNotFoundError response.
+ * - the person performing this request is either the one who initially created the
+ * document or an admin. Else, it sends a ForbiddenOperationError response.
+ * @param {Request} req - An express Request object with data about the
+ * original request sent to this endpoint.
+ * @param {Response} res - An express Response object that will contain
+ * the info this app will send back to the user e.g error messages for
+ * failed updates etc.
+ * @return {void}
+ */
+function deleteDocument(req, res) {
+  const userProfile = req.decodedUserProfile;
+  const documentIdString = req.path.split('/')[1];
+  if (documentIdString === undefined || documentIdString === '') {
+    res.status(400)
+      .json({
+        error: 'DocumentIdNotSuppliedError'
+      });
+    return;
+  }
+
+  const documentId = Number(documentIdString);
+  if (Number.isNaN(documentId)) {
+    res.status(400)
+      .json({
+        error: 'InvalidDocumentIdError'
+      });
+    return;
+  }
+
+  Document
+    .findById(documentId)
+    .then((foundDocument) => {
+      if (foundDocument) {
+        const deleterId = userProfile.userId;
+        if (foundDocument.createdBy === deleterId || userProfile.roleId > 0) {
+          Document
+            .destroy({
+              where: {
+                id: documentId
+              }
+            })
+            .then(() => {
+              res.status(200)
+                .json({
+                  message: 'DocumentDeleteSucceeded'
+                });
+            });
+        } else {
+          res.status(403)
+            .json({
+              error: 'ForbiddenOperationError'
+            });
+        }
+      } else {
+        res.status(404)
+          .json({
+            error: 'TargetDocumentNotFoundError'
+          });
+      }
+    });
+}
 
 // TODO: Use app.all('/*', validateToken)?
 documents.post('/*', validateToken, createDocument);
 documents.get('/*', validateToken, getDocument, getAllDocuments);
 documents.put('/*', validateToken, updateDocument);
+documents.delete('/*', validateToken, deleteDocument);
 
 export default documents;
