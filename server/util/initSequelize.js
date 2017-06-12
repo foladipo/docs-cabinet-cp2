@@ -3,6 +3,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+let enableLogging;
+if (process.env.SEQUELIZE_LOGGING === 'false') {
+  enableLogging = false;
+} else {
+  enableLogging = true;
+}
+
 /**
  * Return an instance of Sequelize that has been initialized with the right
  * data like database name, host, port etc.
@@ -22,6 +29,7 @@ export default function initSequelize() {
         min: 0,
         idle: 10000
       },
+      logging: enableLogging
     }
   );
 
