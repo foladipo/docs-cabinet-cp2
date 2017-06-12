@@ -515,9 +515,10 @@ function deleteUser(req, res) {
  * - if the id is valid but the path after it isn't 'documents', it returns
  * a UnrecognizedPathError response. That is, the request must be made to
  * `/api/users/<id>/documents`.
- * - if the user with the given id hasn't created any documents or the given
- * id belongs to a non-existing user, it returns a response with an empty
- * array of documents.
+ * - if the id and path are valid but the id belongs to a non-existing user,
+ * it sends a TargetUserNotFoundError response.
+ * - if the user with the given id hasn't created any documents, it sends
+ * a response with an empty array of documents.
  * @param {Request} req - An express Request object with data about the
  * original request sent to this endpoint e.g query parameters, headers etc.
  * @param {Response} res - An express Response object with the info this app
@@ -554,17 +555,28 @@ function getUserDocuments(req, res, next) {
     return;
   }
 
-  Document
-    .findAll({
-      where: {
-        createdBy: userId
+  User
+    .findOne({ where: { id: userId } })
+    .then((foundUser) => {
+      if (foundUser) {
+        Document
+          .findAll({
+            where: {
+              createdBy: userId
+            }
+          })
+          .then((docs) => {
+            res.status(200)
+              .json({
+                documents: docs
+              });
+          });
+      } else {
+        res.status(404)
+          .json({
+            error: 'TargetUserNotFoundError'
+          });
       }
-    })
-    .then((docs) => {
-      res.status(200)
-        .json({
-          userDocuments: docs
-        });
     });
 }
 
@@ -619,7 +631,9 @@ function getUser(req, res, next) {
           roleId: foundUser.roleId
         };
         res.status(200)
-          .json(profile);
+          .json({
+            users: [profile]
+          });
       } else {
         res.status(404)
           .json({
@@ -644,9 +658,9 @@ function getUser(req, res, next) {
  * @return {void}
  */
 function getAllUsers(req, res) {
-  const resultsLimitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
-  const resultsLimit = resultsLimitAndOffset.limit;
-  const offset = resultsLimitAndOffset.offset;
+  const limitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
+  const limit = limitAndOffset.limit;
+  const offset = limitAndOffset.offset;
 
   const currentUserId = req.decodedUserProfile.userId;
   User
@@ -656,7 +670,7 @@ function getAllUsers(req, res) {
           ne: currentUserId
         }
       },
-      limit: resultsLimit,
+      limit,
       offset
     })
     .then((foundUsers) => {
@@ -668,7 +682,7 @@ function getAllUsers(req, res) {
         roleId: user.roleId
       }));
       res.status(200)
-        .json(results);
+        .json({ users: results });
     });
 }
 

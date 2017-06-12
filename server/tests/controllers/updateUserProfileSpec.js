@@ -27,7 +27,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
   const newUsername = 'angry@example.com';
   const newPassword = bcryptjs.hashSync('$1Billards', saltLength);
 
-  before('Create a dummy user', (done) => {
+  before('Create a sample user', (done) => {
     User
       .create(dummyUser)
       .then((user) => {
@@ -36,7 +36,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       });
   });
 
-  after('Delete the dummy user', (done) => {
+  after('Delete the sample user', (done) => {
     User
       .destroy({
         where: {

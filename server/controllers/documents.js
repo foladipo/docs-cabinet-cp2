@@ -203,7 +203,7 @@ function getDocument(req, res, next) {
         if (foundDocument.access === 'private') {
           if (userId === foundDocument.createdBy || roleId > 0) {
             res.status(200)
-              .json(foundDocument);
+              .json({ documents: [foundDocument] });
           } else {
             res.status(403)
               .json({
@@ -281,7 +281,7 @@ function getAllDocuments(req, res) {
     })
     .then((foundDocuments) => {
       res.status(200)
-        .json(foundDocuments);
+        .json({ documents: [foundDocuments] });
     });
 }
 
