@@ -10,6 +10,7 @@ dotenv.config();
 const request = supertest(app);
 const updateUserProfileEndpoint = '/api/users/';
 
+// TODO: Debug why some of these async specs never resolve.
 describe('When it receives a PUT request, the /api/users endpoint', () => {
   const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
   const dummyUser = {
@@ -27,6 +28,8 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
   const newUsername = 'angry@example.com';
   const newPassword = bcryptjs.hashSync('$1Billards', saltLength);
 
+  // TODO: Investigate why, despite this before(), the it()s are run while
+  // userId is still undefined.
   before('Create a sample user', (done) => {
     User
       .create(dummyUser)

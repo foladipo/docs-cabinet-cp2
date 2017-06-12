@@ -10,6 +10,7 @@ dotenv.config();
 const request = supertest(app);
 const deleteUserEndpoint = '/api/users';
 
+// TODO: Debug why some of these async specs never resolve.
 describe('When it receives a DELETE request, the /api/users endpoint', () => {
   const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
   const dummyUser = {
