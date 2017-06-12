@@ -12,7 +12,7 @@ const expect = chai.expect;
 describe('When a user GET\'s it, the /api/documents endpoint', () => {
   it('should reject requests that don\'t have a JWT token', (done) => {
     request.get(documentsEndpoint)
-      .expect(401)
+      .expect(400)
       .expect({
         error: 'MissingTokenError'
       }, done);
