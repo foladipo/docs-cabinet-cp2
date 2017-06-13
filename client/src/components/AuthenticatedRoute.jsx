@@ -11,7 +11,6 @@ import React from 'react';
  */
 export default function AuthenticatedRoute(props) {
   const token = window.localStorage.getItem('token');
-  console.log('token ', token);
   if (token !== '' && token !== null) {
     return <props.component {...props} />;
   }

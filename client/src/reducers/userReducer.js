@@ -7,7 +7,6 @@ export default function userReducer(state, action) {
       break;
 
     case 'LOGIN_FULFILLED':
-      console.log('payload is', action.payload);
       newState.isLoggingIn = false;
       newState.isLoggedIn = true;
       newState.token = action.payload.token;
