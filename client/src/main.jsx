@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './store/store';
+import RootContainer from './components/RootContainer';
 
-const SampleComponent = () => (
-  <h1>This is the sample component.</h1>
+ReactDOM.render(
+  <Provider store={store}>
+    <RootContainer />
+  </Provider>,
+  document.getElementById('root-container')
 );
-
-ReactDOM.render(<SampleComponent />, document.getElementById('root-container'));
