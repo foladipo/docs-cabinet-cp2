@@ -28,18 +28,7 @@ module.exports = {
   },
   test: {
     dbUri: process.env.TRAVIS_DB_URI,
-    options: {
-      dialect: 'postgres',
-      pool: {
-        max: 5,
-        min: 0,
-        idle: 15000,
-        acquire: 15000
-      },
-      dialectOptions: {
-        ssl: true
-      }
-    }
+    options: {}
   },
   production: {
     dbUri: 'DB_URL',
