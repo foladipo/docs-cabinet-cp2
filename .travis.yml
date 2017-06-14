@@ -10,6 +10,7 @@ services:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - npm install
+  - npm install -S mysql
   - npm run db:migrate:undo
   - npm run db:migrate
   - npm run db:seed
