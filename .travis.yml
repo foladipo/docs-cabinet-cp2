@@ -7,9 +7,6 @@ node_js:
 services:
   - postgresql
 
-before_install:
-  - sudo apt-get install postgresql-9.4
-
 before_script:
   - psql -c 'create database travis'
   - psql -c "CREATE USER folusho WITH PASSWORD 'jw8s0&F4093878'" -d travis
@@ -19,7 +16,7 @@ before_script:
   - npm run db:seed
 
 script: 
-  - npm test
+  - npm run test:travis
 
 after_success:
   - npm run coverage
