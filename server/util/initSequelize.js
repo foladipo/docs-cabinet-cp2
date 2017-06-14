@@ -1,37 +1,30 @@
 import Sequelize from 'sequelize';
 import dotenv from 'dotenv';
+import sequelizeConfig from '../config/config';
 
 dotenv.config();
 
-let enableLogging;
-if (process.env.SEQUELIZE_LOGGING === 'false') {
-  enableLogging = false;
-} else {
-  enableLogging = true;
-}
-
 /**
- * Return an instance of Sequelize that has been initialized with the right
+ * Return an instance of Sequelize that has been initialized with appropriate
  * data like database name, host, port etc.
  * @return {Sequelize} - An instance of Sequelize.
  */
 export default function initSequelize() {
-  const sequelize = new Sequelize(
-    process.env.POSTGRES_DB,
-    process.env.POSTGRES_DB_USERNAME,
-    process.env.POSTGRES_DB_PASSWORD,
-    {
-      host: process.env.POSTGRES_DB_HOST,
-      port: process.env.POSTGRES_DB_PORT,
-      dialect: 'postgres',
-      pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-      },
-      logging: enableLogging
-    }
-  );
+  const currentEnv = process.env.NODE_ENV || 'development';
+
+  let sequelize;
+  const currentConfig = sequelizeConfig[currentEnv];
+  if (currentEnv !== 'development') {
+    const dbUri = currentConfig.dbUri;
+    sequelize = new Sequelize(dbUri, currentConfig.options);
+  } else {
+    sequelize = new Sequelize(
+      currentConfig.database,
+      currentConfig.username,
+      currentConfig.password,
+      currentConfig.options
+    );
+  }
 
   return sequelize;
 }
