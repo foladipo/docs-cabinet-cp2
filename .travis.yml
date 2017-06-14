@@ -6,6 +6,9 @@ node_js:
 
 before_script:
   - npm install
+  - npm run db:migrate:undo
+  - npm run db:migrate
+  - npm run db:seed
 
 script: 
   - npm test
