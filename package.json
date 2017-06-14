@@ -14,8 +14,8 @@
     "start": "SEQUELIZE_LOGGING=false ./node_modules/.bin/babel-node server.js",
     "start:dev": "./node_modules/.bin/nodemon server.js --exec babel-node --presets es2015,react,node6",
     "test": "npm run test:server",
-    "test:nyc": "SEQUELIZE_LOGGING=false ./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --timeout 5000 --require babel-register server/tests/*/*[sS]pec.js",
-    "test:server": "SEQUELIZE_LOGGING=false ./node_modules/.bin/mocha --timeout 5000 --require babel-register server/tests/*/*[sS]pec.js",
+    "test:nyc": "SEQUELIZE_LOGGING=false ./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --timeout 5000 --require babel-register ./server/tests/*/*[sS]pec.js",
+    "test:server": "SEQUELIZE_LOGGING=false ./node_modules/.bin/mocha --timeout 5000 --require babel-register ./server/tests/*/*[sS]pec.js",
     "test:travis": "NODE_ENV=test npm run test:server"
   },
   "repository": {
