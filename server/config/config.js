@@ -1,11 +1,6 @@
 const dotenv = require('dotenv');
 
 dotenv.config();
-console.log('#####################>>>>>>>>>>>>>>>>>');
-console.log('');
-console.log('Travis db uri is...', process.env.TRAVIS_DB_URI);
-console.log('');
-console.log('#####################>>>>>>>>>>>>>>>>>');
 
 let enableLogging;
 if (process.env.SEQUELIZE_LOGGING === 'false') {
