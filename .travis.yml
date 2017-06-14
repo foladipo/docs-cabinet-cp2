@@ -9,11 +9,11 @@ services:
 
 before_script:
   - psql -c 'create database travis' -U postgres
-  - psql -c "INSERT INTO \"User\" (\"id\",\"firstName\",\"lastName\",\"username\",\"password\",\"roleId\",\"createdAt\",\"updatedAt\") VALUES (DEFAULT,'Travis','Admin','travis@travis-ci.com','$2a$10$4TUrFNTqXgJX6X2xpZAmLOze18q8YNv9f2G3ghY9p6GhjTvDlVoqi',0,'2017-06-14 17:01:40.739 +00:00','2017-06-14 17:01:40.739 +00:00')" -d travis
   - npm install -S mysql
   - npm run db:migrate:undo
   - npm run db:migrate
   - npm run db:seed
+  - psql -c "INSERT INTO public.\"User\" (\"id\",\"firstName\",\"lastName\",\"username\",\"password\",\"roleId\",\"createdAt\",\"updatedAt\") VALUES (DEFAULT,'Travis','Admin','travis@travis-ci.com','$2a$10$4TUrFNTqXgJX6X2xpZAmLOze18q8YNv9f2G3ghY9p6GhjTvDlVoqi',0,'2017-06-14 17:01:40.739 +00:00','2017-06-14 17:01:40.739 +00:00')" -d travis
 
 script: 
   - npm run test:travis
