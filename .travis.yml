@@ -4,7 +4,20 @@ node_js:
   - 6.10.1
   - 6.10.2
 
+services:
+  - postgresql
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install g++-4.8
+
+env:
+  - CXX=g++-4.8
+
 before_script:
+  - psql -c 'create database travis'
+  - psql -c "CREATE USER folusho WITH PASSWORD 'jw8s0&F4093878'" -d travis
   - npm install
   - npm run db:migrate:undo
   - npm run db:migrate
