@@ -23,11 +23,6 @@ describe('The Role model', () => {
       .create(dummyRole)
       .then(() => {
         done();
-      })
-      .catch((errors) => {
-        console.log('The errors are:>>>>>>>>>>>>>>***************');
-        console.log(errors);
-        console.log('>>>>>>>>>>>>>>***************');
       });
   });
 
