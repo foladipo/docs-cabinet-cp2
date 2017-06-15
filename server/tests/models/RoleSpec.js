@@ -7,12 +7,14 @@ const expect = chai.expect;
 
 describe('The Role model', () => {
   const dummyRole = {
+    id: 5,
     roleName: 'Spalaxicon#01'
   };
 
   const duplicateRole = Object.assign(dummyRole);
 
   const completeNewRole = {
+    id: 6,
     roleName: 'Spalaxicon#02'
   };
 
