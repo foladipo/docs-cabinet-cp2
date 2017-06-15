@@ -8,13 +8,13 @@ const expect = chai.expect;
 
 describe('The Role model', () => {
   const dummyRole = {
-    roleName: `Spalaxicon${uuid.v4()}`
+    roleName: 'Spalaxicon#01'
   };
 
   const duplicateRole = Object.assign(dummyRole);
 
   const completeNewRole = {
-    roleName: `Spalaxicon${uuid.v4()}`
+    roleName: 'Spalaxicon#02'
   };
 
   before('Create a sample role', (done) => {
