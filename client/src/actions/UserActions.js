@@ -1,8 +1,7 @@
 import request from 'superagent';
-import axios from 'axios';
 
 export function login(username, password) {
-  return function(dispatch) {
+  return (dispatch) => {
     dispatch({ type: 'LOGIN_PENDING' });
     request
       .post('/api/users/login')
@@ -25,7 +24,7 @@ export function login(username, password) {
 }
 
 export function logout() {
-  return function(dispatch) {
+  return (dispatch) => {
     dispatch({
       type: 'LOG_OUT_PENDING'
     });
@@ -34,5 +33,28 @@ export function logout() {
     dispatch({
       type: 'LOG_OUT_SUCCESS'
     });
+  };
+}
+
+export function signUp(firstName, lastName, username, password) {
+  return (dispatch) => {
+    dispatch({ type: 'SIGN_UP_PENDING' });
+    request
+      .post('/api/users/')
+      .send({ firstName, lastName, username, password })
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: 'SIGN_UP_REJECTED',
+            payload: { error: err.response.body.error }
+          });
+          return;
+        }
+        dispatch({
+          type: 'SIGN_UP_FULFILLED',
+          payload: res.body
+        });
+      });
   };
 }
