@@ -1,6 +1,5 @@
 import chai from 'chai';
 import dotenv from 'dotenv';
-import uuid from 'uuid';
 import Role from '../../models/Role';
 
 dotenv.config();
@@ -19,9 +18,14 @@ describe('The Role model', () => {
 
   before('Create a sample role', (done) => {
     Role
-      .findOrCreate({ where: { roleName: dummyRole.roleName }, defaults: dummyRole })
-      .spread(() => {
+      .create(dummyRole)
+      .then(() => {
         done();
+      })
+      .catch((errors) => {
+        console.log('The errors are:>>>>>>>>>>>>>>***************');
+        console.log(errors);
+        console.log('>>>>>>>>>>>>>>***************');
       });
   });
 
