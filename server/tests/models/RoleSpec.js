@@ -19,8 +19,8 @@ describe('The Role model', () => {
 
   before('Create a sample role', (done) => {
     Role
-      .create(dummyRole)
-      .then(() => {
+      .findOrCreate({ where: { roleName: dummyRole.roleName }, defaults: dummyRole })
+      .spread(() => {
         done();
       });
   });
