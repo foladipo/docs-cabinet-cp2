@@ -27,7 +27,8 @@ function SignUpContainer(props) {
   };
 
   const attemptSignUp = (event) => {
-    // Validate form input here and, if appropriate, show an error message in a toast.
+    // TODO: Validate form input here and, if appropriate, show an error
+    // message in a toast.
     event.preventDefault();
     props.dispatch(signUp(firstName, lastName, username, password));
   };
@@ -36,11 +37,22 @@ function SignUpContainer(props) {
     <div>
       <form>
         <Row>
-          <Input s={6} label="First Name" onChange={updateFirstName} />
-          <Input s={6} label="Last Name" onChange={updateLastName} />
-          <Input s={12} label="Email" type="email" validate onChange={updateUsername} />
-          <Input s={12} label="Password" type="password" onChange={updatePassword} />
-          <Button waves="light" onClick={attemptSignUp}>Sign up<Icon left>send</Icon></Button>
+          <Input s={6} label="First Name" onChange={updateFirstName}>
+            <Icon>face</Icon>
+          </Input>
+          <Input s={6} label="Last Name" onChange={updateLastName}>
+            <Icon>face</Icon>
+          </Input>
+          <Input s={12} label="Email" type="email" validate onChange={updateUsername}>
+            <Icon>account_circle</Icon>
+          </Input>
+          <Input s={12} label="Password" type="password" onChange={updatePassword}>
+            <Icon>lock</Icon>
+          </Input>
+          <Button waves="light" onClick={attemptSignUp}>
+            Sign up
+            <Icon left>send</Icon>
+          </Button>
         </Row>
       </form>
     </div>
