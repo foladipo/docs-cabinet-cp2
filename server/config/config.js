@@ -14,17 +14,24 @@ module.exports = {
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_DB_USERNAME,
     password: process.env.POSTGRES_DB_PASSWORD,
-    host: process.env.POSTGRES_DB_HOST,
-    port: process.env.POSTGRES_DB_PORT,
-    dialect: 'postgres',
-    logging: enableLogging
+    options: {
+      host: process.env.POSTGRES_DB_HOST,
+      port: process.env.POSTGRES_DB_PORT,
+      dialect: 'postgres',
+      pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+      },
+      logging: enableLogging
+    }
   },
   test: {
-    use_env_variable: 'DB_URL_TRAVIS',
+    dbUri: process.env.TRAVIS_DB_URI,
     dialect: 'postgres'
   },
   production: {
-    use_env_variable: 'DB_URL',
+    dbUri: 'DB_URL',
     dialect: 'postgres'
   }
 };

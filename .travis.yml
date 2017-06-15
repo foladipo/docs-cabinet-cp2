@@ -4,11 +4,19 @@ node_js:
   - 6.10.1
   - 6.10.2
 
+services:
+  - postgresql
+
 before_script:
-  - npm install
+  - psql -c 'create database travis' -U postgres
+  - npm install -S mysql
+  - npm run db:migrate:undo
+  - npm run db:migrate
+  - npm run db:seed
+  - psql -c "INSERT INTO public.\"User\" (\"id\",\"firstName\",\"lastName\",\"username\",\"password\",\"roleId\",\"createdAt\",\"updatedAt\") VALUES (DEFAULT,'Travis','Admin','travis@travis-ci.com','$2a$10$4TUrFNTqXgJX6X2xpZAmLOze18q8YNv9f2G3ghY9p6GhjTvDlVoqi',0,'2017-06-14 17:01:40.739 +00:00','2017-06-14 17:01:40.739 +00:00')" -d travis
 
 script: 
-  - npm test
+  - npm run test:travis
 
 after_success:
   - npm run coverage
