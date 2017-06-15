@@ -1,11 +1,12 @@
 export default function userReducer(state, action) {
   const newState = Object.assign({}, state);
   switch (action.type) {
+    case 'SIGN_UP_PENDING':
     case 'LOGIN_PENDING':
       newState.isLoggingIn = true;
       newState.isLoggedIn = false;
       break;
-
+    case 'SIGN_UP_FULFILLED':
     case 'LOGIN_FULFILLED':
       newState.isLoggingIn = false;
       newState.isLoggedIn = true;
@@ -17,6 +18,7 @@ export default function userReducer(state, action) {
       window.location.replace('/dashboard');
       break;
 
+    case 'SIGN_UP_REJECTED':
     case 'LOGIN_REJECTED':
       newState.isLoggingIn = false;
       newState.isLoggedIn = false;
@@ -31,7 +33,7 @@ export default function userReducer(state, action) {
       window.localStorage.clear();
       break;
 
-    // TODO: Maybe split these cases? E.g show an error for the rejection.
+     // TODO: Maybe split these cases? E.g show an error for the rejection.
     case 'LOG_OUT_REJECTED':
     case 'LOG_OUT_SUCCESS':
       window.location.replace('/');
