@@ -22,18 +22,33 @@ export default function AuthenticationPage(props) {
       <div className="container section three-quarters-height">
         <div className="section z-depth-4 white">
           <h3 className="center">Welcome to Docs Cabinet!</h3>
-          <Modal
-            header="Login"
-            trigger={<Button waves="light">Login</Button>}
-          >
-            <LoginContainer />
-          </Modal>
-          <Modal
-            header="Login"
-            trigger={<Button waves="light">Sign up</Button>}
-          >
-            <SignUpContainer />
-          </Modal>
+          <div className="horizontally-centered quarter-side-margin wraps-content">
+            <Modal
+              header="Login"
+              trigger={
+                <Button
+                  waves="light"
+                  className="quarter-side-margin cyan darken-2"
+                >
+                  Sign up
+                </Button>
+              }
+            >
+              <SignUpContainer />
+            </Modal>
+            <Modal
+              header="Login"
+              trigger={
+                <Button
+                  waves="light"
+                  className="quarter-side-margin cyan lighten-5 black-text"
+                >Login
+                </Button>
+              }
+            >
+              <LoginContainer />
+            </Modal>
+          </div>
         </div>
       </div>
     </div>
