@@ -31,7 +31,11 @@ module.exports = {
     dialect: 'postgres'
   },
   production: {
-    dbUri: 'DB_URL',
-    dialect: 'postgres'
+    dbUri: process.env.HEROKU_DB_URI,
+    options: {
+      dialectOptions: {
+        ssl: true
+      }
+    }
   }
 };
