@@ -15,8 +15,8 @@ export default function initSequelize() {
   let sequelize;
   const currentConfig = sequelizeConfig[currentEnv];
   if (currentEnv === 'test' || currentEnv === 'production') {
-    const dbUri = currentConfig.dbUri;
-    sequelize = new Sequelize(dbUri, currentConfig.options);
+    const envVariableName = currentConfig.use_env_variable;
+    sequelize = new Sequelize(process.env[envVariableName], currentConfig);
   } else {
     sequelize = new Sequelize(
       currentConfig.database,

@@ -9,7 +9,7 @@ if (process.env.SEQUELIZE_LOGGING === 'false') {
   enableLogging = true;
 }
 
-module.exports = {
+const config = {
   development: {
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_DB_USERNAME,
@@ -27,15 +27,26 @@ module.exports = {
     }
   },
   test: {
-    dbUri: process.env.TRAVIS_DB_URI,
-    dialect: 'postgres'
+    use_env_variable: 'TRAVIS_DB_URI',
+    dialect: 'postgres',
+    pool: {
+      max: 5,
+      min: 0,
+      idle: 10000
+    },
   },
   production: {
-    dbUri: process.env.HEROKU_DB_URI,
-    options: {
-      dialectOptions: {
-        ssl: true
-      }
+    use_env_variable: 'ELEPHANTSQL_DB_URI',
+    pool: {
+      max: 5,
+      min: 0,
+      idle: 10000
+    },
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: true
     }
   }
 };
+
+module.exports = config;
