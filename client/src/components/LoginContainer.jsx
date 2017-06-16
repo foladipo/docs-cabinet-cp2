@@ -1,8 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Row, Input, Button, Icon } from 'react-materialize';
 import * as UserActions from '../actions/UserActions';
 
-export default function LoginContainer(props) {
+function LoginContainer(props) {
   let username = '';
   let password = '';
   const updateUsername = (event) => {
@@ -30,6 +31,7 @@ export default function LoginContainer(props) {
               type="email"
               label="Email"
               onChange={updateUsername}
+              defaultValue=""
               validate
             >
               <Icon>account_circle</Icon>
@@ -53,3 +55,9 @@ export default function LoginContainer(props) {
     </div>
   );
 }
+
+const mapStateToProps = storeState => ({
+  user: storeState.user
+});
+
+export default connect(mapStateToProps)(LoginContainer);
