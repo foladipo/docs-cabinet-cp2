@@ -66,6 +66,7 @@
     "extract-text-webpack-plugin": "^2.1.2",
     "jsonwebtoken": "^7.4.1",
     "materialize-css": "^0.98.2",
+    "mysql": "^2.13.0",
     "node-sass": "^4.5.3",
     "path": "^0.12.7",
     "pg": "^6.2.3",
