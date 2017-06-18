@@ -86,15 +86,15 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
   });
 
   const targetUserId = 0;
-  it('should reject requests where another path apart from "documents" is' +
-    ' used', (done) => {
+  it('should send the api\'s default message for requests where another' +
+    ' path different from "documents" is used', (done) => {
     request.get(`${getUserDocumentsEndpoint}/${targetUserId}/foo`)
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(400)
+      .expect(200)
       .expect({
-        error: 'UnrecognizedPathError'
+        message: 'Welcome to Docs Cabinet. File away!'
       }, done);
   });
 
