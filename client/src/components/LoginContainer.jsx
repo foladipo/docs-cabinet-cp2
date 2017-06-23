@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Row, Input, Button, Icon } from 'react-materialize';
+import { Row, Input, Button, Icon, Col, ProgressBar } from 'react-materialize';
 import * as UserActions from '../actions/UserActions';
 
 /**
@@ -139,13 +139,20 @@ class LoginContainer extends React.Component {
               >
                 <Icon>lock</Icon>
               </Input>
-              <Button waves="light" onClick={this.login}>
+              <Button
+                className={this.props.user.isLoggingIn ? 'disabled pulse' : 'pulse'}
+                waves="light"
+                onClick={this.login}
+              >
                 Login
                 <Icon left>send</Icon>
               </Button>
             </Row>
           </Row>
         </form>
+        <Col s={12} className={this.props.user.isLoggingIn ? '' : 'hide'}>
+          <ProgressBar />
+        </Col>
       </div>
     );
   }

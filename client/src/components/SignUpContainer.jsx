@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Row, Input, Icon, Button } from 'react-materialize';
+import { Row, Input, Icon, Button, Col, ProgressBar } from 'react-materialize';
 import { signUp } from '../actions/UserActions';
 
 /**
@@ -185,12 +185,19 @@ class SignUpContainer extends React.Component {
             <Input s={12} label="Password" type="password" onChange={this.updatePassword}>
               <Icon>lock</Icon>
             </Input>
-            <Button waves="light" onClick={this.attemptSignUp}>
+            <Button
+              className={this.props.user.isLoggingIn ? 'disabled pulse' : 'pulse'}
+              waves="light"
+              onClick={this.attemptSignUp}
+            >
               Sign up
               <Icon left>send</Icon>
             </Button>
           </Row>
         </form>
+        <Col s={12} className={this.props.user.isLoggingIn ? '' : 'hide'}>
+          <ProgressBar />
+        </Col>
       </div>
     );
   }
