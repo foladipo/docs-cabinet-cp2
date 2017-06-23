@@ -1,63 +1,167 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Input, Button, Icon } from 'react-materialize';
 import * as UserActions from '../actions/UserActions';
 
-function LoginContainer(props) {
-  let username = '';
-  let password = '';
-  const updateUsername = (event) => {
-    event.preventDefault();
-    username = event.target.value;
-  };
+/**
+ * LoginContainer - Renders the login form.
+ */
+class LoginContainer extends React.Component {
+  /**
+   * Creates and initializes an instance of LoginContainer.
+   * @param {Object} props - The data passed to this component from its parent.
+   */
+  constructor(props) {
+    super(props);
 
-  const updatePassword = (event) => {
-    event.preventDefault();
-    password = event.target.value;
-  };
+    this.state = {
+      username: '',
+      password: ''
+    };
 
-  const login = (event) => {
-    event.preventDefault();
-    props.dispatch(UserActions.login(username, password));
-  };
+    this.updateUsername = this.updateUsername.bind(this);
+    this.updatePassword = this.updatePassword.bind(this);
+    this.login = this.login.bind(this);
+    this.simpleErrorMessage = this.simpleErrorMessage.bind(this);
+  }
 
-  return (
-    <div>
-      <form>
-        <Row>
+  /**
+   * Updates the value of username stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateUsername(event) {
+    event.preventDefault();
+    this.setState({
+      username: event.target.value
+    });
+  }
+
+  /**
+   * Updates the value of password stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updatePassword(event) {
+    event.preventDefault();
+    this.setState({
+      password: event.target.value
+    });
+  }
+
+  /**
+   * Attempts to log a user in using the supplied credentials.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  login(event) {
+    // TODO: Validate form input here and, if appropriate, show an error
+    event.preventDefault();
+    this.props.dispatch(UserActions.login(this.state.username, this.state.password));
+  }
+
+  // TODO: Consult: Should this be here? Or in the Actions file?
+  /**
+   * Returns a simplified error message for failed login attempts.
+   * @return {String} - A simplified error message.
+   */
+  simpleErrorMessage() {
+    const technicalError = this.props.user.loginError;
+    let simplifiedError;
+    switch (technicalError) {
+      case 'IncorrectPasswordError':
+        simplifiedError = 'Oops! You supplied an incorrect password.';
+        break;
+
+      case 'NonExistentUserError':
+        simplifiedError = 'We don\'t remember you. Please check the details below or create an account.';
+        break;
+
+      case 'InvalidUsernameError':
+        simplifiedError = 'Please enter a valid email address in the "username" field.';
+        break;
+
+      case 'MissingPasswordError':
+        simplifiedError = 'Please enter your password.';
+        break;
+
+      case 'MissingUsernameError':
+        simplifiedError = 'Please enter your username.';
+        break;
+
+      case 'MissingLoginDetailsError':
+        simplifiedError = 'Please fill the form below.';
+        break;
+
+      default:
+        simplifiedError = '';
+    }
+
+    return simplifiedError;
+  }
+
+  /**
+   * @return {Component|null} - Returns the React Component to be rendered or
+   * null if nothing is to be rendered.
+   */
+  render() {
+    return (
+      <div>
+        <h6 className="red-text text-lighten-2">**All fields are required.</h6>
+        <form>
+          <div className="red lighten-2">
+            <p className="white-text center">
+              {this.simpleErrorMessage()}
+            </p>
+          </div>
           <Row>
-            <Input
-              s={12}
-              type="email"
-              label="Email"
-              onChange={updateUsername}
-              defaultValue=""
-              validate
-            >
-              <Icon>account_circle</Icon>
-            </Input>
-            <Input
-              s={12}
-              type="password"
-              label="Password"
-              onChange={updatePassword}
-              validate
-            >
-              <Icon>lock</Icon>
-            </Input>
-            <Button waves="light" onClick={login}>
-              Login
-              <Icon left>send</Icon>
-            </Button>
+            <Row>
+              <Input
+                s={12}
+                type="email"
+                label="Email"
+                onChange={this.updateUsername}
+                defaultValue=""
+                validate
+              >
+                <Icon>account_circle</Icon>
+              </Input>
+              <Input
+                s={12}
+                type="password"
+                label="Password"
+                onChange={this.updatePassword}
+                validate
+              >
+                <Icon>lock</Icon>
+              </Input>
+              <Button waves="light" onClick={this.login}>
+                Login
+                <Icon left>send</Icon>
+              </Button>
+            </Row>
           </Row>
-        </Row>
-      </form>
-    </div>
-  );
+        </form>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = storeState => ({
   user: storeState.user
 });
+
+LoginContainer.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  user: PropTypes.objectOf(PropTypes.any)
+};
+
+LoginContainer.defaultProps = {
+  user: {}
+};
 
 export default connect(mapStateToProps)(LoginContainer);
