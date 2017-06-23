@@ -71,6 +71,7 @@
     "path": "^0.12.7",
     "pg": "^6.2.3",
     "pg-hstore": "^2.3.2",
+    "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-materialize": "^1.0.1",

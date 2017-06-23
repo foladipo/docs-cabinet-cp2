@@ -3,7 +3,13 @@ import { Button, Modal } from 'react-materialize';
 import LoginContainer from './LoginContainer';
 import SignUpContainer from './SignUpContainer';
 
-export default function AuthenticationPage(props) {
+/**
+ * AuthenticationPage - Renders an authentication page for a user
+ * to either sign up or login.
+ * @return {Component|null} - Returns the React Component to be rendered or
+ * null if nothing is to be rendered.
+ */
+export default function AuthenticationPage() {
   const isLoggedIn = () => {
     let isUserLoggedIn = false;
     const token = window.localStorage.getItem('token');
@@ -24,7 +30,7 @@ export default function AuthenticationPage(props) {
           <h3 className="center">Welcome to Docs Cabinet!</h3>
           <div className="horizontally-centered quarter-side-margin wraps-content">
             <Modal
-              header="Login"
+              header="Sign up"
               trigger={
                 <Button
                   waves="light"
