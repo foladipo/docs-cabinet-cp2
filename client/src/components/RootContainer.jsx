@@ -4,6 +4,11 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import DashboardContainer from './DashboardContainer';
 import AuthenticationPage from './AuthenticationPage';
 
+/**
+ * AuthenticationPage - Renders the entirety of this app.
+ * @return {Component|null} - Returns the React Component to be rendered or
+ * null if nothing is to be rendered.
+ */
 export default function RootContainer() {
   return (
     <BrowserRouter>
