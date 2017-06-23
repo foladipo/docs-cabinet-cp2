@@ -38,17 +38,18 @@ export default function userReducer(state, action) {
       newState.loginError = action.payload.error;
       break;
 
-    case 'LOG_OUT_PENDING':
+    case 'LOGOUT_PENDING':
       newState.isLoggingOut = true;
       newState.isLoggedIn = false;
       newState.token = null;
-      newState.user = {};
+      newState.user = null;
       window.localStorage.clear();
       break;
 
      // TODO: Maybe split these cases? E.g show an error for the rejection.
-    case 'LOG_OUT_REJECTED':
-    case 'LOG_OUT_SUCCESS':
+    case 'LOGOUT_REJECTED':
+    case 'LOGOUT_SUCCESS':
+      newState.isLoggingOut = false;
       window.location.replace('/');
       break;
 

@@ -38,12 +38,12 @@ export function login(username, password) {
 export function logout() {
   return (dispatch) => {
     dispatch({
-      type: 'LOG_OUT_PENDING'
+      type: 'LOGOUT_PENDING'
     });
 
     // TODO: Send a request to /api/users/logout?
     dispatch({
-      type: 'LOG_OUT_SUCCESS'
+      type: 'LOGOUT_SUCCESS'
     });
   };
 }
