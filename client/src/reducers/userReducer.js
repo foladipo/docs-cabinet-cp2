@@ -13,6 +13,7 @@ export default function userReducer(state, action) {
       newState.isLoggingIn = true;
       newState.isLoggedIn = false;
       break;
+
     case 'SIGN_UP_FULFILLED':
     case 'LOGIN_FULFILLED':
       newState.isLoggingIn = false;

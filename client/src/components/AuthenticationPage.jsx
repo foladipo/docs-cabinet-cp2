@@ -34,7 +34,7 @@ export default function AuthenticationPage() {
               trigger={
                 <Button
                   waves="light"
-                  className="quarter-side-margin cyan darken-2"
+                  className="quarter-side-margin teal lighten-1"
                 >
                   Sign up
                 </Button>
@@ -47,7 +47,7 @@ export default function AuthenticationPage() {
               trigger={
                 <Button
                   waves="light"
-                  className="quarter-side-margin cyan lighten-5 black-text"
+                  className="quarter-side-margin teal lighten-5 black-text"
                 >Login
                 </Button>
               }
