@@ -13,7 +13,8 @@ const store = createStore(
       isLoggingOut: false,
       token: null,
       user: {},
-      error: ''
+      signUpError: '',
+      loginError: ''
     },
     documents: {
       count: 0,
