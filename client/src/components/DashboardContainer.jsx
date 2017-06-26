@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, SideNav, SideNavItem, Row, Col, Preloader, Icon } from 'react-materialize';
+import { Button, Col, Icon, Modal, Preloader, Row, SideNav, SideNavItem } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as UserActions from '../actions/UserActions';
+import UpdateDocument from './UpdateDocument';
 
 /**
  * DashboardContainer - Renders the dashboard.
@@ -37,12 +38,15 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
+    // TODO: When trigger is clicked, reduce the size of the container by
+    // 300px, which is the size of the side menu.
     const trigger = <Button>Menu<Icon left>reorder</Icon></Button>;
     return (
       <div className="authenticated-user-area white">
         <SideNav
           trigger={trigger}
           options={{
+            menuWidth: 300,
             closeOnClick: true,
             edge: 'right',
             draggable: true
@@ -59,9 +63,14 @@ class DashboardContainer extends React.Component {
             }}
           />
           <SideNavItem className="row">
-            <Button className="col s12">
-              Compose
-            </Button>
+            <Modal
+              header="Create Document"
+              trigger={
+                <Button className="col s12">Compose</Button>
+              }
+            >
+              <UpdateDocument {...this.props} mode="create" modeMessage="Create document" />
+            </Modal>
           </SideNavItem>
           <SideNavItem divider />
           <SideNavItem href="#!second">Second Link</SideNavItem>
