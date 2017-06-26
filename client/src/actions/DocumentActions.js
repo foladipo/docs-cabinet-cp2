@@ -12,7 +12,7 @@ import request from 'superagent';
  * @return {Function} - Returns a function that dispatches actions based
  * on the state of the document creation process (commencement, success or failure).
  */
-export default function createDocument(token, title, docContent, access, categories, tags) {
+export function createDocument(token, title, docContent, access, categories, tags) {
   return (dispatch) => {
     dispatch({ type: 'CREATE_DOCUMENT_PENDING' });
     const newDocument = {
@@ -42,4 +42,8 @@ export default function createDocument(token, title, docContent, access, categor
         });
       });
   };
+}
+
+export function updateDocument() {
+  
 }

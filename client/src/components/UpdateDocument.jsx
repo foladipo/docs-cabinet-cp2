@@ -17,17 +17,23 @@ class UpdateDocument extends Component {
 
     this.state = {
       errorMessage: '',
-      access: props.access,
+      title: props.title,
       docContent: props.docContent,
-      title: props.title
+      access: props.access,
+      categories: props.categories,
+      tags: props.tags
     };
 
     this.hasValidAccess = this.hasValidAccess.bind(this);
     this.hasValidTitle = this.hasValidTitle.bind(this);
     this.hasValidDocContent = this.hasValidDocContent.bind(this);
+    this.hasValidCategories = this.hasValidCategories.bind(this);
+    this.hasValidTags = this.hasValidTags.bind(this);
     this.updateAccess = this.updateAccess.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
-    this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.updateDocContent = this.updateDocContent.bind(this);
+    this.updateCategories = this.updateCategories.bind(this);
+    this.updateTags = this.updateTags.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
   }
 
@@ -64,6 +70,27 @@ class UpdateDocument extends Component {
     return strippedDocContent.length > 0;
   }
 
+  /**
+   * Tests the validity of a document's categories.
+   * @return {Boolean} - Whether or not a document's categories are valid.
+   */
+  hasValidCategories() {
+    const categories = this.state.categories;
+    if (!categories) return false;
+    const strippedCategories = categories.replace(/(\s+)/, '');
+    return strippedCategories.length > 0;
+  }
+
+  /**
+   * Tests the validity of a document's tags.
+   * @return {Boolean} - Whether or not a document's tags are valid.
+   */
+  hasValidTags() {
+    const tags = this.state.tags;
+    if (!tags) return false;
+    const strippedTags = tags.replace(/(\s+)/, '');
+    return strippedTags.length > 0;
+  }
 
   /**
    * Updates the access type stored in this Component's state.
@@ -91,8 +118,28 @@ class UpdateDocument extends Component {
    * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  handleEditorChange(event) {
+  updateDocContent(event) {
     this.setState({ docContent: event.target.value });
+  }
+
+  /**
+   * Updates the categories stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateCategories(event) {
+    this.setState({ categories: event.target.value });
+  }
+
+  /**
+   * Updates the tags stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateTags(event) {
+    this.setState({ tags: event.target.value });
   }
 
   /**
@@ -104,6 +151,7 @@ class UpdateDocument extends Component {
   submitUpdate(event) {
     event.preventDefault();
 
+    // Needed because a form can be submitted without the submit button.
     const access = this.state.access;
     if (!this.hasValidAccess(access)) {
       this.setState({ errorMessage: 'Please choose a valid access type.' });
@@ -119,6 +167,16 @@ class UpdateDocument extends Component {
       this.setState({ errorMessage: 'Supply a document content that has one or more characters that are not whitespace.' });
       return;
     }
+    const categories = this.state.categories;
+    if (!this.hasValidCategories(categories)) {
+      this.setState({ errorMessage: 'Add one or more comma-separated categories that aren\'t merely whitespace.' });
+      return;
+    }
+    const tags = this.state.tags;
+    if (!this.hasValidTags(tags)) {
+      this.setState({ errorMessage: 'Please supply one or more comma-separated tags that aren\'t merely whitespace.' });
+      return;
+    }
 
     if (this.props.mode === 'create') {
       this.props.dispatch(DocumentActions.createDocument(
@@ -126,8 +184,8 @@ class UpdateDocument extends Component {
         this.state.title,
         this.state.docContent,
         this.state.access,
-        'foo',
-        'bar'
+        this.state.categories,
+        this.state.tags
       ));
     }
   }
@@ -140,11 +198,15 @@ class UpdateDocument extends Component {
     // TODO: isValidDocument works fine, but why do these all become true once one of them is?
     const isValidDocument = (this.hasValidAccess(this.state.access) &&
       this.hasValidTitle(this.state.title) &&
-      this.hasValidDocContent(this.state.docContent));
+      this.hasValidDocContent(this.state.docContent) &&
+      this.hasValidCategories(this.state.categories) &&
+      this.hasValidTags(this.state.tags)
+    );
 
     return (
       <div className="row">
         <form>
+          <h6 className="red-text text-lighten-2">**All fields are required.</h6>
           <div className="red lighten-2">
             <p className="white-text center">
               {this.state.errorMessage}
@@ -168,16 +230,27 @@ class UpdateDocument extends Component {
           <Input s={12} label="Title" type="text" onChange={this.updateTitle}>
             <Icon>title</Icon>
           </Input>
+          <Input s={12} label="Categories" type="text" onChange={this.updateCategories}>
+            <Icon>bookmark_border</Icon>
+          </Input>
+          <Input s={12} label="Tags" type="text" onChange={this.updateTags}>
+            <Icon>label_outline</Icon>
+          </Input>
           <span className="col s12">Document content<Icon left>mode_edit</Icon></span>
           <br />
           <div className="col s12">
             <textarea
               rows="10"
-              onChange={this.handleEditorChange}
+              onChange={this.updateDocContent}
             />
             <br />
           </div>
-          <Button onClick={this.submitUpdate} modal="confirm" className={isValidDocument ? '' : 'disabled'}>
+          <div className="quarter-vertical-margin" />
+          <Button
+            onClick={this.submitUpdate}
+            modal="confirm"
+            className={isValidDocument ? 'quarter-vertical-margin' : 'quarter-vertical-margin disabled'}
+          >
             {this.props.modeMessage}
             <Icon left>{this.props.mode === 'create' ? 'note_add' : ''}</Icon>
             <Icon left>{this.props.mode === 'update' ? 'update' : ''}</Icon>
@@ -190,21 +263,25 @@ class UpdateDocument extends Component {
 
 UpdateDocument.propTypes = {
   access: PropTypes.string,
+  categories: PropTypes.string,
   dispatch: PropTypes.func,
   docContent: PropTypes.string,
   mode: PropTypes.string,
   modeMessage: PropTypes.string,
   user: PropTypes.objectOf(PropTypes.any),
+  tags: PropTypes.string,
   title: PropTypes.string
 };
 
 UpdateDocument.defaultProps = {
   access: undefined,
+  categories: undefined,
   dispatch: undefined,
   docContent: undefined,
   mode: undefined,
   modeMessage: undefined,
   user: {},
+  tags: undefined,
   title: undefined
 };
 
