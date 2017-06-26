@@ -1,6 +1,7 @@
 import express from 'express';
 
 import DocumentsController from '../controllers/DocumentsController';
+import validateDocument from '../middleware/validateDocument';
 import validateToken from '../middleware/validateToken';
 
 const documentsRouter = express.Router();
@@ -87,7 +88,7 @@ documentsRouter.route('/')
    *         schema:
    *          type: string
    */
-  .post(validateToken, DocumentsController.createDocument);
+  .post(validateToken, validateDocument, DocumentsController.createDocument);
 
 documentsRouter.route('/:id')
   /**
@@ -152,7 +153,7 @@ documentsRouter.route('/:id')
    *          schema:
    *            type: string
    */
-  .put(validateToken, DocumentsController.updateDocument)
+  .put(validateToken, validateDocument, DocumentsController.updateDocument)
   /**
    * @swagger
    * /api/document/<id>

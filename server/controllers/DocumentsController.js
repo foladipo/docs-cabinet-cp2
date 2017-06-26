@@ -1,7 +1,6 @@
 import Document from '../models/Document';
 import User from '../models/User';
 import getLimitAndOffset from '../util/getLimitAndOffset';
-import isValidAccessType from '../util/isValidAccessType';
 
 
 // TODO: De-link getDocuments and getAllDocuments, at least in
@@ -31,69 +30,11 @@ export default class DocumentsController {
    */
   static createDocument(req, res) {
     const reqBody = req.body;
-
-    let title;
-    if (reqBody.title) {
-      title = reqBody.title;
-    } else {
-      res.status(400)
-        .json({
-          error: 'MissingTitleError'
-        });
-      return;
-    }
-
-    let docContent;
-    if (reqBody.docContent) {
-      docContent = reqBody.docContent;
-    } else {
-      res.status(400)
-        .json({
-          error: 'MissingDocContentError'
-        });
-      return;
-    }
-
-    let access;
-    if (reqBody.access) {
-      access = reqBody.access.toLowerCase();
-    } else {
-      res.status(400)
-        .json({
-          error: 'MissingAccessError'
-        });
-      return;
-    }
-
-    if (!isValidAccessType(access)) {
-      res.status(400)
-        .json({
-          error: 'InvalidAccessTypeError'
-        });
-      return;
-    }
-
-    let categories;
-    if (reqBody.categories) {
-      categories = reqBody.categories;
-    } else {
-      res.status(400)
-        .json({
-          error: 'MissingCategoriesError'
-        });
-      return;
-    }
-
-    let tags;
-    if (reqBody.tags) {
-      tags = reqBody.tags;
-    } else {
-      res.status(400)
-        .json({
-          error: 'MissingTagsError'
-        });
-      return;
-    }
+    const title = reqBody.title;
+    const docContent = reqBody.docContent;
+    const access = reqBody.access.toLowerCase();
+    const categories = reqBody.categories;
+    const tags = reqBody.tags;
 
     const createdBy = req.decodedUserProfile.userId;
     Document
@@ -122,10 +63,11 @@ export default class DocumentsController {
         };
         Document
           .create(newDocument)
-          .then(() => {
+          .then((createdDocument) => {
             res.status(200)
               .json({
-                message: 'DocumentCreationSucceeded'
+                message: 'DocumentCreationSucceeded',
+                documents: [createdDocument]
               });
           });
       });
