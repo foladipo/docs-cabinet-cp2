@@ -77,7 +77,7 @@ export default function validateDocument(req, res, next) {
       });
     return;
   }
-  if (isValidAccessType(access)) {
+  if (!isValidAccessType(access)) {
     res.status(400)
       .json({
         error: 'InvalidAccessError'
