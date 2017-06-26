@@ -1,9 +1,17 @@
 import React from 'react';
 import { Button, Modal } from 'react-materialize';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import LoginContainer from './LoginContainer';
 import SignUpContainer from './SignUpContainer';
 
-export default function AuthenticationPage(props) {
+/**
+ * AuthenticationPage - Renders an authentication page for a user
+ * to either sign up or login.
+ * @return {Component|null} - Returns the React Component to be rendered or
+ * null if nothing is to be rendered.
+ */
+function AuthenticationPage() {
   const isLoggedIn = () => {
     let isUserLoggedIn = false;
     const token = window.localStorage.getItem('token');
@@ -13,8 +21,7 @@ export default function AuthenticationPage(props) {
     return isUserLoggedIn;
   };
   if (isLoggedIn()) {
-    window.location.replace('/dashboard');
-    return null;
+    return <Redirect to="/dashboard" />;
   }
 
   return (
@@ -24,11 +31,11 @@ export default function AuthenticationPage(props) {
           <h3 className="center">Welcome to Docs Cabinet!</h3>
           <div className="horizontally-centered quarter-side-margin wraps-content">
             <Modal
-              header="Login"
+              header="Sign up"
               trigger={
                 <Button
                   waves="light"
-                  className="quarter-side-margin cyan darken-2"
+                  className="quarter-side-margin teal lighten-1"
                 >
                   Sign up
                 </Button>
@@ -41,7 +48,7 @@ export default function AuthenticationPage(props) {
               trigger={
                 <Button
                   waves="light"
-                  className="quarter-side-margin cyan lighten-5 black-text"
+                  className="quarter-side-margin teal lighten-5 black-text"
                 >Login
                 </Button>
               }
@@ -54,3 +61,9 @@ export default function AuthenticationPage(props) {
     </div>
   );
 }
+
+const mapStateToProps = storeState => ({
+  user: storeState.user
+});
+
+export default connect(mapStateToProps)(AuthenticationPage);

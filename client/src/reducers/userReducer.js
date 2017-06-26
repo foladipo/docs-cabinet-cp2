@@ -1,3 +1,11 @@
+// TODO: For any request that returns an InvalidTokenError, log the user out.
+/**
+ * Creates a new state that has info about an Action this reducer received.
+ * @param {state} state - the previous state of the store.
+ * @param {Object} action - the Action that happened and which needs to
+ * be used to update the store.
+ * @return {Object} - Returns a new state.
+ */
 export default function userReducer(state, action) {
   const newState = Object.assign({}, state);
   switch (action.type) {
@@ -6,37 +14,43 @@ export default function userReducer(state, action) {
       newState.isLoggingIn = true;
       newState.isLoggedIn = false;
       break;
+
     case 'SIGN_UP_FULFILLED':
     case 'LOGIN_FULFILLED':
       newState.isLoggingIn = false;
       newState.isLoggedIn = true;
       newState.token = action.payload.token;
       newState.user = action.payload.user;
-      newState.error = '';
+      newState.signUpError = '';
+      newState.loginError = '';
       window.localStorage.setItem('token', action.payload.token);
       window.localStorage.setItem('user', JSON.stringify(action.payload.user));
-      window.location.replace('/dashboard');
       break;
 
     case 'SIGN_UP_REJECTED':
+      newState.isLoggingIn = false;
+      newState.isLoggedIn = false;
+      newState.signUpError = action.payload.error;
+      break;
+
     case 'LOGIN_REJECTED':
       newState.isLoggingIn = false;
       newState.isLoggedIn = false;
-      newState.error = action.payload.error;
+      newState.loginError = action.payload.error;
       break;
 
-    case 'LOG_OUT_PENDING':
+    case 'LOGOUT_PENDING':
       newState.isLoggingOut = true;
       newState.isLoggedIn = false;
       newState.token = null;
-      newState.user = {};
+      newState.user = null;
       window.localStorage.clear();
       break;
 
      // TODO: Maybe split these cases? E.g show an error for the rejection.
-    case 'LOG_OUT_REJECTED':
-    case 'LOG_OUT_SUCCESS':
-      window.location.replace('/');
+    case 'LOGOUT_REJECTED':
+    case 'LOGOUT_SUCCESS':
+      newState.isLoggingOut = false;
       break;
 
     default:
