@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, SideNav, SideNavItem } from 'react-materialize';
+import { Button, SideNav, SideNavItem, Row, Col, Preloader, Icon } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as UserActions from '../actions/UserActions';
@@ -16,7 +16,9 @@ class DashboardContainer extends React.Component {
     super(props);
 
     this.state = {
-      content: ''
+      content: '',
+      status: 'loadingDocuments',
+      statusMessage: 'Loading documents... Please wait...'
     };
 
     this.logout = this.logout.bind(this);
@@ -35,7 +37,7 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const trigger = <Button>SIDE NAV DEMO</Button>;
+    const trigger = <Button>Menu<Icon left>reorder</Icon></Button>;
     return (
       <div className="authenticated-user-area white">
         <SideNav
@@ -68,6 +70,17 @@ class DashboardContainer extends React.Component {
           <SideNavItem waves href="#!third">Third Link With Waves</SideNavItem>
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
+        <div className="container">
+          <div className="dashboard-welcome">
+            <h3>Welcome to your dashboard!</h3>
+            <h5>{this.state.statusMessage}</h5>
+            <Row className={this.state.status === 'loadingDocuments' ? '' : 'hide'}>
+              <Col s={4} offset="s4">
+                <Preloader size="big" flashing />
+              </Col>
+            </Row>
+          </div>
+        </div>
       </div>
     );
   }
