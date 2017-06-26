@@ -49,7 +49,7 @@ export function logout() {
 }
 
 /**
- * login - Starts the sign up process.
+ * signUp - Starts the sign up process.
  * @param {String} firstName - The first name of the user trying to sign up.
  * @param {String} lastName - The last name of the user trying to sign up.
  * @param {String} username - The username of the user trying to sign up.
