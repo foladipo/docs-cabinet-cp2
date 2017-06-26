@@ -1,3 +1,4 @@
+// TODO: For any request that returns an InvalidTokenError, log the user out.
 /**
  * Creates a new state that has info about an Action this reducer received.
  * @param {state} state - the previous state of the store.

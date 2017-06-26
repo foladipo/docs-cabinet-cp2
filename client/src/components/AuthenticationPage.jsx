@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Modal } from 'react-materialize';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import LoginContainer from './LoginContainer';
 import SignUpContainer from './SignUpContainer';
 
@@ -9,7 +11,7 @@ import SignUpContainer from './SignUpContainer';
  * @return {Component|null} - Returns the React Component to be rendered or
  * null if nothing is to be rendered.
  */
-export default function AuthenticationPage() {
+function AuthenticationPage() {
   const isLoggedIn = () => {
     let isUserLoggedIn = false;
     const token = window.localStorage.getItem('token');
@@ -19,8 +21,7 @@ export default function AuthenticationPage() {
     return isUserLoggedIn;
   };
   if (isLoggedIn()) {
-    window.location.replace('/dashboard');
-    return null;
+    return <Redirect to="/dashboard" />;
   }
 
   return (
@@ -60,3 +61,9 @@ export default function AuthenticationPage() {
     </div>
   );
 }
+
+const mapStateToProps = storeState => ({
+  user: storeState.user
+});
+
+export default connect(mapStateToProps)(AuthenticationPage);

@@ -1,3 +1,4 @@
+// TODO: For any request that returns an InvalidTokenError, log the user out.
 /**
  * Creates a new state that has info about an Action this reducer received.
  * @param {state} state - the previous state of the store.
@@ -24,7 +25,6 @@ export default function userReducer(state, action) {
       newState.loginError = '';
       window.localStorage.setItem('token', action.payload.token);
       window.localStorage.setItem('user', JSON.stringify(action.payload.user));
-      window.location.replace('/dashboard');
       break;
 
     case 'SIGN_UP_REJECTED':
@@ -51,7 +51,6 @@ export default function userReducer(state, action) {
     case 'LOGOUT_REJECTED':
     case 'LOGOUT_SUCCESS':
       newState.isLoggingOut = false;
-      window.location.replace('/');
       break;
 
     default:

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
 /**
  * This Component is a subclass of Route. It contains code for determining
@@ -11,10 +12,9 @@ import React from 'react';
  */
 export default function AuthenticatedRoute(props) {
   const token = window.localStorage.getItem('token');
-  if (token !== '' && token !== null) {
+  if (token !== null) {
     return <props.component {...props} />;
   }
 
-  window.location.replace('/');
-  return null;
+  return <Redirect to="/" />;
 }
