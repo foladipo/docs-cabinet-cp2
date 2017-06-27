@@ -1,6 +1,5 @@
 import request from 'superagent';
 
-
 /**
  * createDocument - Creates a new document.
  * @param {String} token - A token for this document's author.
@@ -38,6 +37,39 @@ export function createDocument(token, title, docContent, access, categories, tag
         }
         dispatch({
           type: 'CREATE_DOCUMENT_FULFILLED',
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * fetchDocuments - Fetches the documents that belong to a user.
+ * @param {String} token - A token for the user making the request.
+ * @param {String} limit - Number of documents to return per request.
+ * @param {String} offset - Number of documents to skip before
+ * beginning the fetch.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the document fetching process (commencement, success or failure).
+ */
+export function fetchDocuments(token, limit, offset) {
+  return (dispatch) => {
+    dispatch({ type: 'FETCH_DOCUMENTS_PENDING' });
+
+    request
+      .get(`/api/documents?limit=${limit}&offset=${offset}`)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: 'FETCH_DOCUMENTS_REJECTED',
+            payload: { error: err.response.body.error }
+          });
+          return;
+        }
+        dispatch({
+          type: 'FETCH_DOCUMENTS_FULFILLED',
           payload: res.body
         });
       });

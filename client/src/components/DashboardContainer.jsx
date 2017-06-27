@@ -2,7 +2,8 @@ import React from 'react';
 import { Button, Col, Icon, Modal, Preloader, Row, SideNav, SideNavItem } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as UserActions from '../actions/UserActions';
+import { fetchDocuments } from '../actions/DocumentActions';
+import { logout } from '../actions/UserActions';
 import UpdateDocument from './UpdateDocument';
 
 /**
@@ -11,18 +12,34 @@ import UpdateDocument from './UpdateDocument';
 class DashboardContainer extends React.Component {
   /**
    * Creates and initializes an instance of DashboardContainer.
-   * @param {Object} props - The data passed to this component from its parent.
+   * @param {Object} props - The data passed to this Component from its parent.
    */
   constructor(props) {
     super(props);
 
     this.state = {
-      content: '',
-      status: 'loadingDocuments',
-      statusMessage: 'Loading documents... Please wait...'
+      limit: 30,
+      offset: 0
     };
 
+    this.startDocumentsFetch = this.startDocumentsFetch.bind(this);
     this.logout = this.logout.bind(this);
+  }
+
+  /**
+   * Called immediately after this Component is mounted.
+   * @return {null} - Returns nothing.
+   */
+  componentDidMount() {
+    this.startDocumentsFetch();
+  }
+
+  /**
+   * Attempts to fetch a user's documents.
+   * @return {null} - Returns nothing.
+   */
+  startDocumentsFetch() {
+    this.props.dispatch(fetchDocuments(this.props.user.token));
   }
 
   /**
@@ -30,7 +47,7 @@ class DashboardContainer extends React.Component {
    * @return {null} - Returns nothing.
    */
   logout() {
-    this.props.dispatch(UserActions.logout());
+    this.props.dispatch(logout());
   }
 
   /**
@@ -38,9 +55,10 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    // TODO: When trigger is clicked, reduce the size of the container by
-    // 300px, which is the size of the side menu.
     const trigger = <Button>Menu<Icon left>reorder</Icon></Button>;
+    const showStatusMessage = this.props.documents.status === 'fetchingDocuments' ||
+      this.props.documents.status === 'documentsFetchFailed';
+
     return (
       <div className="authenticated-user-area white">
         <SideNav
@@ -82,12 +100,18 @@ class DashboardContainer extends React.Component {
         <div className="container">
           <div className="dashboard-welcome">
             <h3>Welcome to your dashboard!</h3>
-            <h5>{this.state.statusMessage}</h5>
-            <Row className={this.state.status === 'loadingDocuments' ? '' : 'hide'}>
+            <h5 className={showStatusMessage ? '' : 'hide'}>{this.props.documents.statusMessage}</h5>
+            <Row className={this.props.documents.status === 'fetchingDocuments' ? '' : 'hide'}>
               <Col s={4} offset="s4">
                 <Preloader size="big" flashing />
               </Col>
             </Row>
+            <Button
+              onClick={this.startDocumentsFetch}
+              className={this.props.documents.status === 'documentsFetchFailed' ? '' : 'hide'}
+            >
+              {this.props.documents.statusMessage}
+            </Button>
           </div>
         </div>
       </div>
@@ -96,11 +120,13 @@ class DashboardContainer extends React.Component {
 }
 
 const mapStoreToProps = store => ({
-  user: store.user
+  user: store.user,
+  documents: store.documents
 });
 
 DashboardContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  documents: PropTypes.objectOf(PropTypes.any).isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
