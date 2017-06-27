@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchDocuments } from '../actions/DocumentActions';
 import { logout } from '../actions/UserActions';
+import Document from './Document';
 import UpdateDocument from './UpdateDocument';
 
 /**
@@ -55,9 +56,13 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const trigger = <Button>Menu<Icon left>reorder</Icon></Button>;
+    const trigger = <Button>Menu<Icon left>menu</Icon></Button>;
     const showStatusMessage = this.props.documents.status === 'fetchingDocuments' ||
       this.props.documents.status === 'documentsFetchFailed';
+
+    const documentsComponents = this.props.documents.documents.map(doc =>
+      <Document key={doc.id} {...doc} />
+    );
 
     return (
       <div className="authenticated-user-area white">
@@ -74,8 +79,8 @@ class DashboardContainer extends React.Component {
             userView
             className="text-black"
             user={{
-              background: 'img/dark-mountains-small.jpg',
-              image: 'img/anonymous-user-thumbnail.png',
+              background: '/img/dark-mountains-small.jpg',
+              image: '/img/anonymous-user-thumbnail.png',
               name: `${this.props.user.user.firstName} ${this.props.user.user.lastName}`,
               email: this.props.user.user.username
             }}
@@ -97,7 +102,7 @@ class DashboardContainer extends React.Component {
           <SideNavItem waves href="#!third">Third Link With Waves</SideNavItem>
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
-        <div className="container">
+        <div className="dashboard-container">
           <div className="dashboard-welcome">
             <h3>Welcome to your dashboard!</h3>
             <h5 className={showStatusMessage ? '' : 'hide'}>{this.props.documents.statusMessage}</h5>
@@ -113,6 +118,7 @@ class DashboardContainer extends React.Component {
               {this.props.documents.statusMessage}
             </Button>
           </div>
+          <div className="dashboard-documents row">{documentsComponents}</div>
         </div>
       </div>
     );

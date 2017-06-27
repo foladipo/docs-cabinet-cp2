@@ -16,7 +16,7 @@ export default function documentsReducer(state, action) {
 
     case 'FETCH_DOCUMENTS_FULFILLED':
       newState.count = state.count + action.payload.documents.length;
-      newState.documents = state.documents.concat(action.payload.documents);
+      newState.documents = state.documents.concat(action.payload.documents)[0];
       newState.status = 'documentsFetched';
       newState.statusMessage = 'Finished loading documents.';
       break;
