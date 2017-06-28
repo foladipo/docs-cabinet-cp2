@@ -45,15 +45,6 @@ describe('The Document model', () => {
       });
   });
 
-  const duplicateDocument = Object.assign(dummyDocument);
-  it('should reject the creation of documents with identical titles', (done) => {
-    Document.create(duplicateDocument)
-      .catch((errors) => {
-        expect(errors.name).to.equal('SequelizeUniqueConstraintError');
-        done();
-      });
-  });
-
   it('should reject the creation of documents that do NOT have a title', (done) => {
     const noTitle = {
       docContent: 'Lorem ipsum',

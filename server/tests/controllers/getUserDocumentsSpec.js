@@ -81,7 +81,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
-        error: 'InvalidUserIdError'
+        error: 'InvalidTargetUserIdError'
       }, done);
   });
 
