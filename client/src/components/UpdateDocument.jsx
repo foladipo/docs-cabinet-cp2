@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
-import * as DocumentActions from '../actions/DocumentActions';
+import { createDocument } from '../actions/DocumentActions';
 
 /**
  * UpdateDocument - Used to update a document. If that document
@@ -179,7 +179,7 @@ class UpdateDocument extends Component {
     }
 
     if (this.props.mode === 'create') {
-      this.props.dispatch(DocumentActions.createDocument(
+      this.props.dispatch(createDocument(
         this.props.user.token,
         this.state.title,
         this.state.docContent,

@@ -15,6 +15,13 @@ export default function documentsReducer(state, action) {
       newState.statusMessage = 'Loading documents... Please wait...';
       break;
 
+    case 'CREATE_DOCUMENT_FULFILLED':
+      newState.count = state.count + action.payload.documents.length;
+      newState.documents = action.payload.documents.concat(state.documents);
+      newState.status = 'documentCreated';
+      newState.statusMessage = 'Document created!';
+      break;
+
     case 'FETCH_USER_DOCUMENTS_FULFILLED':
     case 'FETCH_DOCUMENTS_FULFILLED':
       newState.count = state.count + action.payload.documents.length;

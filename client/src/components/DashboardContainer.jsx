@@ -68,6 +68,11 @@ class DashboardContainer extends React.Component {
       return <Redirect to="/" />;
     }
 
+    if (this.props.documents.status === 'documentCreated') {
+      Materialize.toast(this.props.documents.statusMessage, 5000);
+      $('#updateDocumentModal').modal('close');
+    }
+
     const trigger = <Button>Menu<Icon left>menu</Icon></Button>;
     const showStatusMessage = this.props.documents.status === 'fetchingDocuments' ||
       this.props.documents.status === 'documentsFetchFailed';
@@ -100,6 +105,7 @@ class DashboardContainer extends React.Component {
           <SideNavItem className="row">
             <Modal
               header="Create Document"
+              id="updateDocumentModal"
               trigger={
                 <Button className="col s12">Compose</Button>
               }
