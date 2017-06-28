@@ -7,12 +7,11 @@ const Document = sequelize.define('Document', {
     type: Sequelize.STRING
   },
   docContent: {
-    type: Sequelize.STRING
+    type: Sequelize.TEXT
   },
   access: {
     type: Sequelize.STRING,
     validate: {
-      // will only allow letters
       is: ['[a-z]', 'i'],
       isIn: {
         args: [['public', 'private', 'role']],
