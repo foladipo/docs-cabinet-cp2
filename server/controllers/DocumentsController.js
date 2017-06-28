@@ -209,7 +209,7 @@ export default class DocumentsController {
       })
       .then((foundDocuments) => {
         res.status(200)
-          .json({ documents: [foundDocuments] });
+          .json({ documents: foundDocuments });
       });
   }
 

@@ -517,10 +517,10 @@ export default class UsersController {
                 createdBy: userId
               }
             })
-            .then((docs) => {
+            .then((docsAndMetadata) => {
               res.status(200)
                 .json({
-                  documents: docs
+                  documents: [docsAndMetadata[0].dataValues]
                 });
             });
         } else {
