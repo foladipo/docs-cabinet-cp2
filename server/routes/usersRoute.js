@@ -2,6 +2,7 @@ import express from 'express';
 
 import UsersController from '../controllers/UsersController';
 import adminsOnly from '../middleware/adminsOnly';
+import ownerOrAdminsOnly from '../middleware/ownerOrAdminsOnly';
 import validateToken from '../middleware/validateToken';
 
 const usersRouter = express.Router();
@@ -16,7 +17,7 @@ usersRouter.route('/:id')
   .delete(validateToken, UsersController.deleteUser);
 
 usersRouter.route('/:id/documents')
-  .get(validateToken, adminsOnly, UsersController.getUserDocuments);
+  .get(validateToken, ownerOrAdminsOnly, UsersController.getUserDocuments);
 
 usersRouter.route('/login')
   .post(UsersController.login);
