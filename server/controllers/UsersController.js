@@ -515,12 +515,15 @@ export default class UsersController {
             .findAll({
               where: {
                 createdBy: userId
-              }
+              },
+              order: [['createdAt', 'DESC']],
+              returning: true
             })
             .then((docsAndMetadata) => {
+              const docs = docsAndMetadata.map(doc => doc.dataValues);
               res.status(200)
                 .json({
-                  documents: [docsAndMetadata[0].dataValues]
+                  documents: docs
                 });
             });
         } else {
