@@ -2,7 +2,8 @@ import React from 'react';
 import { Button, Col, Icon, Modal, Preloader, Row, SideNav, SideNavItem } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchDocuments } from '../actions/DocumentActions';
+import { Redirect } from 'react-router-dom';
+import { fetchUserDocuments } from '../actions/DocumentActions';
 import { logout } from '../actions/UserActions';
 import Document from './Document';
 import UpdateDocument from './UpdateDocument';
@@ -40,7 +41,12 @@ class DashboardContainer extends React.Component {
    * @return {null} - Returns nothing.
    */
   startDocumentsFetch() {
-    this.props.dispatch(fetchDocuments(this.props.user.token));
+    this.props.dispatch(fetchUserDocuments(
+      this.props.user.token,
+      this.props.user.user.userId,
+      this.state.limit,
+      this.state.offset
+    ));
   }
 
   /**
@@ -56,6 +62,12 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
+    if (this.props.documents.status === 'invalidTokenError') {
+      window.localStorage.clear();
+      Materialize.toast(this.props.documents.statusMessage, 5000);
+      return <Redirect to="/" />;
+    }
+
     const trigger = <Button>Menu<Icon left>menu</Icon></Button>;
     const showStatusMessage = this.props.documents.status === 'fetchingDocuments' ||
       this.props.documents.status === 'documentsFetchFailed';
@@ -65,7 +77,7 @@ class DashboardContainer extends React.Component {
     );
 
     return (
-      <div className="authenticated-user-area white">
+      <div className="authenticated-user-area grey lighten-3">
         <SideNav
           trigger={trigger}
           options={{

@@ -30,7 +30,7 @@ function Document(props) {
   return (
     <div>
       <div className="col s12 m6 l4 hoverable">
-        <div className="card medium">
+        <div className="card small">
           <div className="card-image">
             <img className="materialboxed responsive-img" src={getDocImage()} alt={props.title} />
             <span className="card-title black-text">{props.title}</span>
