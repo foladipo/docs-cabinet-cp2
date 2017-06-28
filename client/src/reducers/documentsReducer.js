@@ -15,6 +15,16 @@ export default function documentsReducer(state, action) {
       newState.statusMessage = 'Loading documents... Please wait...';
       break;
 
+    case 'CREATE_DOCUMENT_PENDING':
+      newState.status = 'creatingDocument';
+      newState.statusMessage = 'Creating document... Please wait...';
+      break;
+
+    case 'CREATE_DOCUMENT_REJECTED':
+      newState.status = 'documentCreationFailed';
+      newState.statusMessage = 'Oops! Failed to create document.';
+      break;
+
     case 'CREATE_DOCUMENT_FULFILLED':
       newState.count = state.count + action.payload.documents.length;
       newState.documents = action.payload.documents.concat(state.documents);
@@ -38,7 +48,29 @@ export default function documentsReducer(state, action) {
         break;
       }
       newState.status = 'documentsFetchFailed';
-      newState.statusMessage = 'Failed to load documents. Please try again.';
+      newState.statusMessage = 'Failed to get documents. Ask again, but with nicer words.';
+      break;
+
+    case 'DELETE_DOCUMENT_PENDING':
+      newState.status = 'deletingDocument';
+      newState.statusMessage = 'Deleting document... Please wait...';
+      newState.targetDocument = action.payload.targetDocument;
+      break;
+
+    case 'DELETE_DOCUMENT_REJECTED':
+      newState.status = 'deleteDocumentFailed';
+      newState.statusMessage = 'Failed to delete document. Maybe it doesn\'t want to die.';
+      newState.targetDocument = '';
+      break;
+
+    case 'DELETE_DOCUMENT_FULFILLED':
+      newState.status = 'documentDeleted';
+      newState.statusMessage = 'Phew! Got rid of that document.';
+      newState.documents = state.documents.filter(doc =>
+        doc.id !== action.payload.targetDocument
+      );
+      newState.count = newState.documents.length;
+      newState.targetDocument = '';
       break;
 
     default:

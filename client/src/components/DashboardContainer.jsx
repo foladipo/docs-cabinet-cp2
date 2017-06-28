@@ -68,8 +68,11 @@ class DashboardContainer extends React.Component {
       return <Redirect to="/" />;
     }
 
+    if (this.props.documents.status !== 'fetchingDocuments') {
+      Materialize.toast(this.props.documents.statusMessage, 3000);
+    }
+
     if (this.props.documents.status === 'documentCreated') {
-      Materialize.toast(this.props.documents.statusMessage, 5000);
       $('#updateDocumentModal').modal('close');
     }
 
@@ -77,9 +80,16 @@ class DashboardContainer extends React.Component {
     const showStatusMessage = this.props.documents.status === 'fetchingDocuments' ||
       this.props.documents.status === 'documentsFetchFailed';
 
-    const documentsComponents = this.props.documents.documents.map(doc =>
-      <Document key={doc.id} {...doc} />
-    );
+    const documentsComponents = this.props.documents.documents.map(doc => (
+      <Document
+        key={doc.id}
+        dispatch={this.props.dispatch}
+        token={this.props.user.token}
+        documentsStatus={this.props.documents.status}
+        targetDocument={this.props.documents.targetDocument}
+        {...doc}
+      />
+    ));
 
     return (
       <div className="authenticated-user-area grey lighten-3">
@@ -135,6 +145,11 @@ class DashboardContainer extends React.Component {
             >
               {this.props.documents.statusMessage}
             </Button>
+          </div>
+          <div className={this.props.documents.documents.length < 1 ? '' : 'hide'}>
+            <h5 className="teal lighten-2 white-text center">
+              You don&rsquo;t have any documents. Please create some.
+            </h5>
           </div>
           <div className="dashboard-documents row">{documentsComponents}</div>
         </div>

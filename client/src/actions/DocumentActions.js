@@ -110,6 +110,44 @@ export function fetchUserDocuments(token, userId, limit, offset) {
   };
 }
 
-export function updateDocument() {
-  
+/**
+ * deleteDocument - Deletes a document.
+ * @param {String} token - A token for the user making the request.
+ * @param {String} documentId - The id of the document to be deleted.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the deletion process (commencement, success or failure).
+ */
+export function deleteDocument(token, documentId) {
+  return (dispatch) => {
+    dispatch({
+      type: 'DELETE_DOCUMENT_PENDING',
+      payload: {
+        targetDocument: documentId
+      }
+    });
+
+    request
+      .delete(`/api/documents/${documentId}`)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: 'DELETE_DOCUMENT_REJECTED',
+            payload: {
+              error: err.response.body.error,
+              targetDocument: documentId
+            }
+          });
+          return;
+        }
+        dispatch({
+          type: 'DELETE_DOCUMENT_FULFILLED',
+          payload: {
+            response: res.body,
+            targetDocument: documentId
+          }
+        });
+      });
+  };
 }

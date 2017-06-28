@@ -31,7 +31,8 @@ const store = createStore(
       count: 0,
       documents: [],
       status: 'fetchingDocuments',
-      statusMessage: 'Loading documents... Please wait...'
+      statusMessage: 'Loading documents... Please wait...',
+      targetDocument: ''
     }
   },
   middleware

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-materialize';
+import { deleteDocument } from '../actions/DocumentActions';
 
 /**
  * Document - Renders a single document.
@@ -27,8 +28,19 @@ function Document(props) {
     return img;
   };
 
+  const deleteMe = () => {
+    props.dispatch(deleteDocument(props.token, props.id));
+  };
+
+  const isDeletingMe = () => {
+    if (props.documentsStatus === 'deletingDocument' && props.targetDocument === props.id) {
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <div>
+    <div className={isDeletingMe() ? 'disabled' : ''}>
       <div className="col s12 m6 l4 hoverable">
         <div className="card small">
           <div className="card-image">
@@ -54,6 +66,7 @@ function Document(props) {
                   className="red quarter-side-margin"
                   waves="light"
                   icon="delete_forever"
+                  onClick={deleteMe}
                 />
               </li>
             </ul>
@@ -65,16 +78,18 @@ function Document(props) {
 }
 
 Document.propTypes = {
-  access: PropTypes.string,
   docContent: PropTypes.string,
-  docImage: PropTypes.string,
+  documentsStatus: PropTypes.string,
+  id: PropTypes.number,
   title: PropTypes.string,
+  targetDocument: PropTypes.string,
 };
 
 Document.defaultProps = {
-  access: undefined,
   docContent: undefined,
-  docImage: undefined,
+  documentsStatus: undefined,
+  id: undefined,
+  targetDocument: undefined,
   title: undefined
 };
 
