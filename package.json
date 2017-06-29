@@ -84,6 +84,7 @@
     "sequelize-cli": "^2.7.0",
     "style-loader": "^0.18.2",
     "superagent": "^3.5.2",
+    "swagger-jsdoc": "^1.9.5",
     "uuid": "^3.1.0",
     "webpack": "^2.6.1"
   }
