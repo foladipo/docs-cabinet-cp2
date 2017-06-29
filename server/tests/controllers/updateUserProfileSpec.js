@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import chai from 'chai';
 import JWT from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
@@ -7,10 +8,11 @@ import app from '../../app';
 
 dotenv.config();
 
-const request = supertest(app);
-const updateUserProfileEndpoint = '/api/users/';
+const expect = chai.expect;
 
-// TODO: Debug why some of these async specs never resolve.
+const request = supertest(app);
+const updateUserProfileEndpoint = '/api/users';
+
 describe('When it receives a PUT request, the /api/users endpoint', () => {
   const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
   const dummyUser = {
@@ -28,8 +30,6 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
   const newUsername = 'angry@example.com';
   const newPassword = bcryptjs.hashSync('$1Billards', saltLength);
 
-  // TODO: Investigate why, despite this before(), the it()s are run while
-  // userId is still undefined.
   before('Create a sample user', (done) => {
     User
       .create(dummyUser)
@@ -49,8 +49,26 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .then(() => done());
   });
 
+  const getValidToken = () => {
+    const userProfile = {
+      userId,
+      username: dummyUser.username,
+      roleId: dummyUser.roleId,
+      firstName: dummyUser.firstName,
+      lastName: dummyUser.lastName
+    };
+
+    const validToken = JWT.sign(
+      userProfile,
+      process.env.JWT_PRIVATE_KEY,
+      { expiresIn: '3d' }
+    );
+
+    return validToken;
+  };
+
   it('should reject requests where the token header is missing', (done) => {
-    request.put(updateUserProfileEndpoint)
+    request.put(`${updateUserProfileEndpoint}/foo`)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(400)
@@ -59,9 +77,9 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  const emptyToken = '';
   it('should reject requests where the token header is empty', (done) => {
-    request.put(updateUserProfileEndpoint)
+    const emptyToken = '';
+    request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', emptyToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -71,9 +89,9 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  const invalidToken = 'AN_INVALID_TOKEN';
   it('should reject requests where the token supplied is invalid', (done) => {
-    request.put(updateUserProfileEndpoint)
+    const invalidToken = 'AN_INVALID_TOKEN';
+    request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', invalidToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -83,17 +101,17 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  // This token expires after 1ms.
-  const payload = {
-    random: 'stuff'
-  };
-  const expiredToken = JWT.sign(
-    payload,
-    process.env.JWT_PRIVATE_KEY,
-    { expiresIn: '1' }
-  );
   it('should reject requests where the token supplied has expired', (done) => {
-    request.put(updateUserProfileEndpoint)
+    // This token expires after 1ms.
+    const payload = {
+      random: 'stuff'
+    };
+    const expiredToken = JWT.sign(
+      payload,
+      process.env.JWT_PRIVATE_KEY,
+      { expiresIn: '1' }
+    );
+    request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', expiredToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -103,44 +121,22 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  const userProfile = {
-    userId,
-    username: dummyUser.username,
-    roleId: dummyUser.roleId,
-    firstName: dummyUser.firstName,
-    lastName: dummyUser.lastName
-  };
-
-  const validToken = JWT.sign(
-    userProfile,
-    process.env.JWT_PRIVATE_KEY,
-    { expiresIn: '3d' }
-  );
-
-  it('should reject requests where the id of the user to update is not supplied', (done) => {
-    request.put(updateUserProfileEndpoint)
+  it('should show the default API message for requests where the id of the user to delete is' +
+    ' empty', (done) => {
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/`)
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(400)
+      .expect(200)
       .expect({
-        error: 'UserIdNotSuppliedError'
-      }, done);
-  });
-
-  it('should reject requests where the id of the user to update is empty', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=`)
-      .set('x-docs-cabinet-authentication', validToken)
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(400)
-      .expect({
-        error: 'InvalidUserIdError'
+        message: 'Welcome to Docs Cabinet. File away!'
       }, done);
   });
 
   it('should reject requests where the id of the user to update is not numeric', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=foo`)
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -150,63 +146,83 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where no existing user has the id supplied', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=6543210`)
+  it('should reject requests where a non-admin user is trying to delete another user\'s account', (done) => {
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/6543210`)
       .set('x-docs-cabinet-authentication', validToken)
-      .send({ lastName: newLastName })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(404)
+      .expect(403)
       .expect({
-        error: 'TargetUserNotFoundError'
+        error: 'ForbiddenOperationError'
       }, done);
   });
 
   it('should successfully update a user\'s first name', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=${userId}`)
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/${userId}`)
       .send({ firstName: newFirstName })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        message: 'UpdateSucceeded'
-      }, done);
+      .end((err, res) => {
+        if (err) throw new Error(err);
+        const body = res.body;
+        expect(Array.isArray(body.users)).to.equal(true);
+        expect(body.users[0].firstName).to.equal(newFirstName);
+        done();
+      });
   });
 
   it('should successfully update a user\'s last name', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=${userId}`)
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/${userId}`)
       .send({ lastName: newLastName })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        message: 'UpdateSucceeded'
-      }, done);
+      .end((err, res) => {
+        if (err) throw new Error(err);
+        const body = res.body;
+        expect(Array.isArray(body.users)).to.equal(true);
+        expect(body.users[0].lastName).to.equal(newLastName);
+        done();
+      });
   });
 
   it('should successfully update a user\'s email', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=${userId}`)
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/${userId}`)
       .send({ username: newUsername })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        message: 'UpdateSucceeded'
-      }, done);
+      .end((err, res) => {
+        if (err) throw new Error(err);
+        const body = res.body;
+        expect(Array.isArray(body.users)).to.equal(true);
+        expect(body.users[0].username).to.equal(newUsername);
+        done();
+      });
   });
 
   it('should successfully update a user\'s password', (done) => {
-    request.put(`${updateUserProfileEndpoint}?userId=${userId}`)
+    const validToken = getValidToken();
+    request.put(`${updateUserProfileEndpoint}/${userId}`)
       .send({ password: newPassword })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        message: 'UpdateSucceeded'
-      }, done);
+      .end((err, res) => {
+        if (err) throw new Error(err);
+        const body = res.body;
+        expect(Array.isArray(body.users)).to.equal(true);
+        expect(body.users[0].password).to.not.equal(undefined);
+        done();
+      });
   });
 });

@@ -40,8 +40,6 @@ describe('When it receives a GET request, the /api/users endpoint', () => {
 
   let targetUserId;
 
-  // TODO: Investigate why, despite this before(), the it()s are run while
-  // targetUserId is still undefined.
   before('Create a sample user', (done) => {
     User
       .create(dummyUser)
