@@ -326,7 +326,6 @@ export default class UsersController {
       profile.password = bcryptjs.hashSync(newProfile.password, saltLength);
     }
 
-    // TODO: Return the new profile of the user if this update succeeds.
     User.update(
       profile,
       {
@@ -339,7 +338,7 @@ export default class UsersController {
       if (rowsAffected > 0) {
         res.status(200)
           .json({
-            message: 'UpdateSucceeded'
+            users: [rows[1][0].dataValues]
           });
       } else {
         res.status(404)
