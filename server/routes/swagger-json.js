@@ -26,7 +26,8 @@ const options = {
   swaggerDefinition,
   apis: [
     './server/routes/documentsRoute.js',
-    './server/routes/searchRoute.js'
+    './server/routes/searchRoute.js',
+    './server/routes/usersRoute.js'
   ]
 };
 
