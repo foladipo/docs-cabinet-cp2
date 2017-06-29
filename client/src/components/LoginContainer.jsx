@@ -64,7 +64,6 @@ class LoginContainer extends React.Component {
     this.props.dispatch(UserActions.login(this.state.username, this.state.password));
   }
 
-  // TODO: Consult: Should this be here? Or in the Actions file?
   /**
    * Returns a simplified error message for failed login attempts.
    * @return {String} - A simplified error message.
@@ -140,7 +139,7 @@ class LoginContainer extends React.Component {
                 <Icon>lock</Icon>
               </Input>
               <Button
-                className={this.props.user.isLoggingIn ? 'disabled pulse' : 'pulse'}
+                className={this.props.user.isLoggingIn ? 'disabled' : ''}
                 waves="light"
                 onClick={this.login}
               >

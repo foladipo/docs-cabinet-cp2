@@ -62,6 +62,10 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
+    if (!this.props.user.isLoggedIn) {
+      return <Redirect to="/" />;
+    }
+
     if (this.props.documents.status === 'invalidTokenError') {
       window.localStorage.clear();
       Materialize.toast(this.props.documents.statusMessage, 5000);
