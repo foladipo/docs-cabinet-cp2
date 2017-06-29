@@ -1,4 +1,18 @@
 import request from 'superagent';
+import {
+  FETCH_DOCUMENTS_PENDING,
+  FETCH_DOCUMENTS_REJECTED,
+  FETCH_DOCUMENTS_FULFILLED,
+  FETCH_USER_DOCUMENTS_PENDING,
+  FETCH_USER_DOCUMENTS_REJECTED,
+  FETCH_USER_DOCUMENTS_FULFILLED,
+  CREATE_DOCUMENT_PENDING,
+  CREATE_DOCUMENT_REJECTED,
+  CREATE_DOCUMENT_FULFILLED,
+  DELETE_DOCUMENT_PENDING,
+  DELETE_DOCUMENT_REJECTED,
+  DELETE_DOCUMENT_FULFILLED
+} from '../constants';
 
 /**
  * createDocument - Creates a new document.
@@ -13,7 +27,7 @@ import request from 'superagent';
  */
 export function createDocument(token, title, docContent, access, categories, tags) {
   return (dispatch) => {
-    dispatch({ type: 'CREATE_DOCUMENT_PENDING' });
+    dispatch({ type: CREATE_DOCUMENT_PENDING });
     const newDocument = {
       title,
       docContent,
@@ -30,13 +44,13 @@ export function createDocument(token, title, docContent, access, categories, tag
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: 'CREATE_DOCUMENT_REJECTED',
+            type: CREATE_DOCUMENT_REJECTED,
             payload: { error: err.response.body.error }
           });
           return;
         }
         dispatch({
-          type: 'CREATE_DOCUMENT_FULFILLED',
+          type: CREATE_DOCUMENT_FULFILLED,
           payload: res.body
         });
       });
@@ -54,7 +68,7 @@ export function createDocument(token, title, docContent, access, categories, tag
  */
 export function fetchDocuments(token, limit, offset) {
   return (dispatch) => {
-    dispatch({ type: 'FETCH_DOCUMENTS_PENDING' });
+    dispatch({ type: FETCH_DOCUMENTS_PENDING });
 
     request
       .get(`/api/documents?limit=${limit}&offset=${offset}`)
@@ -63,13 +77,13 @@ export function fetchDocuments(token, limit, offset) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: 'FETCH_DOCUMENTS_REJECTED',
+            type: FETCH_DOCUMENTS_REJECTED,
             payload: { error: err.response.body.error }
           });
           return;
         }
         dispatch({
-          type: 'FETCH_DOCUMENTS_FULFILLED',
+          type: FETCH_DOCUMENTS_FULFILLED,
           payload: res.body
         });
       });
@@ -88,7 +102,7 @@ export function fetchDocuments(token, limit, offset) {
  */
 export function fetchUserDocuments(token, userId, limit, offset) {
   return (dispatch) => {
-    dispatch({ type: 'FETCH_USER_DOCUMENTS_PENDING' });
+    dispatch({ type: FETCH_USER_DOCUMENTS_PENDING });
 
     request
       .get(`/api/users/${userId}/documents?limit=${limit}&offset=${offset}`)
@@ -97,13 +111,13 @@ export function fetchUserDocuments(token, userId, limit, offset) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: 'FETCH_USER_DOCUMENTS_REJECTED',
+            type: FETCH_USER_DOCUMENTS_REJECTED,
             payload: { error: err.response.body.error }
           });
           return;
         }
         dispatch({
-          type: 'FETCH_USER_DOCUMENTS_FULFILLED',
+          type: FETCH_USER_DOCUMENTS_FULFILLED,
           payload: res.body
         });
       });
@@ -120,7 +134,7 @@ export function fetchUserDocuments(token, userId, limit, offset) {
 export function deleteDocument(token, documentId) {
   return (dispatch) => {
     dispatch({
-      type: 'DELETE_DOCUMENT_PENDING',
+      type: DELETE_DOCUMENT_PENDING,
       payload: {
         targetDocument: documentId
       }
@@ -133,7 +147,7 @@ export function deleteDocument(token, documentId) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: 'DELETE_DOCUMENT_REJECTED',
+            type: DELETE_DOCUMENT_REJECTED,
             payload: {
               error: err.response.body.error,
               targetDocument: documentId
@@ -142,7 +156,7 @@ export function deleteDocument(token, documentId) {
           return;
         }
         dispatch({
-          type: 'DELETE_DOCUMENT_FULFILLED',
+          type: DELETE_DOCUMENT_FULFILLED,
           payload: {
             response: res.body,
             targetDocument: documentId
