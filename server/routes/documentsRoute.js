@@ -156,7 +156,7 @@ documentsRouter.route('/:id')
   .put(validateToken, validateDocument, DocumentsController.updateDocument)
   /**
    * @swagger
-   * /api/document/<id>
+   * /api/document/<id>:
    *    delete:
    *      description: Deletes the document identified by id.
    *      tags:
@@ -171,7 +171,7 @@ documentsRouter.route('/:id')
    *          type: string
    *        - name: id
    *          description: Document id
-   *          in:  path
+   *          in: path
    *          required: true
    *          type: integer
    *      responses:
