@@ -14,6 +14,7 @@ const config = {
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_DB_USERNAME,
     password: process.env.POSTGRES_DB_PASSWORD,
+    dialect: 'postgres',
     options: {
       host: process.env.POSTGRES_DB_HOST,
       port: process.env.POSTGRES_DB_PORT,

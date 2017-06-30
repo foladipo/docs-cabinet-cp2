@@ -1,4 +1,14 @@
 import request from 'superagent';
+import {
+  SIGN_UP_PENDING,
+  SIGN_UP_REJECTED,
+  SIGN_UP_FULFILLED,
+  LOGIN_PENDING,
+  LOGIN_REJECTED,
+  LOGIN_FULFILLED,
+  LOGOUT_PENDING,
+  LOGOUT_FULFILLED
+} from '../constants';
 
 /**
  * login - Starts the login process.
@@ -9,7 +19,7 @@ import request from 'superagent';
  */
 export function login(username, password) {
   return (dispatch) => {
-    dispatch({ type: 'LOGIN_PENDING' });
+    dispatch({ type: LOGIN_PENDING });
     request
       .post('/api/users/login')
       .send({ username, password })
@@ -17,13 +27,13 @@ export function login(username, password) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: 'LOGIN_REJECTED',
+            type: LOGIN_REJECTED,
             payload: { error: err.response.body.error }
           });
           return;
         }
         dispatch({
-          type: 'LOGIN_FULFILLED',
+          type: LOGIN_FULFILLED,
           payload: res.body
         });
       });
@@ -38,18 +48,18 @@ export function login(username, password) {
 export function logout() {
   return (dispatch) => {
     dispatch({
-      type: 'LOGOUT_PENDING'
+      type: LOGOUT_PENDING
     });
 
     // TODO: Send a request to /api/users/logout?
     dispatch({
-      type: 'LOGOUT_SUCCESS'
+      type: LOGOUT_FULFILLED
     });
   };
 }
 
 /**
- * login - Starts the sign up process.
+ * signUp - Starts the sign up process.
  * @param {String} firstName - The first name of the user trying to sign up.
  * @param {String} lastName - The last name of the user trying to sign up.
  * @param {String} username - The username of the user trying to sign up.
@@ -59,7 +69,7 @@ export function logout() {
  */
 export function signUp(firstName, lastName, username, password) {
   return (dispatch) => {
-    dispatch({ type: 'SIGN_UP_PENDING' });
+    dispatch({ type: SIGN_UP_PENDING });
     request
       .post('/api/users/')
       .send({ firstName, lastName, username, password })
@@ -67,13 +77,13 @@ export function signUp(firstName, lastName, username, password) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: 'SIGN_UP_REJECTED',
+            type: SIGN_UP_REJECTED,
             payload: { error: err.response.body.error }
           });
           return;
         }
         dispatch({
-          type: 'SIGN_UP_FULFILLED',
+          type: SIGN_UP_FULFILLED,
           payload: res.body
         });
       });

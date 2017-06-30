@@ -5,9 +5,20 @@ body {
   overflow: hidden;
 }
 
+.auth-page {
+  background-image: url(/img/books-on-a-wooden-shelf-medium.png);
+  background-position: top left;
+  background-repeat: no-repeat;
+}
+
 .quarter-side-margin {
   margin-left: 1em;
   margin-right: 1em;
+}
+
+.quarter-vertical-margin {
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .wraps-content {
@@ -42,4 +53,24 @@ body {
 
 #sidenav-overlay {
   display: none;
+}
+
+.dashboard-container {
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  padding-bottom: 4em;
+}
+
+.document-actions {
+  margin: 0;
+
+  li {
+    display: inline-block;
+    margin-right: 1em;
+  }
+}
+
+.card {
+  height: 300px;
 }

@@ -10,29 +10,58 @@ const searchRouter = express.Router();
  *   NewDocument:
  *     type: object
  *     required:
- *        - title
- *        - docContent
- *        - access
- *        - categories
- *        - tags
+ *       - title
+ *       - docContent
+ *       - access
+ *       - categories
+ *       - tags
  *     properties:
- *        title:
- *           type: string
- *        docContent:
- *           type: string
- *        access:
- *            type: string
- *        categories:
- *            type: string
- *        tags:
- *            type: string
+ *       title:
+ *         type: string
+ *       docContent:
+ *         type: string
+ *       access:
+ *         type: string
+ *       categories:
+ *         type: string
+ *       tags:
+ *         type: string
  *   Document:
+ *     allOf:
+ *       - $ref: '#definitions/NewDocument'
+ *       - required:
+ *       - id:
+ *         type: integer
+ *         format: int64
+ *   NewUser:
+ *     type: object
+ *     required:
+ *       - userId
+ *       - username
+ *       - password
+ *       - firstName
+ *       - lastName
+ *       - roleId
+ *     properties:
+ *       userId:
+ *         type: integer
+ *       username:
+ *         type: string
+ *       password:
+ *         type: string
+ *       firstName:
+ *         type: string
+ *       lastName:
+ *         type: string
+ *       roleId:
+ *         type: integer
+ *   User:
  *      allOf:
- *        - $ref: '#definitions/NewDocument'
+ *        - $ref: '#definitions/NewUser'
  *        - required:
  *        - id:
- *              type: integer
- *              format: int64
+ *          type: integer
+ *          format: int64
  */
 searchRouter.route('/users')
   /**
@@ -59,7 +88,9 @@ searchRouter.route('/users')
    *        200:
    *          description: user
    *          schema:
-   *            type: object
+   *            type: array
+   *            items:
+   *              $ref: '#/definitions/NewUser'
    */
   .get(validateToken, SearchController.searchUsers);
 
@@ -81,12 +112,12 @@ searchRouter.route('/documents')
    *          type: string
    *        - in: query
    *          name: q
-   *          description: title of a document
+   *          description: Title of a document.
    *          required: true
    *          type: string
    *      responses:
    *        200:
-   *          description: user
+   *          description: document
    *          schema:
    *            type: array
    *            items:

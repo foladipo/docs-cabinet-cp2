@@ -29,7 +29,10 @@ const store = createStore(
     },
     documents: {
       count: 0,
-      documents: []
+      documents: [],
+      status: 'fetchingDocuments',
+      statusMessage: 'Loading documents... Please wait...',
+      targetDocument: ''
     }
   },
   middleware

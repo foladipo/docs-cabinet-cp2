@@ -98,7 +98,6 @@ class SignUpContainer extends React.Component {
     ));
   }
 
-  // TODO: Consult: Should this be here? Or in the Actions file?
   /**
    * Returns a simplified error message for failed sign up attempts.
    * @return {String} - A simplified error message.
@@ -110,13 +109,13 @@ class SignUpContainer extends React.Component {
       case 'InvalidFirstNameError':
       case 'MissingFirstNameError':
       case 'EmptyFirstNameError':
-        simplifiedError = 'Please enter a first name that has two or more letters (no whitespace please).';
+        simplifiedError = 'Please enter a first name that has two or more letters (no white space please).';
         break;
 
       case 'InvalidLastNameError':
       case 'MissingLastNameError':
       case 'EmptyLastNameError':
-        simplifiedError = 'Please enter last name that has two or more letters (no whitespace please).';
+        simplifiedError = 'Please enter last name that has two or more letters (no white space please).';
         break;
 
       case 'InvalidUsernameError':
@@ -136,7 +135,7 @@ class SignUpContainer extends React.Component {
         break;
 
       case 'UserExistsError':
-        simplifiedError = 'This username is taken. Use another one or log in.';
+        simplifiedError = 'This email is taken. Use another one or log in.';
         break;
 
       default:
@@ -186,7 +185,7 @@ class SignUpContainer extends React.Component {
               <Icon>lock</Icon>
             </Input>
             <Button
-              className={this.props.user.isLoggingIn ? 'disabled pulse' : 'pulse'}
+              className={this.props.user.isLoggingIn ? 'disabled' : ''}
               waves="light"
               onClick={this.attemptSignUp}
             >

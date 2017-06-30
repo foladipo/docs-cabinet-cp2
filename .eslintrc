@@ -1,9 +1,13 @@
 {
   "root": true,
   "extends": "airbnb",
+  "globals": {
+    "Materialize": true
+  },
   "env": {
     "browser": true,
     "es6": true,
+    "jquery": true,
     "mocha": true,
     "node": true
   },

@@ -2,8 +2,8 @@ import React from 'react';
 
 /**
  * This is the '404: Not Found' page.
- * @return {Component|null|false} - A Component for DOM rendering.
- * Otherwise, return null or false to prevent the rendering of this Component.
+ * @return {Component|null} - A Component for DOM rendering.
+ * Otherwise, return null to prevent the rendering of this Component.
  */
 export default function NotFoundContainer() {
   const goBack = (e) => {
