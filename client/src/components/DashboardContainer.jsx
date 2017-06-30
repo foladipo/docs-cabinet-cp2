@@ -128,10 +128,6 @@ class DashboardContainer extends React.Component {
             </Modal>
           </SideNavItem>
           <SideNavItem divider />
-          <SideNavItem href="#!second">Second Link</SideNavItem>
-          <SideNavItem divider />
-          <SideNavItem subheader>Subheader</SideNavItem>
-          <SideNavItem waves href="#!third">Third Link With Waves</SideNavItem>
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
         <div className="dashboard-container">

@@ -21,38 +21,40 @@ function AuthenticationPage(props) {
   }
 
   return (
-    <div className={'container valign-wrapper full-height'}>
-      <div className="container section three-quarters-height">
-        <div className="section z-depth-4 white">
-          <h3 className="center">Welcome to Docs Cabinet!</h3>
-          <div className="horizontally-centered quarter-side-margin wraps-content">
-            <Modal
-              id="signUpModal"
-              header="Sign up"
-              trigger={
-                <Button
-                  waves="light"
-                  className="quarter-side-margin teal lighten-1"
-                >
-                  Sign up
-                </Button>
-              }
-            >
-              <SignUpContainer />
-            </Modal>
-            <Modal
-              id="loginModal"
-              header="Login"
-              trigger={
-                <Button
-                  waves="light"
-                  className="quarter-side-margin teal lighten-5 black-text"
-                >Login
-                </Button>
-              }
-            >
-              <LoginContainer />
-            </Modal>
+    <div className="auth-page valign-wrapper full-height">
+      <div className="container">
+        <div className="container section three-quarters-height">
+          <div className="section z-depth-4 white">
+            <h3 className="center">Welcome to Docs Cabinet!</h3>
+            <div className="horizontally-centered quarter-side-margin wraps-content">
+              <Modal
+                id="signUpModal"
+                header="Sign up"
+                trigger={
+                  <Button
+                    waves="light"
+                    className="quarter-side-margin teal lighten-1"
+                  >
+                    Sign up
+                  </Button>
+                }
+              >
+                <SignUpContainer />
+              </Modal>
+              <Modal
+                id="loginModal"
+                header="Login"
+                trigger={
+                  <Button
+                    waves="light"
+                    className="quarter-side-margin teal lighten-5 black-text"
+                  >Login
+                  </Button>
+                }
+              >
+                <LoginContainer />
+              </Modal>
+            </div>
           </div>
         </div>
       </div>
