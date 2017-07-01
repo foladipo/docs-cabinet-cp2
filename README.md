@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/andela-foladipo/docs-cabinet-cp2.svg?branch=develop)](https://travis-ci.org/andela-foladipo/docs-cabinet-cp2)
 [![Code Climate](https://codeclimate.com/github/andela-foladipo/docs-cabinet-cp2//badges/gpa.svg)](https://codeclimate.com/github/andela-foladipo/docs-cabinet-cp2/)
-[![Coverage Status](https://coveralls.io/repos/github/andela-foladipo/docs-cabinet-cp2/badge.svg?branch=chore%2F147025811%2Fsetup-frontend-dev-environment)](https://coveralls.io/github/andela-foladipo/docs-cabinet-cp2?branch=chore%2F147025811%2Fsetup-frontend-dev-environment)
+[![Coverage Status](https://coveralls.io/repos/github/andela-foladipo/docs-cabinet-cp2/badge.svg?branch=develop)](https://coveralls.io/github/andela-foladipo/docs-cabinet-cp2?branch=develop)
 
 
 # Welcome to Docs Cabinet
