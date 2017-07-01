@@ -9,12 +9,12 @@
  * it returns false.
  */
 export default function isValidName(name) {
-  if (typeof name === 'string' && name.length > 1) {
-    const whitespaceCharacters = /\s/;
-    if (whitespaceCharacters.test(name)) {
-      return false;
+  if (typeof name === 'string') {
+    const strippedName = name.replace(/(\s+)/, '');
+    if (strippedName.length > 1) {
+      return true;
     }
-    return true;
+    return false;
   }
   return false;
 }

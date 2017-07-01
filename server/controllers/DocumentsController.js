@@ -67,7 +67,15 @@ export default class DocumentsController {
             res.status(200)
               .json({
                 message: 'DocumentCreationSucceeded',
-                documents: [createdDocument]
+                documents: [{
+                  title: createdDocument.title,
+                  docContent: createdDocument.docContent,
+                  access: createdDocument.access,
+                  categories: createdDocument.categories,
+                  tags: createdDocument.tags,
+                  createdAt: createdDocument.createdAt,
+                  createdBy: createdDocument.createdBy
+                }]
               });
           });
       });
@@ -118,7 +126,8 @@ export default class DocumentsController {
       .findOne({
         where: {
           id: documentId
-        }
+        },
+        attributes: ['title', 'docContent', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
       })
       .then((foundDocument) => {
         if (foundDocument) {
@@ -204,6 +213,7 @@ export default class DocumentsController {
             { createdBy: userId },
           ]
         },
+        attributes: ['title', 'docContent', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
         limit,
         offset
       })

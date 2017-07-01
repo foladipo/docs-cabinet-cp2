@@ -2,6 +2,7 @@ import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
 
+import { DEFAULT_ROLE_ID } from '../constants';
 import Document from '../models/Document';
 import User from '../models/User';
 import getLimitAndOffset from '../util/getLimitAndOffset';
@@ -118,6 +119,7 @@ export default class UsersController {
       });
   }
 
+  // TODO: Move some of this code to a validateNewUser middleware.
   /**
    * Ensures that a user trying to create a new account supplies all necessary
    * data. It also enforces some standards e.g the length and composition of the
@@ -222,7 +224,6 @@ export default class UsersController {
       return;
     }
 
-    const roleId = Number(process.env.DEFAULT_ROLE);
     User
       .findOne({
         where: {
@@ -238,13 +239,15 @@ export default class UsersController {
         } else {
           const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
           const hashedPassword = bcryptjs.hashSync(password, saltLength);
+          const trimmedFirstname = firstName.trim().replace(/(\s{2,})/, ' ');
+          const trimmedLastname = lastName.trim().replace(/(\s{2,})/, ' ');
           User
             .create({
-              firstName,
-              lastName,
+              firstName: trimmedFirstname,
+              lastName: trimmedLastname,
               username,
               password: hashedPassword,
-              roleId
+              roleId: DEFAULT_ROLE_ID
             })
             .then((createdUser) => {
               const userDetails = {
@@ -335,10 +338,17 @@ export default class UsersController {
     )
     .then((rows) => {
       const rowsAffected = rows[0];
+      const updatedProfile = rows[1][0].dataValues;
       if (rowsAffected > 0) {
         res.status(200)
           .json({
-            users: [rows[1][0].dataValues]
+            users: [{
+              userId: updatedProfile.id,
+              firstName: updatedProfile.firstName,
+              lastName: updatedProfile.lastName,
+              username: updatedProfile.username,
+              roleId: updatedProfile.roleId,
+            }]
           });
       } else {
         res.status(404)
@@ -515,6 +525,7 @@ export default class UsersController {
               where: {
                 createdBy: userId
               },
+              attributes: ['title', 'docContent', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
               order: [['createdAt', 'DESC']],
               returning: true
             })
