@@ -45,7 +45,8 @@ export default class SearchController {
         where: {
           $or: [
             { firstName: { $iLike: `%${userQuery}%` } },
-            { lastName: { $iLike: `%${userQuery}%` } }
+            { lastName: { $iLike: `%${userQuery}%` } },
+            { username: { $iLike: `%${userQuery}%` } }
           ]
         },
         attributes: ['id', 'firstName', 'lastName', 'username', 'roleId'],
