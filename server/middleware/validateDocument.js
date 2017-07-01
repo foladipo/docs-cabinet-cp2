@@ -68,7 +68,7 @@ export default function validateDocument(req, res, next) {
     return;
   }
 
-  const access = reqBody.access.toLowerCase();
+  const access = reqBody.access;
   if (!access) {
     res.status(400)
       .json({
@@ -77,7 +77,8 @@ export default function validateDocument(req, res, next) {
       });
     return;
   }
-  if (typeof access !== 'string') {
+  const loweredAccess = access.toLowerCase();
+  if (typeof loweredAccess !== 'string') {
     res.status(400)
       .json({
         message: 'Please enter an access type of \'public\', \'private\' or \'role\' for your document.',
@@ -85,7 +86,7 @@ export default function validateDocument(req, res, next) {
       });
     return;
   }
-  if (!isValidAccessType(access)) {
+  if (!isValidAccessType(loweredAccess)) {
     res.status(400)
       .json({
         message: 'Please enter an access type of \'public\', \'private\' or \'role\' for your document.',
