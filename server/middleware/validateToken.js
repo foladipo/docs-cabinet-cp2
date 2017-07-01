@@ -62,7 +62,7 @@ export default function validateToken(req, res, next) {
   User
     .findOne({
       where: {
-        id: userProfile.userId
+        id: userProfile.id
       }
     })
     .then((foundUser) => {

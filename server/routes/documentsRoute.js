@@ -153,7 +153,7 @@ documentsRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .put(validateToken, validateDocument, DocumentsController.updateDocument)
+  .put(validateToken, DocumentsController.updateDocument)
   /**
    * @swagger
    * /api/document/<id>:

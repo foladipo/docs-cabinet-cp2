@@ -43,7 +43,7 @@ class DashboardContainer extends React.Component {
   startDocumentsFetch() {
     this.props.dispatch(fetchUserDocuments(
       this.props.user.token,
-      this.props.user.user.userId,
+      this.props.user.user.id,
       this.state.limit,
       this.state.offset
     ));

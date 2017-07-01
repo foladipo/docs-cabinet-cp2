@@ -22,9 +22,9 @@ export default function adminsOnly(req, res, next) {
   }
 
   const user = req.decodedUserProfile;
-  const userId = user.userId;
+  const id = user.id;
   const roleId = user.roleId;
-  if (roleId < 1 && userId !== targetUserId) {
+  if (roleId < 1 && id !== targetUserId) {
     res.status(403)
       .json({
         error: 'ForbiddenOperationError'

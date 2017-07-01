@@ -64,7 +64,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
   });
 
   const user = {
-    userId: 0,
+    id: 0,
     username: 'foo@example.com',
     roleId: 0,
     firstName: 'Lagbaja',

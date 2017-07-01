@@ -42,14 +42,14 @@ const usersRouter = express.Router();
  *   NewUser:
  *     type: object
  *     required:
- *       - userId
+ *       - id
  *       - username
  *       - password
  *       - firstName
  *       - lastName
  *       - roleId
  *     properties:
- *       userId:
+ *       id:
  *         type: integer
  *       username:
  *         type: string

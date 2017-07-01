@@ -28,7 +28,7 @@ describe('When a user GET\'s it, the /api/documents endpoint', () => {
   });
 
   const userDetails = {
-    userId: 0,
+    id: 0,
     username: 'foo@example.com',
     roleId: 0,
     firstName: 'Lagbaja',

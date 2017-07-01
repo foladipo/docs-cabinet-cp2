@@ -23,7 +23,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
     roleId: 0
   };
 
-  let userId;
+  let id;
 
   const newFirstName = 'Bruce';
   const newLastName = 'Banner';
@@ -34,7 +34,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
     User
       .create(dummyUser)
       .then((user) => {
-        userId = user.id;
+        id = user.id;
         done();
       });
   });
@@ -51,7 +51,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   const getValidToken = () => {
     const userProfile = {
-      userId,
+      id,
       username: dummyUser.username,
       roleId: dummyUser.roleId,
       firstName: dummyUser.firstName,
@@ -160,7 +160,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s first name', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ firstName: newFirstName })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -177,7 +177,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s last name', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ lastName: newLastName })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -194,7 +194,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s email', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ username: newUsername })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -211,7 +211,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s password', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ password: newPassword })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')

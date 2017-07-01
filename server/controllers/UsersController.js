@@ -53,7 +53,7 @@ export default class UsersController {
               const isCorrectPassword = bcryptjs.compareSync(password, storedPasswordHash);
               if (isCorrectPassword) {
                 const userDetails = {
-                  userId: user.id,
+                  id: user.id,
                   username: user.username,
                   roleId: user.roleId,
                   firstName: user.firstName,
@@ -251,7 +251,7 @@ export default class UsersController {
             })
             .then((createdUser) => {
               const userDetails = {
-                userId: createdUser.id,
+                id: createdUser.id,
                 username: createdUser.username,
                 roleId: createdUser.roleId,
                 firstName: createdUser.firstName,
@@ -305,7 +305,7 @@ export default class UsersController {
       return;
     }
 
-    if (targetUserId !== profileOfUpdater.userId
+    if (targetUserId !== profileOfUpdater.id
       && profileOfUpdater.roleId < 1) {
       res.status(403)
         .json({
@@ -344,7 +344,7 @@ export default class UsersController {
           .json({
             message: 'Profile updated',
             users: [{
-              userId: updatedProfile.id,
+              id: updatedProfile.id,
               firstName: updatedProfile.firstName,
               lastName: updatedProfile.lastName,
               username: updatedProfile.username,
@@ -401,7 +401,7 @@ export default class UsersController {
       return;
     }
 
-    if (targetUserId === userProfile.userId) {
+    if (targetUserId === userProfile.id) {
       User
         .destroy({
           where: {
@@ -492,16 +492,16 @@ export default class UsersController {
    */
   static getUserDocuments(req, res, next) {
     const pathInfo = req.path.split('/');
-    const userIdString = pathInfo[1];
+    const idString = pathInfo[1];
     const documentPath = pathInfo[2];
 
-    if (!(userIdString && documentPath)) {
+    if (!(idString && documentPath)) {
       next();
       return;
     }
 
-    const userId = Number(userIdString);
-    if (Number.isNaN(userId)) {
+    const id = Number(idString);
+    if (Number.isNaN(id)) {
       res.status(400)
         .json({
           error: 'InvalidUserIdError'
@@ -518,15 +518,15 @@ export default class UsersController {
     }
 
     User
-      .findOne({ where: { id: userId } })
+      .findOne({ where: { id } })
       .then((foundUser) => {
         if (foundUser) {
           Document
             .findAll({
               where: {
-                createdBy: userId
+                createdBy: id
               },
-              attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+              attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
               order: [['createdAt', 'DESC']],
               returning: true
             })
@@ -567,15 +567,15 @@ export default class UsersController {
    */
   static getUser(req, res, next) {
     const pathInfo = req.path.split('/');
-    const userIdString = pathInfo[1];
+    const idString = pathInfo[1];
 
-    if (!userIdString) {
+    if (!idString) {
       next();
       return;
     }
 
-    const userId = Number(userIdString);
-    if (Number.isNaN(userId)) {
+    const id = Number(idString);
+    if (Number.isNaN(id)) {
       res.status(400)
         .json({
           error: 'InvalidUserIdError'
@@ -584,15 +584,11 @@ export default class UsersController {
     }
 
     User
-      .findOne({
-        where: {
-          id: userId
-        }
-      })
+      .findOne({ where: { id } })
       .then((foundUser) => {
         if (foundUser) {
           const profile = {
-            userId: foundUser.id,
+            id: foundUser.id,
             username: foundUser.username,
             firstName: foundUser.firstName,
             lastName: foundUser.lastName,
@@ -630,7 +626,7 @@ export default class UsersController {
     const limit = limitAndOffset.limit;
     const offset = limitAndOffset.offset;
 
-    const currentUserId = req.decodedUserProfile.userId;
+    const currentUserId = req.decodedUserProfile.id;
     User
       .findAll({
         where: {
@@ -643,7 +639,7 @@ export default class UsersController {
       })
       .then((foundUsers) => {
         const results = foundUsers.map(user => ({
-          userId: user.id,
+          id: user.id,
           username: user.username,
           firstName: user.firstName,
           lastName: user.lastName,

@@ -275,7 +275,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
         if (err) return done(err);
 
         expect(res.body.token).to.not.equal(undefined);
-        expect(res.body.user.userId).to.not.equal(undefined);
+        expect(res.body.user.id).to.not.equal(undefined);
         expect(res.body.user.firstName).to.equal(validNewUser.firstName);
         expect(res.body.user.lastName).to.equal(validNewUser.lastName);
         expect(res.body.user.username).to.equal(validNewUser.username);

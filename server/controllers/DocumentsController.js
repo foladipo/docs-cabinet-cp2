@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Document from '../models/Document';
 import User from '../models/User';
 import getLimitAndOffset from '../util/getLimitAndOffset';
@@ -36,7 +37,7 @@ export default class DocumentsController {
     const categories = reqBody.categories;
     const tags = reqBody.tags;
 
-    const createdBy = req.decodedUserProfile.userId;
+    const createdBy = req.decodedUserProfile.id;
     Document
       .findOne({
         where: {
@@ -68,6 +69,7 @@ export default class DocumentsController {
               .json({
                 message: 'DocumentCreationSucceeded',
                 documents: [{
+                  id: createdDocument.id,
                   title: createdDocument.title,
                   content: createdDocument.content,
                   access: createdDocument.access,
@@ -119,7 +121,7 @@ export default class DocumentsController {
       return;
     }
 
-    const userId = req.decodedUserProfile.userId;
+    const id = req.decodedUserProfile.id;
     const roleId = req.decodedUserProfile.roleId;
 
     Document
@@ -127,7 +129,7 @@ export default class DocumentsController {
         where: {
           id: documentId
         },
-        attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
       })
       .then((foundDocument) => {
         if (foundDocument) {
@@ -138,7 +140,7 @@ export default class DocumentsController {
           }
 
           if (foundDocument.access === 'private') {
-            if (userId === foundDocument.createdBy || roleId > 0) {
+            if (id === foundDocument.createdBy || roleId > 0) {
               res.status(200)
                 .json({ documents: [foundDocument] });
             } else {
@@ -201,7 +203,7 @@ export default class DocumentsController {
     const limitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
     const limit = limitAndOffset.limit;
     const offset = limitAndOffset.offset;
-    const userId = req.decodedUserProfile.userId;
+    const id = req.decodedUserProfile.id;
 
     Document
       .findAll({
@@ -210,10 +212,10 @@ export default class DocumentsController {
         where: {
           $or: [
             { access: 'public' },
-            { createdBy: userId },
+            { createdBy: id },
           ]
         },
-        attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
         limit,
         offset
       })
@@ -243,7 +245,7 @@ export default class DocumentsController {
    */
   static updateDocument(req, res) {
     const userProfile = req.decodedUserProfile;
-    const updatedDocument = req.body;
+    const documentUpdate = req.body;
 
     const documentIdString = req.path.split('/')[1];
     if (documentIdString === undefined || documentIdString === '') {
@@ -263,36 +265,58 @@ export default class DocumentsController {
       return;
     }
 
+    if (!documentUpdate || _.isEqual(documentUpdate, {})) {
+      res.status(400)
+        .json({
+          error: 'EmptyDocumentBodyError'
+        });
+    }
+
     Document
       .findById(documentId)
       .then((foundDocument) => {
         if (foundDocument) {
-          const updaterId = userProfile.userId;
+          const updaterId = userProfile.id;
           if (foundDocument.createdBy === updaterId) {
             const document = {};
-            if (updatedDocument.content) {
-              document.content = updatedDocument.content;
+            if (documentUpdate.title) {
+              document.title = documentUpdate.title;
             }
-            if (updatedDocument.access) {
-              document.access = updatedDocument.access;
+            if (documentUpdate.content) {
+              document.content = documentUpdate.content;
             }
-            if (updatedDocument.categories) {
-              document.categories = updatedDocument.categories;
+            if (documentUpdate.access) {
+              document.access = documentUpdate.access;
             }
-            if (updatedDocument.tags) {
-              document.tags = updatedDocument.tags;
+            if (documentUpdate.categories) {
+              document.categories = documentUpdate.categories;
+            }
+            if (documentUpdate.tags) {
+              document.tags = documentUpdate.tags;
             }
 
             Document
               .update(document, {
                 where: {
                   id: documentId
-                }
+                },
+                returning: true
               })
-              .then(() => {
+              .then((docs) => {
+                const updatedDocument = docs[1][0];
                 res.status(200)
                   .json({
-                    message: 'DocumentUpdateSucceeded'
+                    message: 'DocumentUpdateSucceeded',
+                    documents: [{
+                      id: updatedDocument.id,
+                      title: updatedDocument.title,
+                      content: updatedDocument.content,
+                      access: updatedDocument.access,
+                      categories: updatedDocument.categories,
+                      tags: updatedDocument.tags,
+                      createdAt: updatedDocument.createdAt,
+                      createdBy: updatedDocument.createdBy,
+                    }]
                   });
               });
           } else {
@@ -352,7 +376,7 @@ export default class DocumentsController {
       .findById(documentId)
       .then((foundDocument) => {
         if (foundDocument) {
-          const deleterId = userProfile.userId;
+          const deleterId = userProfile.id;
           if (foundDocument.createdBy === deleterId || userProfile.roleId > 0) {
             Document
               .destroy({

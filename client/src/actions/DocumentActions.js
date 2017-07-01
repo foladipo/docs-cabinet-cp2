@@ -93,19 +93,19 @@ export function fetchDocuments(token, limit, offset) {
 /**
  * fetchUserDocuments - Fetches the documents that belong to a user.
  * @param {String} token - A token for the user making the request.
- * @param {Number} userId - The id of the user making the request.
+ * @param {Number} id - The id of the user making the request.
  * @param {String} limit - Number of documents to return per request.
  * @param {String} offset - Number of documents to skip before
  * beginning the fetch.
  * @return {Function} - Returns a function that dispatches actions based
  * on the state of the document fetching process (commencement, success or failure).
  */
-export function fetchUserDocuments(token, userId, limit, offset) {
+export function fetchUserDocuments(token, id, limit, offset) {
   return (dispatch) => {
     dispatch({ type: FETCH_USER_DOCUMENTS_PENDING });
 
     request
-      .get(`/api/users/${userId}/documents?limit=${limit}&offset=${offset}`)
+      .get(`/api/users/${id}/documents?limit=${limit}&offset=${offset}`)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', token)
       .end((err, res) => {
