@@ -23,14 +23,6 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
     createdBy: 0
   };
 
-  before('Remove the sample document to be used in this suite\'s specs', (done) => {
-    Document
-      .destroy({ where: { title: completeNewDocument.title } })
-      .then(() => {
-        done();
-      });
-  });
-
   after('Remove the sample document used in this suite\'s specs', (done) => {
     Document
       .destroy({ where: { title: completeNewDocument.title } })

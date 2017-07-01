@@ -59,7 +59,7 @@ export default class DocumentsController {
   /**
    * Sends an authenticated user a document identified by a particular id.
    * Other details include:
-   * - if the specified id is invalid, it sends an InvalidDocumentIdError
+   * - if the specified id is invalid, it sends an InvalidTargetDocumentIdError
    * response. The id is invalid if it cannot be parsed to an integer.
    * - if the requested document has an access type that does not fit the
    * role of user making this request, this function sends a
@@ -79,7 +79,7 @@ export default class DocumentsController {
       res.status(400)
         .json({
           message: 'The document id you supplied is not a valid number.',
-          error: 'InvalidDocumentIdError'
+          error: 'InvalidTargetDocumentIdError'
         });
       return;
     }
@@ -198,9 +198,7 @@ export default class DocumentsController {
   /**
    * Updates a document's title, content, access type, categories or tags. Before
    * performing the update, this function checks that:
-   * - the HTTP request includes the id of the document that is to be updated.
-   * Else, it sends a DocumentIdNotSuppliedError response.
-   * - the included document id is valid, else it sends an InvalidDocumentIdError
+   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
    * response. A document id is invalid if it is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
@@ -218,21 +216,13 @@ export default class DocumentsController {
     const documentUpdate = req.body;
 
     const documentIdString = req.path.split('/')[1];
-    if (documentIdString === undefined || documentIdString === '') {
-      res.status(400)
-        .json({
-          message: 'Oops! You didn\'t supply the id of the document.',
-          error: 'DocumentIdNotSuppliedError'
-        });
-      return;
-    }
 
     const documentId = Number(documentIdString);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
           message: 'The document id you supplied is not a number.',
-          error: 'InvalidDocumentIdError'
+          error: 'InvalidTargetDocumentIdError'
         });
       return;
     }
@@ -243,6 +233,7 @@ export default class DocumentsController {
           message: 'You didn\'t supply any info for the update.',
           error: 'EmptyDocumentBodyError'
         });
+      return;
     }
 
     Document
@@ -312,9 +303,7 @@ export default class DocumentsController {
   /**
    * Delete a document. Before performing the update, this function checks
    * that:
-   * - the HTTP request includes the id of the document that is to be deleted.
-   * Else, it sends a DocumentIdNotSuppliedError response.
-   * - the included document id is valid, else it sends an InvalidDocumentIdError
+   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
    * response. A document id is invalid if it is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
@@ -330,21 +319,13 @@ export default class DocumentsController {
   static deleteDocument(req, res) {
     const userProfile = req.decodedUserProfile;
     const documentIdString = req.path.split('/')[1];
-    if (documentIdString === undefined || documentIdString === '') {
-      res.status(400)
-        .json({
-          message: 'Oops! You didn\'t supply the id of the document.',
-          error: 'DocumentIdNotSuppliedError'
-        });
-      return;
-    }
 
     const documentId = Number(documentIdString);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
           message: 'The document id you supplied is not a number.',
-          error: 'InvalidDocumentIdError'
+          error: 'InvalidTargetDocumentIdError'
         });
       return;
     }
