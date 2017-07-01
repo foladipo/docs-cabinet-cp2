@@ -12,14 +12,14 @@ const documentsRouter = express.Router();
  *     type: object
  *     required:
  *       - title
- *       - docContent
+ *       - content
  *       - access
  *       - categories
  *       - tags
  *     properties:
  *       title:
  *         type: string
- *       docContent:
+ *       content:
  *         type: string
  *       access:
  *         type: string
@@ -153,7 +153,7 @@ documentsRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .put(validateToken, validateDocument, DocumentsController.updateDocument)
+  .put(validateToken, DocumentsController.updateDocument)
   /**
    * @swagger
    * /api/document/<id>:

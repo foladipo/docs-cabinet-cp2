@@ -18,7 +18,7 @@ class UpdateDocument extends Component {
     this.state = {
       errorMessage: '',
       title: props.title,
-      docContent: props.docContent,
+      content: props.content,
       access: props.access,
       categories: props.categories,
       tags: props.tags
@@ -26,12 +26,12 @@ class UpdateDocument extends Component {
 
     this.hasValidAccess = this.hasValidAccess.bind(this);
     this.hasValidTitle = this.hasValidTitle.bind(this);
-    this.hasValidDocContent = this.hasValidDocContent.bind(this);
+    this.hasValidContent = this.hasValidContent.bind(this);
     this.hasValidCategories = this.hasValidCategories.bind(this);
     this.hasValidTags = this.hasValidTags.bind(this);
     this.updateAccess = this.updateAccess.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
-    this.updateDocContent = this.updateDocContent.bind(this);
+    this.updateContent = this.updateContent.bind(this);
     this.updateCategories = this.updateCategories.bind(this);
     this.updateTags = this.updateTags.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
@@ -63,11 +63,11 @@ class UpdateDocument extends Component {
    * Tests the validity of a document's content.
    * @return {Boolean} - Whether or not a document's content is valid.
    */
-  hasValidDocContent() {
-    const docContent = this.state.docContent;
-    if (!docContent) return false;
-    const strippedDocContent = docContent.replace(/(\s+)/, '');
-    return strippedDocContent.length > 0;
+  hasValidContent() {
+    const content = this.state.content;
+    if (!content) return false;
+    const strippedContent = content.replace(/(\s+)/, '');
+    return strippedContent.length > 0;
   }
 
   /**
@@ -118,8 +118,8 @@ class UpdateDocument extends Component {
    * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  updateDocContent(event) {
-    this.setState({ docContent: event.target.value });
+  updateContent(event) {
+    this.setState({ content: event.target.value });
   }
 
   /**
@@ -162,8 +162,8 @@ class UpdateDocument extends Component {
       this.setState({ errorMessage: 'Supply a title that has one or more characters that are not whitespace.' });
       return;
     }
-    const docContent = this.state.docContent;
-    if (!this.hasValidDocContent(docContent)) {
+    const content = this.state.content;
+    if (!this.hasValidContent(content)) {
       this.setState({ errorMessage: 'Supply a document content that has one or more characters that are not whitespace.' });
       return;
     }
@@ -182,7 +182,7 @@ class UpdateDocument extends Component {
       this.props.dispatch(createDocument(
         this.props.user.token,
         this.state.title,
-        this.state.docContent,
+        this.state.content,
         this.state.access,
         this.state.categories,
         this.state.tags
@@ -198,7 +198,7 @@ class UpdateDocument extends Component {
     // TODO: isValidDocument works fine, but why do these all become true once one of them is?
     const isValidDocument = (this.hasValidAccess(this.state.access) &&
       this.hasValidTitle(this.state.title) &&
-      this.hasValidDocContent(this.state.docContent) &&
+      this.hasValidContent(this.state.content) &&
       this.hasValidCategories(this.state.categories) &&
       this.hasValidTags(this.state.tags)
     );
@@ -241,7 +241,7 @@ class UpdateDocument extends Component {
           <div className="col s12">
             <textarea
               rows="10"
-              onChange={this.updateDocContent}
+              onChange={this.updateContent}
             />
             <br />
           </div>
@@ -265,7 +265,7 @@ UpdateDocument.propTypes = {
   access: PropTypes.string,
   categories: PropTypes.string,
   dispatch: PropTypes.func,
-  docContent: PropTypes.string,
+  content: PropTypes.string,
   mode: PropTypes.string,
   modeMessage: PropTypes.string,
   user: PropTypes.objectOf(PropTypes.any),
@@ -277,7 +277,7 @@ UpdateDocument.defaultProps = {
   access: undefined,
   categories: undefined,
   dispatch: undefined,
-  docContent: undefined,
+  content: undefined,
   mode: undefined,
   modeMessage: undefined,
   user: {},

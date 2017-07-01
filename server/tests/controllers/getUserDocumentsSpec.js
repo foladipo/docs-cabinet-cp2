@@ -13,7 +13,7 @@ const getUserDocumentsEndpoint = '/api/users';
 
 describe('When it receives a GET request, the /api/users/<id>/documents endpoint', () => {
   const regularUserProfile = {
-    userId: 0,
+    id: 0,
     firstName: 'Lagbaja',
     lastName: 'Anonymous',
     username: 'foo@example.com',
@@ -21,7 +21,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
   };
 
   const adminUserProfile = {
-    userId: Number(process.env.DEFAULT_ADMIN_USER_USERID),
+    id: Number(process.env.DEFAULT_ADMIN_USER_USERID),
     firstName: process.env.DEFAULT_ADMIN_USER_FIRSTNAME,
     lastName: process.env.DEFAULT_ADMIN_USER_LASTNAME,
     username: process.env.DEFAULT_ADMIN_USER_USERNAME,
@@ -30,7 +30,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
 
   const dummyDocument = {
     title: 'Test document',
-    docContent: 'Lorem ipsum',
+    content: 'Lorem ipsum',
     access: 'public',
     categories: 'random',
     tags: 'random',
@@ -65,6 +65,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted to perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });
@@ -81,6 +82,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'The user id you supplied is not a number.',
         error: 'InvalidTargetUserIdError'
       }, done);
   });
@@ -105,6 +107,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
       .expect('Content-Type', /json/)
       .expect(404)
       .expect({
+        message: 'The account you asked for doesn\'t exist.',
         error: 'TargetUserNotFoundError'
       }, done);
   });

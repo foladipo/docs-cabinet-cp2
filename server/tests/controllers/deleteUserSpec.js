@@ -20,24 +20,20 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
     roleId: 0
   };
 
-  let userId;
+  let id;
 
   before('Create a sample user', (done) => {
     User
       .create(dummyUser)
       .then((user) => {
-        userId = user.id;
+        id = user.id;
         done();
       });
   });
 
   after('Remove the sample user used in this suite\'s specs', (done) => {
     User
-      .destroy({
-        where: {
-          id: userId
-        }
-      })
+      .destroy({ where: { id } })
       .then(() => {
         done();
       });
@@ -45,7 +41,7 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
 
   const getValidToken = () => {
     const userProfile = {
-      userId,
+      id,
       username: dummyUser.username,
       roleId: dummyUser.roleId,
       firstName: dummyUser.firstName,
@@ -83,7 +79,8 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
-        error: 'InvalidUserIdError'
+        message: 'The user id you supplied is not a number.',
+        error: 'InvalidTargetUserIdError'
       }, done);
   });
 
@@ -93,9 +90,10 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(404)
+      .expect(403)
       .expect({
-        error: 'TargetUserNotFoundError'
+        message: 'Sorry, you\'re not permitted perform this action.',
+        error: 'ForbiddenOperationError'
       }, done);
   });
 
@@ -108,19 +106,20 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });
 
   it('should successfully delete a user\'s own account', (done) => {
     const validToken = getValidToken();
-    request.delete(`${deleteUserEndpoint}/${userId}`)
+    request.delete(`${deleteUserEndpoint}/${id}`)
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
       .expect({
-        message: 'UserDeletionSucceeded'
+        message: 'It\'s a pity, but you successfully deleted that account.'
       }, done);
   });
 });

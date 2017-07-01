@@ -48,7 +48,7 @@ function Document(props) {
             <span className="card-title black-text">{props.title}</span>
           </div>
           <div className="card-content">
-            <p>{props.docContent}</p>
+            <p>{props.content}</p>
           </div>
           <div className="card-action">
             <ul className="document-actions valign-wrapper">
@@ -78,7 +78,7 @@ function Document(props) {
 }
 
 Document.propTypes = {
-  docContent: PropTypes.string,
+  content: PropTypes.string,
   documentsStatus: PropTypes.string,
   id: PropTypes.number,
   title: PropTypes.string,
@@ -86,7 +86,7 @@ Document.propTypes = {
 };
 
 Document.defaultProps = {
-  docContent: undefined,
+  content: undefined,
   documentsStatus: undefined,
   id: undefined,
   targetDocument: undefined,

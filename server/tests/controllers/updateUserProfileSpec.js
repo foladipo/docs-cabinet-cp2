@@ -23,7 +23,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
     roleId: 0
   };
 
-  let userId;
+  let id;
 
   const newFirstName = 'Bruce';
   const newLastName = 'Banner';
@@ -34,7 +34,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
     User
       .create(dummyUser)
       .then((user) => {
-        userId = user.id;
+        id = user.id;
         done();
       });
   });
@@ -51,7 +51,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   const getValidToken = () => {
     const userProfile = {
-      userId,
+      id,
       username: dummyUser.username,
       roleId: dummyUser.roleId,
       firstName: dummyUser.firstName,
@@ -73,6 +73,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'MissingTokenError'
       }, done);
   });
@@ -85,6 +86,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'EmptyTokenError'
       }, done);
   });
@@ -97,6 +99,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
+        message: 'Your token is invalid. Please sign in to get a new one.',
         error: 'InvalidTokenError'
       }, done);
   });
@@ -117,6 +120,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
+        message: 'Your identification token is expired. Please sign in to get a new one.',
         error: 'ExpiredTokenError'
       }, done);
   });
@@ -142,7 +146,8 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
-        error: 'InvalidUserIdError'
+        message: 'The user id you supplied is not a number.',
+        error: 'InvalidTargetUserIdError'
       }, done);
   });
 
@@ -154,13 +159,14 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });
 
   it('should successfully update a user\'s first name', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ firstName: newFirstName })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -177,7 +183,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s last name', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ lastName: newLastName })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -194,7 +200,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s email', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ username: newUsername })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -211,7 +217,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
 
   it('should successfully update a user\'s password', (done) => {
     const validToken = getValidToken();
-    request.put(`${updateUserProfileEndpoint}/${userId}`)
+    request.put(`${updateUserProfileEndpoint}/${id}`)
       .send({ password: newPassword })
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -221,7 +227,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
         if (err) throw new Error(err);
         const body = res.body;
         expect(Array.isArray(body.users)).to.equal(true);
-        expect(body.users[0].password).to.not.equal(undefined);
+        expect(body.message).to.equal('Account updated.');
         done();
       });
   });

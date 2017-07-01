@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      docContent: {
+      content: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
@@ -43,6 +43,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
         references: {
           model: 'User',
           key: 'id'

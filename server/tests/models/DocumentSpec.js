@@ -9,7 +9,7 @@ const expect = chai.expect;
 describe('The Document model', () => {
   const dummyDocument = {
     title: `Spalaxicon${uuid.v4()}`,
-    docContent: 'Lorem ipsum',
+    content: 'Lorem ipsum',
     access: 'public',
     categories: 'foo',
     tags: 'bar',
@@ -18,7 +18,7 @@ describe('The Document model', () => {
 
   const completeNewDocument = {
     title: `Spalaxicon${uuid.v4()}`,
-    docContent: 'Sit dolor amet plavoy',
+    content: 'Sit dolor amet plavoy',
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
@@ -47,7 +47,7 @@ describe('The Document model', () => {
 
   it('should reject the creation of documents that do NOT have a title', (done) => {
     const noTitle = {
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar',
@@ -64,16 +64,16 @@ describe('The Document model', () => {
   });
 
   it('should reject the creation of documents that do NOT have content', (done) => {
-    const noDocContent = {
+    const noContent = {
       title: 'Spalaxicon1',
       access: 'public',
       categories: 'foo',
       tags: 'bar',
       createdBy: 0
     };
-    Document.create(noDocContent)
+    Document.create(noContent)
       .catch((errors) => {
-        const expectedMessage = 'null value in column "docContent" violates' +
+        const expectedMessage = 'null value in column "content" violates' +
         ' not-null constraint';
         expect(errors.name).to.equal('SequelizeDatabaseError');
         expect(errors.message).to.equal(expectedMessage);
@@ -84,7 +84,7 @@ describe('The Document model', () => {
   it('should reject the creation of documents that do NOT have categories', (done) => {
     const noCategories = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'public',
       tags: 'bar',
       createdBy: 0
@@ -102,7 +102,7 @@ describe('The Document model', () => {
   it('should reject the creation of documents that do NOT have tags', (done) => {
     const noTags = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       createdBy: 0
@@ -120,7 +120,7 @@ describe('The Document model', () => {
   it('should reject the creation of documents that do NOT have an access type', (done) => {
     const noAccessTypes = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: '',
       categories: 'foo',
       tags: 'bar',
@@ -141,7 +141,7 @@ describe('The Document model', () => {
     ' \'private\' or \'role\'', (done) => {
     const invalidAccessType = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'random',
       categories: 'foo',
       tags: 'bar',
@@ -162,7 +162,7 @@ describe('The Document model', () => {
     ' createdBy (i.e author id)', (done) => {
     const noCreatedBy = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar'
@@ -179,7 +179,7 @@ describe('The Document model', () => {
   it('should reject the creation of documents whose createdBy (i.e author id) is NOT an integer', (done) => {
     const invalidCreatedBy = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar',
@@ -197,7 +197,7 @@ describe('The Document model', () => {
   it('should reject the creation of documents whose createdBy (i.e author id) is NOT in the User model', (done) => {
     const nonExistentUser = {
       title: 'Spalaxicon1',
-      docContent: 'Lorem ipsum',
+      content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar',
@@ -217,7 +217,7 @@ describe('The Document model', () => {
     Document.create(completeNewDocument)
       .then((document) => {
         expect(document.title).to.equal(completeNewDocument.title);
-        expect(document.docContent).to.equal(completeNewDocument.docContent);
+        expect(document.content).to.equal(completeNewDocument.content);
         done();
       });
   });

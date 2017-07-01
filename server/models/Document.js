@@ -6,7 +6,7 @@ const Document = sequelize.define('Document', {
   title: {
     type: Sequelize.STRING
   },
-  docContent: {
+  content: {
     type: Sequelize.TEXT
   },
   access: {

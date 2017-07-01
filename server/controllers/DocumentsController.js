@@ -1,26 +1,16 @@
+import _ from 'lodash';
 import Document from '../models/Document';
 import User from '../models/User';
 import getLimitAndOffset from '../util/getLimitAndOffset';
 
-
-// TODO: De-link getDocuments and getAllDocuments, at least in
-// the JSDoc of each.
-
 /**
- * Defines the controller for the /documents route.
+ * Defines the controller for the /api/documents route.
  * @export
  * @class DocumentsController
  */
 export default class DocumentsController {
   /**
-   * Creates a new document for a particular user. Some other details include:
-   * - if the title, document content, access type, tags or categories of the new
-   * document are not specified, it sends an error response that appropriately
-   * describes which field/info is missing.
-   * - if the access type specified is not a value recognized by this app,
-   * it sends an InvalidAccessTypeError response.
-   * - if the user making this request has previously created a document with
-   * the same title, it sends a DocumentExistsError response.
+   * Creates a new document for a particular user.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint e.g document title, content etc.
    * @param {Response} res - An express Response object that will contain
@@ -31,44 +21,37 @@ export default class DocumentsController {
   static createDocument(req, res) {
     const reqBody = req.body;
     const title = reqBody.title;
-    const docContent = reqBody.docContent;
+    const content = reqBody.content;
     const access = reqBody.access.toLowerCase();
     const categories = reqBody.categories;
     const tags = reqBody.tags;
 
-    const createdBy = req.decodedUserProfile.userId;
-    Document
-      .findOne({
-        where: {
-          title,
-          createdBy,
-        }
-      })
-      .then((document) => {
-        if (document) {
-          res.status(409)
-            .json({
-              error: 'DocumentExistsError'
-            });
-          return;
-        }
+    const createdBy = req.decodedUserProfile.id;
 
-        const newDocument = {
-          title,
-          docContent,
-          access,
-          categories,
-          tags,
-          createdBy
-        };
-        Document
-          .create(newDocument)
-          .then((createdDocument) => {
-            res.status(200)
-              .json({
-                message: 'DocumentCreationSucceeded',
-                documents: [createdDocument]
-              });
+    const newDocument = {
+      title,
+      content,
+      access,
+      categories,
+      tags,
+      createdBy
+    };
+    Document
+      .create(newDocument)
+      .then((createdDocument) => {
+        res.status(200)
+          .json({
+            message: 'Your document was successfully created.',
+            documents: [{
+              id: createdDocument.id,
+              title: createdDocument.title,
+              content: createdDocument.content,
+              access: createdDocument.access,
+              categories: createdDocument.categories,
+              tags: createdDocument.tags,
+              createdAt: createdDocument.createdAt,
+              createdBy: createdDocument.createdBy
+            }]
           });
       });
   }
@@ -76,65 +59,63 @@ export default class DocumentsController {
   /**
    * Sends an authenticated user a document identified by a particular id.
    * Other details include:
-   * - if an id is not given as part of the path of the HTTP request, it
-   * calls next().
-   * - if the specified id is invalid, it sends an InvalidDocumentIdError
+   * - if the specified id is invalid, it sends an InvalidTargetDocumentIdError
    * response. The id is invalid if it cannot be parsed to an integer.
    * - if the requested document has an access type that does not fit the
    * role of user making this request, this function sends a
    * ForbiddenOperationError response.
-   * - if the document belongs to a user that no longer exists, this function
-   * sends an OrphanedDocumentError response.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint.
    * @param {Response} res - An express Response object that will contain
    * the identified document, error messages, HTTP status codes etc.
-   * @param {Function} next - The next function or middleware in the callback
-   * stack of express.
    * @return {void}
    */
-  static getDocument(req, res, next) {
+  static getDocument(req, res) {
     const pathInfo = req.path.split('/');
     const documentIdString = pathInfo[1];
-
-    if (!documentIdString) {
-      next();
-      return;
-    }
 
     const documentId = Number(documentIdString);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
-          error: 'InvalidDocumentIdError'
+          message: 'The document id you supplied is not a valid number.',
+          error: 'InvalidTargetDocumentIdError'
         });
       return;
     }
 
-    const userId = req.decodedUserProfile.userId;
+    const id = req.decodedUserProfile.id;
     const roleId = req.decodedUserProfile.roleId;
 
     Document
       .findOne({
         where: {
           id: documentId
-        }
+        },
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
       })
       .then((foundDocument) => {
         if (foundDocument) {
           if (foundDocument.access === 'public') {
             res.status(200)
-              .json(foundDocument);
+              .json({
+                message: 'Document found.',
+                documents: [foundDocument]
+              });
             return;
           }
 
           if (foundDocument.access === 'private') {
-            if (userId === foundDocument.createdBy || roleId > 0) {
+            if (id === foundDocument.createdBy || roleId > 0) {
               res.status(200)
-                .json({ documents: [foundDocument] });
+                .json({
+                  message: 'Document found.',
+                  documents: [foundDocument]
+                });
             } else {
               res.status(403)
                 .json({
+                  message: 'You cannot access this document.',
                   error: 'ForbiddenOperationError'
                 });
             }
@@ -150,30 +131,27 @@ export default class DocumentsController {
                 attributes: ['id', 'roleId']
               })
               .then((foundAuthor) => {
-                // TODO: This is a hotfix. There should be a default action
-                // for documents whose author has unregistered/been deleted.
-                // Probably make delete them all.
                 if (foundAuthor) {
                   if (foundAuthor.roleId === roleId) {
                     res.status(200)
-                      .json(foundDocument);
+                      .json({
+                        message: 'Document found.',
+                        documents: [foundDocument]
+                      });
                   } else {
                     res.status(403)
                       .json({
+                        message: 'You cannot access this document.',
                         error: 'ForbiddenOperationError'
                       });
                   }
-                } else {
-                  res.status()
-                    .json({
-                      error: 'OrphanedDocumentError'
-                    });
                 }
               });
           }
         } else {
           res.status(404)
             .json({
+              message: 'The document you requested for doesn\'t exist.',
               error: 'NoDocumentsFoundError'
             });
         }
@@ -192,7 +170,7 @@ export default class DocumentsController {
     const limitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
     const limit = limitAndOffset.limit;
     const offset = limitAndOffset.offset;
-    const userId = req.decodedUserProfile.userId;
+    const id = req.decodedUserProfile.id;
 
     Document
       .findAll({
@@ -201,24 +179,26 @@ export default class DocumentsController {
         where: {
           $or: [
             { access: 'public' },
-            { createdBy: userId },
+            { createdBy: id },
           ]
         },
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
         limit,
         offset
       })
       .then((foundDocuments) => {
         res.status(200)
-          .json({ documents: foundDocuments });
+          .json({
+            message: 'Documents found.',
+            documents: foundDocuments
+          });
       });
   }
 
   /**
-   * Updates a document's content, access type, categories or tags. Before
+   * Updates a document's title, content, access type, categories or tags. Before
    * performing the update, this function checks that:
-   * - the HTTP request includes the id of the document that is to be updated.
-   * Else, it sends a DocumentIdNotSuppliedError response.
-   * - the included document id is valid, else it sends an InvalidDocumentIdError
+   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
    * response. A document id is invalid if it is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
@@ -233,22 +213,25 @@ export default class DocumentsController {
    */
   static updateDocument(req, res) {
     const userProfile = req.decodedUserProfile;
-    const updatedDocument = req.body;
+    const documentUpdate = req.body;
 
     const documentIdString = req.path.split('/')[1];
-    if (documentIdString === undefined || documentIdString === '') {
-      res.status(400)
-        .json({
-          error: 'DocumentIdNotSuppliedError'
-        });
-      return;
-    }
 
     const documentId = Number(documentIdString);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
-          error: 'InvalidDocumentIdError'
+          message: 'The document id you supplied is not a number.',
+          error: 'InvalidTargetDocumentIdError'
+        });
+      return;
+    }
+
+    if (!documentUpdate || _.isEqual(documentUpdate, {})) {
+      res.status(400)
+        .json({
+          message: 'You didn\'t supply any info for the update.',
+          error: 'EmptyDocumentBodyError'
         });
       return;
     }
@@ -257,43 +240,60 @@ export default class DocumentsController {
       .findById(documentId)
       .then((foundDocument) => {
         if (foundDocument) {
-          const updaterId = userProfile.userId;
+          const updaterId = userProfile.id;
           if (foundDocument.createdBy === updaterId) {
             const document = {};
-            if (updatedDocument.docContent) {
-              document.docContent = updatedDocument.docContent;
+            if (documentUpdate.title) {
+              document.title = documentUpdate.title;
             }
-            if (updatedDocument.access) {
-              document.access = updatedDocument.access;
+            if (documentUpdate.content) {
+              document.content = documentUpdate.content;
             }
-            if (updatedDocument.categories) {
-              document.categories = updatedDocument.categories;
+            if (documentUpdate.access) {
+              document.access = documentUpdate.access;
             }
-            if (updatedDocument.tags) {
-              document.tags = updatedDocument.tags;
+            if (documentUpdate.categories) {
+              document.categories = documentUpdate.categories;
+            }
+            if (documentUpdate.tags) {
+              document.tags = documentUpdate.tags;
             }
 
             Document
               .update(document, {
                 where: {
                   id: documentId
-                }
+                },
+                returning: true
               })
-              .then(() => {
+              .then((docs) => {
+                const updatedDocument = docs[1][0];
                 res.status(200)
                   .json({
-                    message: 'DocumentUpdateSucceeded'
+                    message: 'Document updated.',
+                    documents: [{
+                      id: updatedDocument.id,
+                      title: updatedDocument.title,
+                      content: updatedDocument.content,
+                      access: updatedDocument.access,
+                      categories: updatedDocument.categories,
+                      tags: updatedDocument.tags,
+                      createdAt: updatedDocument.createdAt,
+                      createdBy: updatedDocument.createdBy,
+                    }]
                   });
               });
           } else {
             res.status(403)
               .json({
+                message: 'Halt! You cannot modify this document.',
                 error: 'ForbiddenOperationError'
               });
           }
         } else {
           res.status(404)
             .json({
+              message: 'The document you tried to update doesn\'t exist.',
               error: 'TargetDocumentNotFoundError'
             });
         }
@@ -303,9 +303,7 @@ export default class DocumentsController {
   /**
    * Delete a document. Before performing the update, this function checks
    * that:
-   * - the HTTP request includes the id of the document that is to be deleted.
-   * Else, it sends a DocumentIdNotSuppliedError response.
-   * - the included document id is valid, else it sends an InvalidDocumentIdError
+   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
    * response. A document id is invalid if it is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
@@ -321,19 +319,13 @@ export default class DocumentsController {
   static deleteDocument(req, res) {
     const userProfile = req.decodedUserProfile;
     const documentIdString = req.path.split('/')[1];
-    if (documentIdString === undefined || documentIdString === '') {
-      res.status(400)
-        .json({
-          error: 'DocumentIdNotSuppliedError'
-        });
-      return;
-    }
 
     const documentId = Number(documentIdString);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
-          error: 'InvalidDocumentIdError'
+          message: 'The document id you supplied is not a number.',
+          error: 'InvalidTargetDocumentIdError'
         });
       return;
     }
@@ -342,7 +334,7 @@ export default class DocumentsController {
       .findById(documentId)
       .then((foundDocument) => {
         if (foundDocument) {
-          const deleterId = userProfile.userId;
+          const deleterId = userProfile.id;
           if (foundDocument.createdBy === deleterId || userProfile.roleId > 0) {
             Document
               .destroy({
@@ -353,18 +345,20 @@ export default class DocumentsController {
               .then(() => {
                 res.status(200)
                   .json({
-                    message: 'DocumentDeleteSucceeded'
+                    message: 'Document deleted.'
                   });
               });
           } else {
             res.status(403)
               .json({
+                message: 'Halt! You cannot modify this document.',
                 error: 'ForbiddenOperationError'
               });
           }
         } else {
           res.status(404)
             .json({
+              message: 'The document you tried to delete doesn\'t exist.',
               error: 'TargetDocumentNotFoundError'
             });
         }

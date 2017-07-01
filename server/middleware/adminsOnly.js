@@ -19,6 +19,7 @@ export default function adminsOnly(req, res, next) {
   } else {
     res.status(403)
       .json({
+        message: 'Sorry, you\'re not permitted to perform this action.',
         error: 'ForbiddenOperationError'
       });
   }

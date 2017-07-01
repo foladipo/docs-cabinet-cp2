@@ -6,7 +6,7 @@ import isValidAccessType from '../util/isValidAccessType';
  * original HTTP request.
  * @param {Response} res - An express Response object with the info this app
  * will send back to the user e.g error messages like MissingTitleError,
- * InvalidDocContentError etc.
+ * InvalidContentError etc.
  * @param {Function} next - The next function or middleware in the callback stack
  * of express.
  * @return {void}
@@ -18,6 +18,7 @@ export default function validateDocument(req, res, next) {
   if (!title) {
     res.status(400)
       .json({
+        message: 'Please enter the title of your document.',
         error: 'MissingTitleError'
       });
     return;
@@ -25,61 +26,70 @@ export default function validateDocument(req, res, next) {
   if (typeof title !== 'string') {
     res.status(400)
       .json({
+        message: 'Please enter a title with two or more non-whitespace characters.',
         error: 'InvalidTitleError'
       });
     return;
   }
-  const strippedTitle = title.replace(/\s/, '');
-  if (strippedTitle.length < 1) {
+  const strippedTitle = title.replace(/(\s+)/, '');
+  if (strippedTitle.length < 2) {
     res.status(400)
       .json({
+        message: 'Please enter a title with two or more non-whitespace characters.',
         error: 'InvalidTitleError'
       });
     return;
   }
 
-  const docContent = reqBody.docContent;
-  if (!docContent) {
+  const content = reqBody.content;
+  if (!content) {
     res.status(400)
       .json({
-        error: 'MissingDocContentError'
+        message: 'Please enter the content of your document.',
+        error: 'MissingContentError'
       });
     return;
   }
-  if (typeof docContent !== 'string') {
+  if (typeof content !== 'string') {
     res.status(400)
       .json({
-        error: 'InvalidDocContentError'
+        message: 'Please enter a document content with two or more non-whitespace characters.',
+        error: 'InvalidContentError'
       });
     return;
   }
-  const strippedDocContent = docContent.replace(/\s/, '');
-  if (strippedDocContent.length < 1) {
+  const strippedContent = content.replace(/(\s+)/, '');
+  if (strippedContent.length < 2) {
     res.status(400)
       .json({
-        error: 'InvalidDocContentError'
+        message: 'Please enter a document content with two or more non-whitespace characters.',
+        error: 'InvalidContentError'
       });
     return;
   }
 
-  const access = reqBody.access.toLowerCase();
+  const access = reqBody.access;
   if (!access) {
     res.status(400)
       .json({
+        message: 'Please enter an access type of \'public\', \'private\' or \'role\' for your document.',
         error: 'MissingAccessError'
       });
     return;
   }
-  if (typeof access !== 'string') {
+  const loweredAccess = access.toLowerCase();
+  if (typeof loweredAccess !== 'string') {
     res.status(400)
       .json({
+        message: 'Please enter an access type of \'public\', \'private\' or \'role\' for your document.',
         error: 'InvalidAccessError'
       });
     return;
   }
-  if (!isValidAccessType(access)) {
+  if (!isValidAccessType(loweredAccess)) {
     res.status(400)
       .json({
+        message: 'Please enter an access type of \'public\', \'private\' or \'role\' for your document.',
         error: 'InvalidAccessError'
       });
     return;
@@ -89,6 +99,7 @@ export default function validateDocument(req, res, next) {
   if (!categories) {
     res.status(400)
       .json({
+        message: 'Please enter the categories of your document.',
         error: 'MissingCategoriesError'
       });
     return;
@@ -96,14 +107,16 @@ export default function validateDocument(req, res, next) {
   if (typeof categories !== 'string') {
     res.status(400)
       .json({
+        message: 'Please enter categories with two or more non-whitespace characters.',
         error: 'InvalidCategoriesError'
       });
     return;
   }
-  const strippedCategories = categories.replace(/\s/, '');
-  if (strippedCategories.length < 1) {
+  const strippedCategories = categories.replace(/(\s+)/, '');
+  if (strippedCategories.length < 2) {
     res.status(400)
       .json({
+        message: 'Please enter categories with two or more non-whitespace characters.',
         error: 'InvalidCategoriesError'
       });
     return;
@@ -113,6 +126,7 @@ export default function validateDocument(req, res, next) {
   if (!tags) {
     res.status(400)
       .json({
+        message: 'Please enter the tags of your document.',
         error: 'MissingTagsError'
       });
     return;
@@ -120,14 +134,16 @@ export default function validateDocument(req, res, next) {
   if (typeof tags !== 'string') {
     res.status(400)
       .json({
+        message: 'Please enter tags with two or more non-whitespace characters.',
         error: 'InvalidTagsError'
       });
     return;
   }
-  const strippedTags = tags.replace(/\s/, '');
-  if (strippedTags.length < 1) {
+  const strippedTags = tags.replace(/(\s+)/, '');
+  if (strippedTags.length < 2) {
     res.status(400)
       .json({
+        message: 'Please enter tags with two or more non-whitespace characters.',
         error: 'InvalidTagsError'
       });
     return;

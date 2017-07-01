@@ -14,7 +14,7 @@ const usersRouter = express.Router();
  *     type: object
  *     required:
  *        - title
- *        - docContent
+ *        - content
  *        - access
  *        - categories
  *        - tags
@@ -22,7 +22,7 @@ const usersRouter = express.Router();
  *     properties:
  *       title:
  *         type: string
- *       docContent:
+ *       content:
  *         type: string
  *       access:
  *         type: string
@@ -42,14 +42,14 @@ const usersRouter = express.Router();
  *   NewUser:
  *     type: object
  *     required:
- *       - userId
+ *       - id
  *       - username
  *       - password
  *       - firstName
  *       - lastName
  *       - roleId
  *     properties:
- *       userId:
+ *       id:
  *         type: integer
  *       username:
  *         type: string
@@ -176,7 +176,7 @@ usersRouter.route('/:id')
    *           items:
    *             $ref: '#/definitions/NewUser'
    */
-  .get(validateToken, adminsOnly, UsersController.getUser)
+  .get(validateToken, ownerOrAdminsOnly, UsersController.getUser)
   /**
    * @swagger
    * /api/users/<id>:
@@ -203,7 +203,7 @@ usersRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .put(validateToken, UsersController.updateUserProfile)
+  .put(validateToken, ownerOrAdminsOnly, UsersController.updateUserProfile)
   /**
    * @swagger
    * /api/users/<id>:
@@ -230,7 +230,7 @@ usersRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .delete(validateToken, UsersController.deleteUser);
+  .delete(validateToken, ownerOrAdminsOnly, UsersController.deleteUser);
 
 usersRouter.route('/:id/documents')
   /**

@@ -17,16 +17,20 @@ export default function adminsOnly(req, res, next) {
   const targetUserId = Number(path.split('/')[1]);
   if (Number.isNaN(targetUserId)) {
     res.status(400)
-      .json({ error: 'InvalidTargetUserIdError' });
+      .json({
+        message: 'The user id you supplied is not a number.',
+        error: 'InvalidTargetUserIdError'
+      });
     return;
   }
 
   const user = req.decodedUserProfile;
-  const userId = user.userId;
+  const id = user.id;
   const roleId = user.roleId;
-  if (roleId < 1 && userId !== targetUserId) {
+  if (roleId < 1 && id !== targetUserId) {
     res.status(403)
       .json({
+        message: 'Sorry, you\'re not permitted perform this action.',
         error: 'ForbiddenOperationError'
       });
     return;

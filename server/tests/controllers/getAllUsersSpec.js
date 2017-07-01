@@ -14,7 +14,7 @@ const getAllUsersEndpoint = '/api/users';
 
 describe('When it receives a GET request, the /api/users endpoint', () => {
   const regularUserProfile = {
-    userId: 0,
+    id: 0,
     firstName: 'Lagbaja',
     lastName: 'Anonymous',
     username: 'foo@example.com',
@@ -22,7 +22,7 @@ describe('When it receives a GET request, the /api/users endpoint', () => {
   };
 
   const adminUserProfile = {
-    userId: Number(process.env.DEFAULT_ADMIN_USER_USERID),
+    id: Number(process.env.DEFAULT_ADMIN_USER_USERID),
     firstName: process.env.DEFAULT_ADMIN_USER_FIRSTNAME,
     lastName: process.env.DEFAULT_ADMIN_USER_LASTNAME,
     username: process.env.DEFAULT_ADMIN_USER_USERNAME,
@@ -73,6 +73,7 @@ describe('When it receives a GET request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted to perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });
