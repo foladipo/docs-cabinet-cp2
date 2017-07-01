@@ -3,12 +3,12 @@ import User from '../models/User';
 
 /**
  * Validates the token supplied to any HTTP request to a given route, before
- * passing on the request to the route itself. It validates the request's
- * token by ensuring that the request:
+ * passing on the request to the route itself. It validates the request
+ * by ensuring that the request:
  * - includes a token.
  * - includes a valid token that was signed by this app.
  * - includes a valid token for a user that is actually registered with this
- * app. For example, a token was signed by this app for a certain user,
+ * app. For example, a token could have been signed by this app for a certain user,
  * but the user subsequently deleted his/her account. This function ensures
  * that in such an event, the previously generated token is not accepted as valid.
  * @param {Request} req - An express Request object with data about the
@@ -26,6 +26,7 @@ export default function validateToken(req, res, next) {
   if (token === undefined) {
     res.status(400)
       .json({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'MissingTokenError'
       });
     return;
@@ -33,6 +34,7 @@ export default function validateToken(req, res, next) {
   if (token === '') {
     res.status(400)
       .json({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'EmptyTokenError'
       });
     return;
@@ -45,11 +47,13 @@ export default function validateToken(req, res, next) {
     if (errorType === 'TokenExpiredError') {
       res.status(401)
         .json({
+          message: 'Your identification token is expired. Please sign in to get a new one.',
           error: 'ExpiredTokenError'
         });
     } else {
       res.status(401)
       .json({
+        message: 'Your token is invalid. Please sign in to get a new one.',
         error: 'InvalidTokenError'
       });
     }
@@ -72,6 +76,7 @@ export default function validateToken(req, res, next) {
       } else {
         res.status(401)
           .json({
+            message: 'Sorry, you don\'t have an account. Please create one.',
             error: 'NonExistentUserError'
           });
       }

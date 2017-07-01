@@ -52,6 +52,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a first name with at least two non-whitespace characters.',
         error: 'MissingFirstNameError'
       }, done);
   });
@@ -69,12 +70,13 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a first name with at least two non-whitespace characters.',
         error: 'EmptyFirstNameError'
       }, done);
   });
 
   const invalidFirstName = {
-    firstName: '2',
+    firstName: 'k',
     lastName: newLastName,
     username: newUsername,
     password: newPassword
@@ -86,6 +88,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a first name with at least two non-whitespace characters.',
         error: 'InvalidFirstNameError'
       }, done);
   });
@@ -102,6 +105,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a last name with at least two non-whitespace characters.',
         error: 'MissingLastNameError'
       }, done);
   });
@@ -119,6 +123,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a last name with at least two non-whitespace characters.',
         error: 'EmptyLastNameError'
       }, done);
   });
@@ -136,6 +141,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a last name with at least two non-whitespace characters.',
         error: 'InvalidLastNameError'
       }, done);
   });
@@ -152,6 +158,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a valid email.',
         error: 'MissingUsernameError'
       }, done);
   });
@@ -169,6 +176,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a valid email.',
         error: 'EmptyUsernameError'
       }, done);
   });
@@ -187,6 +195,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a valid email.',
         error: 'InvalidUsernameError'
       }, done);
   });
@@ -204,6 +213,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'This email is taken. Please use another one.',
         error: 'UserExistsError'
       }, done);
   });
@@ -220,6 +230,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a strong password to sign up.',
         error: 'MissingPasswordError'
       }, done);
   });
@@ -237,6 +248,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a strong password to sign up.',
         error: 'EmptyPasswordError'
       }, done);
   });
@@ -254,6 +266,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a strong password to sign up.',
         error: 'InvalidPasswordError'
       }, done);
   });

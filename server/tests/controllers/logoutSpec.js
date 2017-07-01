@@ -15,6 +15,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'MissingTokenError'
       }, done);
   });
@@ -27,6 +28,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'EmptyTokenError'
       }, done);
   });
@@ -39,6 +41,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
+        message: 'Your token is invalid. Please sign in to get a new one.',
         error: 'InvalidTokenError'
       }, done);
   });
@@ -59,6 +62,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
+        message: 'Your identification token is expired. Please sign in to get a new one.',
         error: 'ExpiredTokenError'
       }, done);
   });
@@ -82,7 +86,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .expect({
-        message: 'LogoutSucceeded'
+        message: 'You\'re now logged out.'
       }, done);
   });
 });

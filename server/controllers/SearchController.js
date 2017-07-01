@@ -34,6 +34,7 @@ export default class SearchController {
     if (userQuery === undefined || userQuery === '') {
       res.status(400)
         .json({
+          message: 'Yikes! You didn\'t supply a search query.',
           error: 'UserQueryNotSuppliedError'
         });
       return;
@@ -85,6 +86,7 @@ export default class SearchController {
     if (documentTitleQuery === undefined || documentTitleQuery === '') {
       res.status(400)
         .json({
+          message: 'Yikes! You didn\'t supply a search query.',
           error: 'DocumentQueryNotSuppliedError'
         });
       return;

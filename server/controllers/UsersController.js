@@ -61,18 +61,21 @@ export default class UsersController {
                 };
                 const token = JWT.sign(userDetails, process.env.JWT_PRIVATE_KEY, { expiresIn: '3d' });
                 res.status(200).json({
-                  user: userDetails,
-                  token
+                  message: 'Logged in successfully.',
+                  token,
+                  user: userDetails
                 });
               } else {
                 res.status(400)
                   .json({
+                    message: 'Nope. That\'s not the correct password.',
                     error: 'IncorrectPasswordError'
                   });
               }
             } else {
               res.status(400)
                 .json({
+                  message: 'Yikes! You don\'t have an account yet. Please sign up, or check your login details.',
                   error: 'NonExistentUserError'
                 });
             }
@@ -80,12 +83,14 @@ export default class UsersController {
         } else {
           res.status(400)
             .json({
+              message: 'Please enter a valid email.',
               error: 'InvalidUsernameError'
             });
         }
       } else {
         res.status(400)
           .json({
+            message: 'Sorry, you need to enter your password.',
             error: 'MissingPasswordError'
           });
       }
@@ -93,12 +98,14 @@ export default class UsersController {
       if (!password) {
         res.status(400)
           .json({
+            message: 'Please enter your email and password to login.',
             error: 'MissingLoginDetailsError'
           });
         return;
       }
       res.status(400)
         .json({
+          message: 'Sorry, you need to enter your email.',
           error: 'MissingUsernameError'
         });
     }
@@ -115,7 +122,7 @@ export default class UsersController {
   static logout(req, res) {
     res.status(200)
       .json({
-        message: 'LogoutSucceeded'
+        message: 'You\'re now logged out.'
       });
   }
 
@@ -140,22 +147,26 @@ export default class UsersController {
   static signUp(req, res) {
     const reqBody = req.body;
 
+    // TODO: Move most of this validation logic to a middleware.
     const firstName = reqBody.firstName;
     if (firstName) {
       if (!isValidName(firstName)) {
         res.status(400)
           .json({
+            message: 'Please enter a first name with at least two non-whitespace characters.',
             error: 'InvalidFirstNameError'
           });
         return;
       }
     } else {
       let errorType = 'MissingFirstNameError';
+      const message = 'Please enter a first name with at least two non-whitespace characters.';
       if (firstName === '') {
         errorType = 'EmptyFirstNameError';
       }
       res.status(400)
         .json({
+          message,
           error: errorType
         });
       return;
@@ -166,17 +177,20 @@ export default class UsersController {
       if (!isValidName(lastName)) {
         res.status(400)
           .json({
+            message: 'Please enter a last name with at least two non-whitespace characters.',
             error: 'InvalidLastNameError'
           });
         return;
       }
     } else {
       let errorType = 'MissingLastNameError';
+      const message = 'Please enter a last name with at least two non-whitespace characters.';
       if (lastName === '') {
         errorType = 'EmptyLastNameError';
       }
       res.status(400)
         .json({
+          message,
           error: errorType
         });
       return;
@@ -187,17 +201,20 @@ export default class UsersController {
       if (!isValidEmail(username)) {
         res.status(400)
           .json({
+            message: 'Please enter a valid email.',
             error: 'InvalidUsernameError'
           });
         return;
       }
     } else {
       let errorType = 'MissingUsernameError';
+      const message = 'Please enter a valid email.';
       if (username === '') {
         errorType = 'EmptyUsernameError';
       }
       res.status(400)
         .json({
+          message,
           error: errorType
         });
       return;
@@ -208,17 +225,20 @@ export default class UsersController {
       if (!isValidPassword(password)) {
         res.status(400)
           .json({
+            message: 'Please enter a strong password to sign up.',
             error: 'InvalidPasswordError'
           });
         return;
       }
     } else {
       let errorType = 'MissingPasswordError';
+      const message = 'Please enter a strong password to sign up.';
       if (password === '') {
         errorType = 'EmptyPasswordError';
       }
       res.status(400)
         .json({
+          message,
           error: errorType
         });
       return;
@@ -234,6 +254,7 @@ export default class UsersController {
         if (user) {
           res.status(400)
           .json({
+            message: 'This email is taken. Please use another one.',
             error: 'UserExistsError'
           });
         } else {
@@ -259,6 +280,7 @@ export default class UsersController {
               };
               const token = JWT.sign(userDetails, process.env.JWT_PRIVATE_KEY, { expiresIn: '3d' });
               res.status(200).json({
+                message: 'Signed up successfully.',
                 user: userDetails,
                 token
               });
@@ -291,6 +313,7 @@ export default class UsersController {
     if (targetUserIdString === undefined || targetUserIdString === '') {
       res.status(400)
         .json({
+          message: 'Please supply the id of the account you want to update.',
           error: 'UserIdNotSuppliedError'
         });
       return;
@@ -300,6 +323,7 @@ export default class UsersController {
     if (Number.isNaN(targetUserId)) {
       res.status(400)
         .json({
+          message: 'The user id you supplied is not a number.',
           error: 'InvalidUserIdError'
         });
       return;
@@ -309,6 +333,7 @@ export default class UsersController {
       && profileOfUpdater.roleId < 1) {
       res.status(403)
         .json({
+          message: 'You\'re not permitted to update this account.',
           error: 'ForbiddenOperationError'
         });
       return;
@@ -342,7 +367,7 @@ export default class UsersController {
       if (rowsAffected > 0) {
         res.status(200)
           .json({
-            message: 'Profile updated',
+            message: 'Account updated.',
             users: [{
               id: updatedProfile.id,
               firstName: updatedProfile.firstName,
@@ -354,6 +379,7 @@ export default class UsersController {
       } else {
         res.status(404)
           .json({
+            message: 'The account you tried to update doesn\'t exist.',
             error: 'TargetUserNotFoundError'
           });
       }
@@ -387,6 +413,7 @@ export default class UsersController {
     if (targetUserIdString === undefined || targetUserIdString === '') {
       res.status(400)
         .json({
+          message: 'Please supply the id of the account you want to modify.',
           error: 'UserIdNotSuppliedError'
         });
       return;
@@ -396,6 +423,7 @@ export default class UsersController {
     if (Number.isNaN(targetUserId)) {
       res.status(400)
         .json({
+          message: 'The user id you supplied is not a number.',
           error: 'InvalidUserIdError'
         });
       return;
@@ -412,11 +440,12 @@ export default class UsersController {
           if (userCount > 0) {
             res.status(200)
               .json({
-                message: 'UserDeletionSucceeded'
+                message: 'It\'s a pity, but you successfully deleted that account.'
               });
           } else {
             res.status(404)
               .json({
+                message: 'The account you tried to delete doesn\'t exist.',
                 error: 'TargetUserNotFoundError'
               });
           }
@@ -441,11 +470,12 @@ export default class UsersController {
                   if (userCount > 0) {
                     res.status(200)
                       .json({
-                        message: 'UserDeletionSucceeded'
+                        message: 'It\'s a pity, but you successfully deleted that account.'
                       });
                   } else {
                     res.status(404)
                       .json({
+                        message: 'The account you tried to delete doesn\'t exist.',
                         error: 'TargetUserNotFoundError'
                       });
                   }
@@ -453,12 +483,14 @@ export default class UsersController {
             } else {
               res.status(403)
                 .json({
+                  message: 'You\'re not permitted to modify this account.',
                   error: 'ForbiddenOperationError'
                 });
             }
           } else {
             res.status(404)
               .json({
+                message: 'The account you tried to delete doesn\'t exist.',
                 error: 'TargetUserNotFoundError'
               });
           }
@@ -469,14 +501,8 @@ export default class UsersController {
   /**
    * Returns all the documents for the user identified by a certain id. Some
    * details about this function's behaviour are:
-   * - if a user id isn't supplied in the request's path or this isn't a
-   * request for the documents path, this function calls the next middleware
-   * function in the callback stack.
    * - if the id is not a valid integer, it returns an InvalidUserIdError
    * response.
-   * - if the id is valid but the path after it isn't 'documents', it returns
-   * a UnrecognizedPathError response. That is, the request must be made to
-   * `/api/users/<id>/documents`.
    * - if the id and path are valid but the id belongs to a non-existing user,
    * it sends a TargetUserNotFoundError response.
    * - if the user with the given id hasn't created any documents, it sends
@@ -486,33 +512,18 @@ export default class UsersController {
    * @param {Response} res - An express Response object with the info this app
    * will send back to the user e.g a list of a user's documents, error,
    * messages like InvalidUserIdError, UnrecognizedPathError etc.
-   * @param {Function} next - The next function or middleware in the callback stack
-   * of express.
    * @return {void}
    */
-  static getUserDocuments(req, res, next) {
+  static getUserDocuments(req, res) {
     const pathInfo = req.path.split('/');
     const idString = pathInfo[1];
-    const documentPath = pathInfo[2];
-
-    if (!(idString && documentPath)) {
-      next();
-      return;
-    }
 
     const id = Number(idString);
     if (Number.isNaN(id)) {
       res.status(400)
         .json({
+          message: 'The user id you supplied is not a number.',
           error: 'InvalidUserIdError'
-        });
-      return;
-    }
-
-    if (documentPath !== 'documents') {
-      res.status(400)
-        .json({
-          error: 'UnrecognizedPathError'
         });
       return;
     }
@@ -534,25 +545,23 @@ export default class UsersController {
               const docs = docsAndMetadata.map(doc => doc.dataValues);
               res.status(200)
                 .json({
+                  message: 'Documents found.',
                   documents: docs
                 });
             });
         } else {
           res.status(404)
             .json({
+              message: 'The account you asked for doesn\'t exist.',
               error: 'TargetUserNotFoundError'
             });
         }
       });
   }
 
-  // TODO: Shouldn't users be able to get their own profile? Or should I
-  // create a separate endpoint for that?
   /**
    * Returns the profile of the user with a particular id. Other details about this
    * function's behaviour are:
-   * - if a user id isn't supplied in the request's path, this function calls
-   * the next middleware function in the callback stack.
    * - if the id is not a valid integer, it returns an InvalidUserIdError
    * response.
    * - if the id belongs to a non-existing user, it returns a TargetUserNotFoundError.
@@ -561,23 +570,17 @@ export default class UsersController {
    * @param {Response} res - An express Response object with the info this app
    * will send back to the user e.g a user's profile, error messages like
    * TargetUserNotFoundError, InvalidUserIdError etc.
-   * @param {Function} next - The next function or middleware in the callback stack
-   * of express.
    * @return {void}
    */
-  static getUser(req, res, next) {
+  static getUser(req, res) {
     const pathInfo = req.path.split('/');
     const idString = pathInfo[1];
-
-    if (!idString) {
-      next();
-      return;
-    }
 
     const id = Number(idString);
     if (Number.isNaN(id)) {
       res.status(400)
         .json({
+          message: 'The user id you supplied is not a number.',
           error: 'InvalidUserIdError'
         });
       return;
@@ -596,11 +599,13 @@ export default class UsersController {
           };
           res.status(200)
             .json({
+              message: 'User found.',
               users: [profile]
             });
         } else {
           res.status(404)
             .json({
+              message: 'The account you asked for doesn\'t exist.',
               error: 'TargetUserNotFoundError'
             });
         }
@@ -646,7 +651,10 @@ export default class UsersController {
           roleId: user.roleId
         }));
         res.status(200)
-          .json({ users: results });
+          .json({
+            message: 'Users found.',
+            users: results
+          });
       });
   }
 }

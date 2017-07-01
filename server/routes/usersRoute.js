@@ -176,7 +176,7 @@ usersRouter.route('/:id')
    *           items:
    *             $ref: '#/definitions/NewUser'
    */
-  .get(validateToken, adminsOnly, UsersController.getUser)
+  .get(validateToken, ownerOrAdminsOnly, UsersController.getUser)
   /**
    * @swagger
    * /api/users/<id>:
@@ -203,7 +203,7 @@ usersRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .put(validateToken, UsersController.updateUserProfile)
+  .put(validateToken, ownerOrAdminsOnly, UsersController.updateUserProfile)
   /**
    * @swagger
    * /api/users/<id>:
@@ -230,7 +230,7 @@ usersRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .delete(validateToken, UsersController.deleteUser);
+  .delete(validateToken, ownerOrAdminsOnly, UsersController.deleteUser);
 
 usersRouter.route('/:id/documents')
   /**

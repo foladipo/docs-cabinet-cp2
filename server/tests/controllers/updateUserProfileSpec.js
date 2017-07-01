@@ -73,6 +73,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'MissingTokenError'
       }, done);
   });
@@ -85,6 +86,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'EmptyTokenError'
       }, done);
   });
@@ -97,6 +99,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
+        message: 'Your token is invalid. Please sign in to get a new one.',
         error: 'InvalidTokenError'
       }, done);
   });
@@ -117,6 +120,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
+        message: 'Your identification token is expired. Please sign in to get a new one.',
         error: 'ExpiredTokenError'
       }, done);
   });
@@ -142,7 +146,8 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
-        error: 'InvalidUserIdError'
+        message: 'The user id you supplied is not a number.',
+        error: 'InvalidTargetUserIdError'
       }, done);
   });
 
@@ -154,6 +159,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });
@@ -221,7 +227,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
         if (err) throw new Error(err);
         const body = res.body;
         expect(Array.isArray(body.users)).to.equal(true);
-        expect(body.message).to.equal('Profile updated');
+        expect(body.message).to.equal('Account updated.');
         done();
       });
   });

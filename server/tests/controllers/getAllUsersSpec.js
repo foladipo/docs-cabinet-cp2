@@ -73,6 +73,7 @@ describe('When it receives a GET request, the /api/users endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted to perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });

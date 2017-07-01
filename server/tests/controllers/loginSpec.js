@@ -21,6 +21,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter your email and password to login.',
         error: 'MissingLoginDetailsError'
       }, done);
   });
@@ -36,6 +37,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Sorry, you need to enter your email.',
         error: 'MissingUsernameError'
       }, done);
   });
@@ -51,6 +53,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Sorry, you need to enter your password.',
         error: 'MissingPasswordError'
       }, done);
   });
@@ -66,6 +69,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Please enter a valid email.',
         error: 'InvalidUsernameError'
       }, done);
   });
@@ -81,6 +85,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Yikes! You don\'t have an account yet. Please sign up, or check your login details.',
         error: 'NonExistentUserError'
       }, done);
   });
@@ -96,6 +101,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
+        message: 'Nope. That\'s not the correct password.',
         error: 'IncorrectPasswordError'
       }, done);
   });

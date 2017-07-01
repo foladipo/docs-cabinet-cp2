@@ -73,6 +73,7 @@ describe('When it receives a GET request, the /api/users/<id> endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(403)
       .expect({
+        message: 'Sorry, you\'re not permitted to perform this action.',
         error: 'ForbiddenOperationError'
       }, done);
   });
@@ -89,7 +90,8 @@ describe('When it receives a GET request, the /api/users/<id> endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(400)
       .expect({
-        error: 'InvalidUserIdError'
+        message: 'The user id you supplied is not a number.',
+        error: 'InvalidTargetUserIdError'
       }, done);
   });
 
@@ -100,6 +102,7 @@ describe('When it receives a GET request, the /api/users/<id> endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(404)
       .expect({
+        message: 'The account you asked for doesn\'t exist.',
         error: 'TargetUserNotFoundError'
       }, done);
   });

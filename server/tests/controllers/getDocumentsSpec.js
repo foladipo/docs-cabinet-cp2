@@ -14,6 +14,7 @@ describe('When a user GET\'s it, the /api/documents endpoint', () => {
     request.get(documentsEndpoint)
       .expect(400)
       .expect({
+        message: 'We don\'t recognize you. Please send your identification token with the next request.',
         error: 'MissingTokenError'
       }, done);
   });
@@ -23,6 +24,7 @@ describe('When a user GET\'s it, the /api/documents endpoint', () => {
       .set('x-docs-cabinet-authentication', 'SOME_RANDOM_INCORRECT_TOKEN')
       .expect(401)
       .expect({
+        message: 'Your token is invalid. Please sign in to get a new one.',
         error: 'InvalidTokenError'
       }, done);
   });
