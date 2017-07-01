@@ -54,7 +54,7 @@ export default class SearchController {
       })
       .then((foundUsers) => {
         res.status(200).json({
-          message: 'Users found',
+          message: 'Users found.',
           users: foundUsers
         });
       });
@@ -92,7 +92,7 @@ export default class SearchController {
       return;
     }
 
-    // TODO: Add code for when access = 'role'.
+    // TODO: Add code for when access === 'role'.
     Document
       .findAll({
         where: {
@@ -108,7 +108,7 @@ export default class SearchController {
       })
       .then((foundDocuments) => {
         res.status(200).json({
-          message: 'Documents found',
+          message: 'Documents found.',
           documents: foundDocuments
         });
       });
