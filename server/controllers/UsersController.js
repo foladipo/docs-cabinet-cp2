@@ -342,6 +342,7 @@ export default class UsersController {
       if (rowsAffected > 0) {
         res.status(200)
           .json({
+            message: 'Profile updated',
             users: [{
               userId: updatedProfile.id,
               firstName: updatedProfile.firstName,
@@ -525,7 +526,7 @@ export default class UsersController {
               where: {
                 createdBy: userId
               },
-              attributes: ['title', 'docContent', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+              attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
               order: [['createdAt', 'DESC']],
               returning: true
             })

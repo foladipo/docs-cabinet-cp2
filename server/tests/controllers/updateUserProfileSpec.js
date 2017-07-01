@@ -221,7 +221,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
         if (err) throw new Error(err);
         const body = res.body;
         expect(Array.isArray(body.users)).to.equal(true);
-        expect(body.users[0].password).to.not.equal(undefined);
+        expect(body.message).to.equal('Profile updated');
         done();
       });
   });

@@ -30,7 +30,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
 
   const dummyDocument = {
     title: 'Test document',
-    docContent: 'Lorem ipsum',
+    content: 'Lorem ipsum',
     access: 'public',
     categories: 'random',
     tags: 'random',

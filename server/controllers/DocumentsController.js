@@ -31,7 +31,7 @@ export default class DocumentsController {
   static createDocument(req, res) {
     const reqBody = req.body;
     const title = reqBody.title;
-    const docContent = reqBody.docContent;
+    const content = reqBody.content;
     const access = reqBody.access.toLowerCase();
     const categories = reqBody.categories;
     const tags = reqBody.tags;
@@ -55,7 +55,7 @@ export default class DocumentsController {
 
         const newDocument = {
           title,
-          docContent,
+          content,
           access,
           categories,
           tags,
@@ -69,7 +69,7 @@ export default class DocumentsController {
                 message: 'DocumentCreationSucceeded',
                 documents: [{
                   title: createdDocument.title,
-                  docContent: createdDocument.docContent,
+                  content: createdDocument.content,
                   access: createdDocument.access,
                   categories: createdDocument.categories,
                   tags: createdDocument.tags,
@@ -127,7 +127,7 @@ export default class DocumentsController {
         where: {
           id: documentId
         },
-        attributes: ['title', 'docContent', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
+        attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
       })
       .then((foundDocument) => {
         if (foundDocument) {
@@ -213,7 +213,7 @@ export default class DocumentsController {
             { createdBy: userId },
           ]
         },
-        attributes: ['title', 'docContent', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+        attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
         limit,
         offset
       })
@@ -270,8 +270,8 @@ export default class DocumentsController {
           const updaterId = userProfile.userId;
           if (foundDocument.createdBy === updaterId) {
             const document = {};
-            if (updatedDocument.docContent) {
-              document.docContent = updatedDocument.docContent;
+            if (updatedDocument.content) {
+              document.content = updatedDocument.content;
             }
             if (updatedDocument.access) {
               document.access = updatedDocument.access;

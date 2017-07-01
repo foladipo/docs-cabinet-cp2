@@ -6,7 +6,7 @@ import isValidAccessType from '../util/isValidAccessType';
  * original HTTP request.
  * @param {Response} res - An express Response object with the info this app
  * will send back to the user e.g error messages like MissingTitleError,
- * InvalidDocContentError etc.
+ * InvalidContentError etc.
  * @param {Function} next - The next function or middleware in the callback stack
  * of express.
  * @return {void}
@@ -38,26 +38,26 @@ export default function validateDocument(req, res, next) {
     return;
   }
 
-  const docContent = reqBody.docContent;
-  if (!docContent) {
+  const content = reqBody.content;
+  if (!content) {
     res.status(400)
       .json({
-        error: 'MissingDocContentError'
+        error: 'MissingContentError'
       });
     return;
   }
-  if (typeof docContent !== 'string') {
+  if (typeof content !== 'string') {
     res.status(400)
       .json({
-        error: 'InvalidDocContentError'
+        error: 'InvalidContentError'
       });
     return;
   }
-  const strippedDocContent = docContent.replace(/\s/, '');
-  if (strippedDocContent.length < 1) {
+  const strippedContent = content.replace(/\s/, '');
+  if (strippedContent.length < 1) {
     res.status(400)
       .json({
-        error: 'InvalidDocContentError'
+        error: 'InvalidContentError'
       });
     return;
   }

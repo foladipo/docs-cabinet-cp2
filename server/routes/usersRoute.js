@@ -14,7 +14,7 @@ const usersRouter = express.Router();
  *     type: object
  *     required:
  *        - title
- *        - docContent
+ *        - content
  *        - access
  *        - categories
  *        - tags
@@ -22,7 +22,7 @@ const usersRouter = express.Router();
  *     properties:
  *       title:
  *         type: string
- *       docContent:
+ *       content:
  *         type: string
  *       access:
  *         type: string

@@ -52,7 +52,10 @@ export default class SearchController {
         offset
       })
       .then((foundUsers) => {
-        res.status(200).json(foundUsers);
+        res.status(200).json({
+          message: 'Users found',
+          users: foundUsers
+        });
       });
   }
 
@@ -96,11 +99,15 @@ export default class SearchController {
             { access: 'private', createdBy: userProfile.userId }
           ]
         },
+        attributes: ['title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
         limit,
         offset
       })
       .then((foundDocuments) => {
-        res.status(200).json(foundDocuments);
+        res.status(200).json({
+          message: 'Documents found',
+          documents: foundDocuments
+        });
       });
   }
 }
