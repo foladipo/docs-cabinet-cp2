@@ -29,6 +29,7 @@ class DashboardContainer extends React.Component {
     this.logout = this.logout.bind(this);
   }
 
+  // TODO: Move this to DashboardPage.
   /**
    * Called immediately after this Component is mounted.
    * @return {null} - Returns nothing.
@@ -81,7 +82,7 @@ class DashboardContainer extends React.Component {
       Materialize.toast(this.props.documents.statusMessage, 3000);
     }
 
-    const trigger = <Button>Menu<Icon left>menu</Icon></Button>;
+    const trigger = <Button className="dashboard-menu-btn">Menu<Icon left>menu</Icon></Button>;
 
     return (
       <div className="authenticated-user-area grey lighten-3">
@@ -119,7 +120,7 @@ class DashboardContainer extends React.Component {
           <li>
             <NavLink
               to="/dashboard/users"
-              activeClassName="teal-text disabled"
+              activeClassName="teal lighten-2 white-text disabled"
             >
               <Icon left>people</Icon>
               Users
@@ -130,7 +131,7 @@ class DashboardContainer extends React.Component {
         </SideNav>
 
         <Switch>
-          <Route path="/dashboard/users" component={UsersPage} />
+          <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
           <Route exact path="*" render={() => <DashboardPage {...this.props} />} />
         </Switch>
       </div>

@@ -25,7 +25,10 @@ const store = createStore(
       token,
       user,
       signUpError: '',
-      loginError: ''
+      loginError: '',
+      allUsers: [],
+      status: '',
+      statusMessage: ''
     },
     documents: {
       count: 0,
