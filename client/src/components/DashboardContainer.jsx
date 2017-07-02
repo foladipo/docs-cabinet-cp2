@@ -3,6 +3,7 @@ import { Button, Icon, Modal, SideNav, SideNavItem } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
+import uuid from 'uuid';
 import { fetchUserDocuments } from '../actions/DocumentActions';
 import { logout } from '../actions/UserActions';
 import DashboardPage from './DashboardPage';
@@ -26,6 +27,7 @@ class DashboardContainer extends React.Component {
     };
 
     this.startDocumentsFetch = this.startDocumentsFetch.bind(this);
+    this.getAdminSection = this.getAdminSection.bind(this);
     this.logout = this.logout.bind(this);
   }
 
@@ -36,6 +38,28 @@ class DashboardContainer extends React.Component {
    */
   componentDidMount() {
     this.startDocumentsFetch();
+  }
+
+  /**
+   * Renders menu options that are meant for admin users only.
+   * @return {Array|null} - Returns an array of Components to render, or null
+   * if the current user is not an admin.
+   */
+  getAdminSection() {
+    if (this.props.user.user.roleId > 0) {
+      return [
+        (<li key={uuid.v4()}>
+          <NavLink
+            to="/dashboard/users"
+            activeClassName="teal lighten-2 white-text disabled"
+          >
+            <Icon left>people</Icon>
+            Users
+          </NavLink>
+        </li>),
+        (<SideNavItem divider key={uuid.v4()} />)
+      ];
+    }
   }
 
   /**
@@ -117,16 +141,7 @@ class DashboardContainer extends React.Component {
             </Modal>
           </SideNavItem>
           <SideNavItem divider />
-          <li>
-            <NavLink
-              to="/dashboard/users"
-              activeClassName="teal lighten-2 white-text disabled"
-            >
-              <Icon left>people</Icon>
-              Users
-            </NavLink>
-          </li>
-          <SideNavItem divider />
+          {this.getAdminSection()}
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
 
