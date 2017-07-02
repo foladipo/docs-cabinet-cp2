@@ -15,7 +15,7 @@ export default function RootContainer() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={AuthenticationPage} />
-        <AuthenticatedRoute exact path="/dashboard" component={DashboardContainer} />
+        <AuthenticatedRoute path="/dashboard*" component={DashboardContainer} />
         <AuthenticatedRoute exact path="*" component={NotFound} />
       </Switch>
     </BrowserRouter>
