@@ -52,12 +52,12 @@ class UsersPage extends Component {
         </div>
         <div
           className={
-            this.props.user.statusMessage === 'fetchingAllUsers' ||
-            this.props.user.statusMessage === 'fetchAllUsersFailed' ? '' : 'hide'
+            this.props.user.status === 'fetchingAllUsers' ||
+            this.props.user.status === 'fetchAllUsersFailed' ? '' : 'hide'
           }
         >
           <h3>{this.props.user.statusMessage}</h3>
-          <div className={this.props.user.statusMessage === 'fetchingAllUsers' ? '' : 'hide'}>
+          <div className={this.props.user.status === 'fetchingAllUsers' ? '' : 'hide'}>
             <Preloader flashing className="center-align" />
           </div>
         </div>
