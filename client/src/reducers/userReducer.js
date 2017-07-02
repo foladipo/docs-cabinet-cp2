@@ -79,7 +79,7 @@ export default function userReducer(state, action) {
 
     case FETCH_ALL_USERS_FULFILLED:
       newState.status = 'fetchedAllUsers';
-      newState.statusMessage = 'Successfully fetched users.';
+      newState.statusMessage = action.payload.users.length > 0 ? 'Successfully fetched users.' : 'Oops! There are no users yet.';
       newState.allUsers = state.allUsers.concat(action.payload.users);
       break;
 
