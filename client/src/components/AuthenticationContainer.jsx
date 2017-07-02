@@ -7,13 +7,13 @@ import LoginContainer from './LoginContainer';
 import SignUpContainer from './SignUpContainer';
 
 /**
- * AuthenticationPage - Renders an authentication page for a user
+ * AuthenticationContainer - Renders an authentication page for a user
  * to either sign up or login.
  * @param {Object} props - The data passed to this component from its parent.
  * @return {Component|null} - Returns the React Component to be rendered or
  * null if nothing is to be rendered.
  */
-function AuthenticationPage(props) {
+function AuthenticationContainer(props) {
   if (props.user.isLoggedIn) {
     $('#loginModal').modal('close');
     $('#signUpModal').modal('close');
@@ -66,8 +66,8 @@ const mapStateToProps = storeState => ({
   user: storeState.user
 });
 
-AuthenticationPage.propTypes = {
+AuthenticationContainer.propTypes = {
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default connect(mapStateToProps)(AuthenticationPage);
+export default connect(mapStateToProps)(AuthenticationContainer);
