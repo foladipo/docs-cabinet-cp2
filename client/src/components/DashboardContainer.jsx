@@ -7,6 +7,7 @@ import uuid from 'uuid';
 import { fetchUserDocuments } from '../actions/DocumentActions';
 import { logout } from '../actions/UserActions';
 import DashboardPage from './DashboardPage';
+import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 
@@ -50,6 +51,7 @@ class DashboardContainer extends React.Component {
       return [
         (<li key={uuid.v4()}>
           <NavLink
+            exact
             to="/dashboard/users"
             activeClassName="teal lighten-2 white-text disabled"
           >
@@ -141,11 +143,23 @@ class DashboardContainer extends React.Component {
             </Modal>
           </SideNavItem>
           <SideNavItem divider />
+          <li key={uuid.v4()}>
+            <NavLink
+              exact
+              to="/dashboard"
+              activeClassName="teal lighten-2 white-text disabled"
+            >
+              <Icon left>home</Icon>
+              Home
+            </NavLink>
+          </li>
+          <SideNavItem divider />
           {this.getAdminSection()}
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
 
         <Switch>
+          <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
           <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
           <Route exact path="*" render={() => <DashboardPage {...this.props} />} />
         </Switch>
