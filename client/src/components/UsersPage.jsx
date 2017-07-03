@@ -46,7 +46,7 @@ class UsersPage extends Component {
     }
 
     return (
-      <div className="users-page">
+      <div className="scrollable-page users-page">
         <h3
           className={this.props.user.status === 'fetchedAllUsers' && this.props.user.allUsers.length < 1 ? '' : 'hide'}
         >

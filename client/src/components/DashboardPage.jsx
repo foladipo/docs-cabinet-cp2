@@ -41,7 +41,7 @@ export default function DashboardPage(props) {
   };
 
   return (
-    <div className="dashboard-page">
+    <div className="scrollable-page dashboard-page">
       <div className="dashboard-welcome">
         <h3>Welcome to your dashboard!</h3>
         <h5 className={showStatusMessage ? '' : 'hide'}>{props.documents.statusMessage}</h5>
