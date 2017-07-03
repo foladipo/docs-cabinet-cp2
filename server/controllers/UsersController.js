@@ -639,6 +639,7 @@ export default class UsersController {
             ne: currentUserId
           }
         },
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       })

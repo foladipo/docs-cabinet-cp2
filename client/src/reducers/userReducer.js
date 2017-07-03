@@ -7,7 +7,10 @@ import {
   LOGIN_FULFILLED,
   LOGOUT_PENDING,
   LOGOUT_REJECTED,
-  LOGOUT_FULFILLED
+  LOGOUT_FULFILLED,
+  FETCH_ALL_USERS_PENDING,
+  FETCH_ALL_USERS_REJECTED,
+  FETCH_ALL_USERS_FULFILLED
 } from '../constants';
 
 /**
@@ -62,6 +65,22 @@ export default function userReducer(state, action) {
     case LOGOUT_REJECTED:
     case LOGOUT_FULFILLED:
       newState.isLoggingOut = false;
+      break;
+
+    case FETCH_ALL_USERS_PENDING:
+      newState.status = 'fetchingAllUsers';
+      newState.statusMessage = 'Fetching users... Please wait...';
+      break;
+
+    case FETCH_ALL_USERS_REJECTED:
+      newState.status = 'fetchAllUsersFailed';
+      newState.statusMessage = action.payload.message || 'Failed to fetch users. Please try again.';
+      break;
+
+    case FETCH_ALL_USERS_FULFILLED:
+      newState.status = 'fetchedAllUsers';
+      newState.statusMessage = action.payload.users.length > 0 ? 'Successfully fetched users.' : 'Oops! There are no users yet.';
+      newState.allUsers = state.allUsers.concat(action.payload.users);
       break;
 
     default:

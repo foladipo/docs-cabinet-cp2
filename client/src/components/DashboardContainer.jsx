@@ -1,11 +1,13 @@
 import React from 'react';
-import { Button, Col, Icon, Modal, Preloader, Row, SideNav, SideNavItem } from 'react-materialize';
+import { Button, Icon, Modal, SideNav, SideNavItem } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
+import uuid from 'uuid';
 import { fetchUserDocuments } from '../actions/DocumentActions';
 import { logout } from '../actions/UserActions';
-import Document from './Document';
+import DashboardPage from './DashboardPage';
+import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 
 /**
@@ -25,15 +27,39 @@ class DashboardContainer extends React.Component {
     };
 
     this.startDocumentsFetch = this.startDocumentsFetch.bind(this);
+    this.getAdminSection = this.getAdminSection.bind(this);
     this.logout = this.logout.bind(this);
   }
 
+  // TODO: Move this to DashboardPage.
   /**
    * Called immediately after this Component is mounted.
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
     this.startDocumentsFetch();
+  }
+
+  /**
+   * Renders menu options that are meant for admin users only.
+   * @return {Array|null} - Returns an array of Components to render, or null
+   * if the current user is not an admin.
+   */
+  getAdminSection() {
+    if (this.props.user.user.roleId > 0) {
+      return [
+        (<li key={uuid.v4()}>
+          <NavLink
+            to="/dashboard/users"
+            activeClassName="teal lighten-2 white-text disabled"
+          >
+            <Icon left>people</Icon>
+            Users
+          </NavLink>
+        </li>),
+        (<SideNavItem divider key={uuid.v4()} />)
+      ];
+    }
   }
 
   /**
@@ -72,28 +98,15 @@ class DashboardContainer extends React.Component {
       return <Redirect to="/" />;
     }
 
-    if (this.props.documents.status !== 'fetchingDocuments') {
-      Materialize.toast(this.props.documents.statusMessage, 3000);
-    }
-
     if (this.props.documents.status === 'documentCreated') {
       $('#updateDocumentModal').modal('close');
     }
 
-    const trigger = <Button>Menu<Icon left>menu</Icon></Button>;
-    const showStatusMessage = this.props.documents.status === 'fetchingDocuments' ||
-      this.props.documents.status === 'documentsFetchFailed';
+    if (this.props.documents.status !== 'fetchingDocuments') {
+      Materialize.toast(this.props.documents.statusMessage, 3000);
+    }
 
-    const documentsComponents = this.props.documents.documents.map(doc => (
-      <Document
-        key={doc.id}
-        dispatch={this.props.dispatch}
-        token={this.props.user.token}
-        documentsStatus={this.props.documents.status}
-        targetDocument={this.props.documents.targetDocument}
-        {...doc}
-      />
-    ));
+    const trigger = <Button className="dashboard-menu-btn">Menu<Icon left>menu</Icon></Button>;
 
     return (
       <div className="authenticated-user-area grey lighten-3">
@@ -128,31 +141,14 @@ class DashboardContainer extends React.Component {
             </Modal>
           </SideNavItem>
           <SideNavItem divider />
+          {this.getAdminSection()}
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
-        <div className="dashboard-container">
-          <div className="dashboard-welcome">
-            <h3>Welcome to your dashboard!</h3>
-            <h5 className={showStatusMessage ? '' : 'hide'}>{this.props.documents.statusMessage}</h5>
-            <Row className={this.props.documents.status === 'fetchingDocuments' ? '' : 'hide'}>
-              <Col s={4} offset="s4">
-                <Preloader size="big" flashing />
-              </Col>
-            </Row>
-            <Button
-              onClick={this.startDocumentsFetch}
-              className={this.props.documents.status === 'documentsFetchFailed' ? '' : 'hide'}
-            >
-              {this.props.documents.statusMessage}
-            </Button>
-          </div>
-          <div className={this.props.documents.documents.length < 1 ? '' : 'hide'}>
-            <h5 className="teal lighten-2 white-text center">
-              You don&rsquo;t have any documents. Please create some.
-            </h5>
-          </div>
-          <div className="dashboard-documents row">{documentsComponents}</div>
-        </div>
+
+        <Switch>
+          <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
+          <Route exact path="*" render={() => <DashboardPage {...this.props} />} />
+        </Switch>
       </div>
     );
   }

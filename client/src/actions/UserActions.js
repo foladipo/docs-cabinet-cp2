@@ -7,7 +7,10 @@ import {
   LOGIN_REJECTED,
   LOGIN_FULFILLED,
   LOGOUT_PENDING,
-  LOGOUT_FULFILLED
+  LOGOUT_FULFILLED,
+  FETCH_ALL_USERS_PENDING,
+  FETCH_ALL_USERS_REJECTED,
+  FETCH_ALL_USERS_FULFILLED
 } from '../constants';
 
 /**
@@ -84,6 +87,40 @@ export function signUp(firstName, lastName, username, password) {
         }
         dispatch({
           type: SIGN_UP_FULFILLED,
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * fetchAllUsers - Fetches a list of all users.
+ * @param {String} token - A token for the user making the request.
+ * @param {String} limit - Number of users to return per request.
+ * @param {String} offset - Number of users to skip before
+ * beginning the fetch.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the fetching process (commencement, success or failure).
+ */
+export function fetchAllUsers(token, limit, offset) {
+  return (dispatch) => {
+    dispatch({
+      type: FETCH_ALL_USERS_PENDING
+    });
+
+    request.get(`/api/users?limit=${limit}&offset=${offset}`)
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: FETCH_ALL_USERS_REJECTED,
+            payload: err.response.body
+          });
+          return;
+        }
+
+        dispatch({
+          type: FETCH_ALL_USERS_FULFILLED,
           payload: res.body
         });
       });
