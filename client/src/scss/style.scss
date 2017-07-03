@@ -55,19 +55,23 @@ body {
   display: none;
 }
 
-.dashboard-page {
+.scrollable-page {
   width: 100%;
   height: 100%;
   overflow: scroll;
+}
+
+.dashboard-page {
   padding-bottom: 4em;
 }
 
 .users-page {
-  width: 100%;
-  height: 100%;
-  overflow: scroll;
   padding: 0.5em 2em 4em;
   margin-bottom: 2em;
+}
+
+.update-user-page {
+  padding-bottom: 8em;
 }
 
 .document-actions {
@@ -87,6 +91,18 @@ body {
   margin: 1em;
 }
 
-.admin-user-card {
-  border: 3px solid #80cbc4;
+.light-teal-border {
+  border: 2px solid #80cbc4;
+}
+
+.red-border {
+  border: 2px solid red;
+}
+
+.all-corners-rounded {
+  border-radius: 3px;
+}
+
+.delete-user-section {
+  padding: 1em;
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { Button } from 'react-materialize';
 
 /**
@@ -16,10 +17,11 @@ function User(props) {
     }
     return roleName;
   };
+
   return (
     <div>
       <div className="col s12 m6 l4 hoverable">
-        <div className={props.roleId > 0 ? 'card small horizontal admin-user-card' : 'card small horizontal'}>
+        <div className={props.roleId > 0 ? 'card small horizontal light-teal-border' : 'card small horizontal'}>
           <div className="card-image">
             <img
               src={props.imgUrl}
@@ -40,20 +42,14 @@ function User(props) {
             <div className="card-action">
               <ul className="document-actions valign-wrapper">
                 <li>
-                  <Button
-                    floating
-                    className="teal lighten-2 quarter-side-margin"
-                    waves="light"
-                    icon="mode_edit"
-                  />
-                </li>
-                <li>
-                  <Button
-                    floating
-                    className="red quarter-side-margin"
-                    waves="light"
-                    icon="delete_forever"
-                  />
+                  <Link to={`/dashboard/updateUser/${props.id}`}>
+                    <Button
+                      floating
+                      className="teal lighten-2 quarter-side-margin"
+                      waves="light"
+                      icon="mode_edit"
+                    />
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -66,6 +62,7 @@ function User(props) {
 
 User.propTypes = {
   firstName: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   imgUrl: PropTypes.string,
   lastName: PropTypes.string.isRequired,
   roleId: PropTypes.number.isRequired,
