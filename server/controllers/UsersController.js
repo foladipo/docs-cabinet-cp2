@@ -354,6 +354,18 @@ export default class UsersController {
       profile.password = bcryptjs.hashSync(newProfile.password, saltLength);
     }
 
+    if (newProfile.roleId) {
+      if (profileOfUpdater.roleId < 1) {
+        res.status(403)
+          .json({
+            message: 'You, a regular user, cannot change your role or that of another user.',
+            error: 'ForbiddenOperationError'
+          });
+        return;
+      }
+      profile.roleId = Number.parseInt(newProfile.roleId, 10);
+    }
+
     User.update(
       profile,
       {
