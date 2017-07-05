@@ -13,7 +13,10 @@ import {
   FETCH_ALL_USERS_FULFILLED,
   UPDATE_USER_PENDING,
   UPDATE_USER_REJECTED,
-  UPDATE_USER_FULFILLED
+  UPDATE_USER_FULFILLED,
+  DELETE_USER_PENDING,
+  DELETE_USER_REJECTED,
+  DELETE_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -158,6 +161,37 @@ export function updateUser(token, targetUserId, updateInfo) {
 
         dispatch({
           type: UPDATE_USER_FULFILLED,
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * deleteUser - Deletes a user.
+ * @param {String} token - A token for the user making the request.
+ * @param {Number} targetUserId - Id of the user to delete.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the deletion process (commencement, success or failure).
+ */
+export function deleteUser(token, targetUserId) {
+  return (dispatch) => {
+    dispatch({ type: DELETE_USER_PENDING });
+
+    request.delete(`/api/users/${targetUserId}`)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: DELETE_USER_REJECTED,
+            payload: err.response.body
+          });
+          return;
+        }
+
+        dispatch({
+          type: DELETE_USER_FULFILLED,
           payload: res.body
         });
       });

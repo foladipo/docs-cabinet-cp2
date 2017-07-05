@@ -471,7 +471,7 @@ export default class UsersController {
         })
         .then((user) => {
           if (user) {
-            if (userProfile.roleId > user.roleId) {
+            if (userProfile.roleId > 0) {
               User
                 .destroy({
                   where: {
@@ -482,7 +482,14 @@ export default class UsersController {
                   if (userCount > 0) {
                     res.status(200)
                       .json({
-                        message: 'It\'s a pity, but you successfully deleted that account.'
+                        message: 'It\'s a pity, but you successfully deleted that account.',
+                        users: [{
+                          id: user.id,
+                          firstName: user.firstName,
+                          lastName: user.lastName,
+                          username: user.username,
+                          roleId: user.roleId
+                        }]
                       });
                   } else {
                     res.status(404)

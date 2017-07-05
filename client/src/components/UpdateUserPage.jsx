@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input, Row } from 'react-materialize';
+import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
+import { Redirect } from 'react-router-dom';
+import DeleteUserPage from './DeleteUserPage';
 import isValidName from '../../../server/util/isValidName';
 import isValidEmail from '../../../server/util/isValidEmail';
 import isValidPassword from '../../../server/util/isValidPassword';
@@ -60,7 +62,6 @@ class UpdateUserPage extends Component {
       this.setState({
         hasValidTargetUserId: false,
         message: 'Oops! The id of the account you wish to update is not a number.'
-
       });
       return;
     }
@@ -68,8 +69,7 @@ class UpdateUserPage extends Component {
     if (targetUserId === this.props.user.user.id) {
       this.setState({
         hasValidTargetUserId: true,
-        targetUser: this.props.user.user,
-
+        targetUser: this.props.user.user
       });
       this.setState();
       return;
@@ -276,10 +276,18 @@ class UpdateUserPage extends Component {
                 you continue, this account and the documents that
                 belong to it will be gone forever.
               </p>
-              <Button className="red white-text hoverable" waves="light">
-                Delete account
-                <Icon left>delete</Icon>
-              </Button>
+              <Modal
+                id="deleteAccountModal"
+                header="Delete account"
+                trigger={
+                  <Button className="red white-text hoverable" waves="light">
+                    Delete account
+                    <Icon left>delete</Icon>
+                  </Button>
+                }
+              >
+                <DeleteUserPage targetUser={this.state.targetUser} {...this.props} />
+              </Modal>
             </div>
           </div>
         );
@@ -307,7 +315,8 @@ class UpdateUserPage extends Component {
         <div className="container">
           <div className="center-align white-text">
             <h3 className={this.props.user.status === 'updatingUser' ? 'orange' : 'hide'}>{this.props.user.statusMessage}</h3>
-            <h3 className={this.props.user.status === 'updateUserFailed' ? 'red' : 'hide'}>{this.props.user.statusMessage}</h3>
+            <h3 className={this.props.user.status === 'updateUserFailed' ? 'red lighten-2' : 'hide'}>{this.props.user.statusMessage}</h3>
+            <h3 className={this.state.hasValidTargetUserId ? 'hide' : 'red lighten-2 white-text'}>{this.state.message}</h3>
             <h4 className={this.props.user.status === 'updatedUser' ? 'teal lighten-3' : 'hide'}>{this.props.user.statusMessage}</h4>
           </div>
           <div>
@@ -346,7 +355,7 @@ class UpdateUserPage extends Component {
                   <Icon>lock</Icon>
                 </Input>
                 <Button
-                  className={isUpdate() ? 'hoverable' : 'disabled'}
+                  className={isUpdate() && this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'}
                   waves="light"
                   onClick={this.attemptProfileUpdate}
                 >
@@ -355,6 +364,7 @@ class UpdateUserPage extends Component {
                 </Button>
               </Row>
             </form>
+            <ProgressBar className={this.props.user.status === 'updatingUser' ? '' : 'hide'} />
           </div>
           <div className="divider" />
           {this.showDeleteAccountSection()}
@@ -376,6 +386,16 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
+    // TODO: Log out a user when he/she deletes his/her own account.
+    if (this.state.targetUser) {
+      if (this.state.targetUser.id === this.props.user.deletedUserId
+        && this.props.user.status === 'deletedUser') {
+        $('#deleteAccountModal').modal('close');
+        Materialize.toast(this.props.user.statusMessage, 5000);
+        return <Redirect to="/dashboard" />;
+      }
+    }
+
     return (
       <div className="scrollable-page update-user-page">
         {this.showUpdateForm()}

@@ -28,7 +28,8 @@ const store = createStore(
       loginError: '',
       allUsers: [],
       status: '',
-      statusMessage: ''
+      statusMessage: '',
+      deletedUserId: -1
     },
     documents: {
       count: 0,
