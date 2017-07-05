@@ -26,8 +26,8 @@ const Document = sequelize.define('Document', {
   tags: {
     type: Sequelize.STRING
   },
-  createdBy: {
-    type: Sequelize.STRING
+  authorId: {
+    type: Sequelize.INTEGER
   },
   createdAt: {
     type: Sequelize.DATE

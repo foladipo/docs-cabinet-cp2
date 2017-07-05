@@ -20,7 +20,7 @@ describe('When it receives a GET request, the /api/search/documents endpoint', (
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
-    createdBy: 0
+    authorId: 0
   };
 
   before('Create the sample document to be used in this suite\'s specs', (done) => {

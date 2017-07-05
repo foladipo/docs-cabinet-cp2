@@ -13,7 +13,7 @@ describe('The Document model', () => {
     access: 'public',
     categories: 'foo',
     tags: 'bar',
-    createdBy: 0
+    authorId: 0
   };
 
   const completeNewDocument = {
@@ -22,7 +22,7 @@ describe('The Document model', () => {
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
-    createdBy: 0
+    authorId: 0
   };
 
   before('Create a sample document', (done) => {
@@ -51,7 +51,7 @@ describe('The Document model', () => {
       access: 'public',
       categories: 'foo',
       tags: 'bar',
-      createdBy: 0
+      authorId: 0
     };
     Document.create(noTitle)
       .catch((errors) => {
@@ -69,7 +69,7 @@ describe('The Document model', () => {
       access: 'public',
       categories: 'foo',
       tags: 'bar',
-      createdBy: 0
+      authorId: 0
     };
     Document.create(noContent)
       .catch((errors) => {
@@ -87,7 +87,7 @@ describe('The Document model', () => {
       content: 'Lorem ipsum',
       access: 'public',
       tags: 'bar',
-      createdBy: 0
+      authorId: 0
     };
     Document.create(noCategories)
       .catch((errors) => {
@@ -105,7 +105,7 @@ describe('The Document model', () => {
       content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
-      createdBy: 0
+      authorId: 0
     };
     Document.create(noTags)
       .catch((errors) => {
@@ -124,7 +124,7 @@ describe('The Document model', () => {
       access: '',
       categories: 'foo',
       tags: 'bar',
-      createdBy: 0
+      authorId: 0
     };
     Document.create(noAccessTypes)
       .catch((errors) => {
@@ -145,7 +145,7 @@ describe('The Document model', () => {
       access: 'random',
       categories: 'foo',
       tags: 'bar',
-      createdBy: 0
+      authorId: 0
     };
     Document.create(invalidAccessType)
       .catch((errors) => {
@@ -158,34 +158,34 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have a' +
-    ' createdBy (i.e author id)', (done) => {
-    const noCreatedBy = {
+  it('should reject the creation of documents that do NOT have an' +
+    ' authorId', (done) => {
+    const noAuthorId = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar'
     };
-    Document.create(noCreatedBy)
+    Document.create(noAuthorId)
       .catch((errors) => {
-        const expectedMessage = 'null value in column "createdBy" violates not-null constraint';
+        const expectedMessage = 'null value in column "authorId" violates not-null constraint';
         expect(errors.name).to.equal('SequelizeDatabaseError');
         expect(errors.message).to.equal(expectedMessage);
         done();
       });
   });
 
-  it('should reject the creation of documents whose createdBy (i.e author id) is NOT an integer', (done) => {
-    const invalidCreatedBy = {
+  it('should reject the creation of documents whose authorId (i.e author id) is NOT an integer', (done) => {
+    const invalidAuthorId = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar',
-      createdBy: 'quux'
+      authorId: 'quux'
     };
-    Document.create(invalidCreatedBy)
+    Document.create(invalidAuthorId)
       .catch((errors) => {
         const expectedMessage = 'invalid input syntax for integer: "quux"';
         expect(errors.name).to.equal('SequelizeDatabaseError');
@@ -194,19 +194,19 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents whose createdBy (i.e author id) is NOT in the User model', (done) => {
+  it('should reject the creation of documents whose authorId (i.e author id) is NOT in the User model', (done) => {
     const nonExistentUser = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
       access: 'public',
       categories: 'foo',
       tags: 'bar',
-      createdBy: 6543210
+      authorId: 6543210
     };
     Document.create(nonExistentUser)
       .catch((errors) => {
         const expectedMessage = 'insert or update on table "Document" violates' +
-        ' foreign key constraint "Document_createdBy_fkey"';
+        ' foreign key constraint "Document_authorId_fkey"';
         expect(errors.name).to.equal('SequelizeForeignKeyConstraintError');
         expect(errors.message).to.equal(expectedMessage);
         done();

@@ -20,7 +20,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
-    createdBy: 0
+    authorId: 0
   };
 
   let id;

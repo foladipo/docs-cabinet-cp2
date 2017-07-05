@@ -20,7 +20,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
-    createdBy: 0
+    authorId: 0
   };
 
   after('Remove the sample document used in this suite\'s specs', (done) => {

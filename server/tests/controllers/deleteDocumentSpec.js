@@ -18,7 +18,7 @@ describe('When it gets a DELETE request, the /api/documents endpoint', () => {
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
-    createdBy: 0
+    authorId: 0
   };
 
   let id;

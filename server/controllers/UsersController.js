@@ -565,9 +565,9 @@ export default class UsersController {
           Document
             .findAll({
               where: {
-                createdBy: id
+                authorId: id
               },
-              attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+              attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
               order: [['createdAt', 'DESC']],
               returning: true
             })

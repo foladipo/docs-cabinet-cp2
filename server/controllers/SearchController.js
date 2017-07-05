@@ -100,10 +100,10 @@ export default class SearchController {
           title: { $iLike: `%${documentTitleQuery}%` },
           $or: [
             { access: 'public' },
-            { access: 'private', createdBy: userProfile.id }
+            { access: 'private', authorId: userProfile.id }
           ]
         },
-        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
         limit,
         offset
       })

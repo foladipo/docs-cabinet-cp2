@@ -18,7 +18,7 @@ const usersRouter = express.Router();
  *        - access
  *        - categories
  *        - tags
- *        - createdBy
+ *        - authorId
  *     properties:
  *       title:
  *         type: string
@@ -30,7 +30,7 @@ const usersRouter = express.Router();
  *         type: string
  *       tags:
  *         type: string
- *       createdBy:
+ *       authorId:
  *         type: string
  *   Document:
  *     allOf:

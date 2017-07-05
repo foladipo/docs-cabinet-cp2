@@ -34,7 +34,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
     access: 'public',
     categories: 'random',
     tags: 'random',
-    createdBy: 0
+    authorId: 0
   };
 
   before('Create a dummy document', (done) => {
