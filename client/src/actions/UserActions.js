@@ -10,7 +10,10 @@ import {
   LOGOUT_FULFILLED,
   FETCH_ALL_USERS_PENDING,
   FETCH_ALL_USERS_REJECTED,
-  FETCH_ALL_USERS_FULFILLED
+  FETCH_ALL_USERS_FULFILLED,
+  UPDATE_USER_PENDING,
+  UPDATE_USER_REJECTED,
+  UPDATE_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -109,6 +112,7 @@ export function fetchAllUsers(token, limit, offset) {
     });
 
     request.get(`/api/users?limit=${limit}&offset=${offset}`)
+      .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', token)
       .end((err, res) => {
         if (err) {
@@ -121,6 +125,39 @@ export function fetchAllUsers(token, limit, offset) {
 
         dispatch({
           type: FETCH_ALL_USERS_FULFILLED,
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * updateUser - Updates a user's profile.
+ * @param {String} token - A token for the user making the request.
+ * @param {Number} targetUserId - Id of the user to update.
+ * @param {Object} updateInfo - Data about the update e.g new username etc.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the update process (commencement, success or failure).
+ */
+export function updateUser(token, targetUserId, updateInfo) {
+  return (dispatch) => {
+    dispatch({ type: UPDATE_USER_PENDING });
+
+    request.put(`/api/users/${targetUserId}`)
+      .send(updateInfo)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: UPDATE_USER_REJECTED,
+            payload: err.response.body
+          });
+          return;
+        }
+
+        dispatch({
+          type: UPDATE_USER_FULFILLED,
           payload: res.body
         });
       });

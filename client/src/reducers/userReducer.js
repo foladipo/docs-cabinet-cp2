@@ -10,7 +10,10 @@ import {
   LOGOUT_FULFILLED,
   FETCH_ALL_USERS_PENDING,
   FETCH_ALL_USERS_REJECTED,
-  FETCH_ALL_USERS_FULFILLED
+  FETCH_ALL_USERS_FULFILLED,
+  UPDATE_USER_PENDING,
+  UPDATE_USER_REJECTED,
+  UPDATE_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -81,6 +84,21 @@ export default function userReducer(state, action) {
       newState.status = 'fetchedAllUsers';
       newState.statusMessage = action.payload.users.length > 0 ? 'Successfully fetched users.' : 'Oops! There are no users yet.';
       newState.allUsers = state.allUsers.concat(action.payload.users);
+      break;
+
+    case UPDATE_USER_PENDING:
+      newState.status = 'updatingUser';
+      newState.statusMessage = 'Updating profile... Please wait...';
+      break;
+
+    case UPDATE_USER_REJECTED:
+      newState.status = 'updateUserFailed';
+      newState.statusMessage = action.payload.message || 'Failed to update this profile. Please try again.';
+      break;
+
+    case UPDATE_USER_FULFILLED:
+      newState.status = 'updatedUser';
+      newState.statusMessage = 'Account successfully updated.';
       break;
 
     default:

@@ -4,6 +4,7 @@ import { Button, Icon, Input, Row } from 'react-materialize';
 import isValidName from '../../../server/util/isValidName';
 import isValidEmail from '../../../server/util/isValidEmail';
 import isValidPassword from '../../../server/util/isValidPassword';
+import { updateUser } from '../actions/UserActions';
 
 /**
  * UpdateUserPage - Renders a form for updating a user's profile.
@@ -24,7 +25,9 @@ class UpdateUserPage extends Component {
 
     this.determineTargetUser = this.determineTargetUser.bind(this);
     this.showRoleUpdate = this.showRoleUpdate.bind(this);
+    this.showDeleteAccountSection = this.showDeleteAccountSection.bind(this);
     this.showUpdateForm = this.showUpdateForm.bind(this);
+    this.attemptProfileUpdate = this.attemptProfileUpdate.bind(this);
 
     this.updateRoleId = this.updateRoleId.bind(this);
     this.hasNewRoleId = this.hasNewRoleId.bind(this);
@@ -237,13 +240,51 @@ class UpdateUserPage extends Component {
   attemptProfileUpdate(event) {
     event.preventDefault();
 
-    let newProfile = {};
+    const newProfile = {};
     if (this.hasNewFirstName()) newProfile.firstName = this.state.newFirstName;
     if (this.hasNewLastName()) newProfile.lastName = this.state.newLastName;
     if (this.hasNewUsername()) newProfile.username = this.state.newUsername;
     if (this.hasNewPassword()) newProfile.password = this.state.newPassword;
+    if (this.hasNewRoleId()) newProfile.roleId = this.state.newRoleId;
 
-    // TODO: Dispatch an update action using this user's token and newProfile.
+    this.props.dispatch(updateUser(
+      this.props.user.token,
+      this.state.targetUser.id,
+      newProfile
+    ));
+  }
+
+  /**
+   * Called to show the "delete account" section if the target user has
+   * been determined. Note that it prevents admin users from deleting their
+   * own accounts.
+   * @return {Component|null} - Returns the React Component to be rendered or
+   * null if nothing is to be rendered.
+   */
+  showDeleteAccountSection() {
+    if (this.state.targetUser) {
+      if (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id) {
+        return (
+          <div>
+            {/* TODO: If a user deletes his or her own account, log him/her out immediately. */}
+            <h3 className="red-text">Danger zone</h3>
+            <div className="divider" />
+            <div className="delete-user-section red-border all-corners-rounded">
+              <h5>Delete account</h5>
+              <p>
+                You&rsquo;re about to delete this account. If
+                you continue, this account and the documents that
+                belong to it will be gone forever.
+              </p>
+              <Button className="red white-text hoverable" waves="light">
+                Delete account
+                <Icon left>delete</Icon>
+              </Button>
+            </div>
+          </div>
+        );
+      }
+    }
   }
 
   /**
@@ -252,6 +293,7 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   showUpdateForm() {
+    // TODO: Try and reset the update form when an update is successfully performed.
     const isUpdate = () => (
       this.hasNewRoleId() ||
       this.hasNewFirstName() ||
@@ -263,6 +305,11 @@ class UpdateUserPage extends Component {
     if (this.state.targetUser) {
       return (
         <div className="container">
+          <div className="center-align white-text">
+            <h3 className={this.props.user.status === 'updatingUser' ? 'orange' : 'hide'}>{this.props.user.statusMessage}</h3>
+            <h3 className={this.props.user.status === 'updateUserFailed' ? 'red' : 'hide'}>{this.props.user.statusMessage}</h3>
+            <h4 className={this.props.user.status === 'updatedUser' ? 'teal lighten-3' : 'hide'}>{this.props.user.statusMessage}</h4>
+          </div>
           <div>
             <h3>Update profile</h3>
             <div className="divider" />
@@ -301,6 +348,7 @@ class UpdateUserPage extends Component {
                 <Button
                   className={isUpdate() ? 'hoverable' : 'disabled'}
                   waves="light"
+                  onClick={this.attemptProfileUpdate}
                 >
                   Update
                   <Icon left>update</Icon>
@@ -309,22 +357,7 @@ class UpdateUserPage extends Component {
             </form>
           </div>
           <div className="divider" />
-          <div>
-            <h3 className="red-text">Danger zone</h3>
-            <div className="divider" />
-            <div className="delete-user-section red-border all-corners-rounded">
-              <h5>Delete account</h5>
-              <p>
-                You&rsquo;re about to delete this account. If
-                you continue, this account and the documents that
-                belong to it will be gone forever.
-              </p>
-              <Button className="red white-text hoverable" waves="light">
-                Delete account
-                <Icon left>delete</Icon>
-              </Button>
-            </div>
-          </div>
+          {this.showDeleteAccountSection()}
         </div>
       );
     }
@@ -352,6 +385,7 @@ class UpdateUserPage extends Component {
 }
 
 UpdateUserPage.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   location: PropTypes.objectOf(PropTypes.any).isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
