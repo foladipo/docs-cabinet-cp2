@@ -84,7 +84,9 @@ Replace <DATABASE_NAME> with the name of your database. Then please replace <ADM
  install [bcryptjs](https://www.npmjs.com/package/bcryptjs) generate a hashed password using
  `hashSync(PASSWORD, 10)` and use that to replace <HASHED\_ADMIN\_PASSWORD>. (Your PASSWORD must
  contain one upper case letter, one lower case letter, one number and one symbol (like $, *, @ etc).)
- Don't forget to add the credentials of this account to your `.env` file.
+ Note that the hashed string that `bcryptjs` will generate will contain `$` (dollar) symbols. Make
+ sure you escape all of them. That is, replace all those `$` symbols with `\$`. Finally, don't forget
+ to add the credentials of this account to your `.env` file.
 
 - That's it! You may now run `npm start` and the app will run on your system. 
 

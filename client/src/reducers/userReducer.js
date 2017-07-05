@@ -10,7 +10,13 @@ import {
   LOGOUT_FULFILLED,
   FETCH_ALL_USERS_PENDING,
   FETCH_ALL_USERS_REJECTED,
-  FETCH_ALL_USERS_FULFILLED
+  FETCH_ALL_USERS_FULFILLED,
+  UPDATE_USER_PENDING,
+  UPDATE_USER_REJECTED,
+  UPDATE_USER_FULFILLED,
+  DELETE_USER_PENDING,
+  DELETE_USER_REJECTED,
+  DELETE_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -81,6 +87,48 @@ export default function userReducer(state, action) {
       newState.status = 'fetchedAllUsers';
       newState.statusMessage = action.payload.users.length > 0 ? 'Successfully fetched users.' : 'Oops! There are no users yet.';
       newState.allUsers = state.allUsers.concat(action.payload.users);
+      break;
+
+    case UPDATE_USER_PENDING:
+      newState.status = 'updatingUser';
+      newState.statusMessage = 'Updating profile... Please wait...';
+      break;
+
+    case UPDATE_USER_REJECTED:
+      newState.status = 'updateUserFailed';
+      newState.statusMessage = action.payload.message || 'Failed to update this profile. Please try again.';
+      break;
+
+    case UPDATE_USER_FULFILLED:
+      newState.status = 'updatedUser';
+      newState.statusMessage = 'Account successfully updated.';
+      newState.allUsers = state.allUsers.map((user) => {
+        const updatedUser = action.payload.users[0];
+        if (user.id === updatedUser.id) {
+          return updatedUser;
+        }
+
+        return user;
+      });
+      break;
+
+    case DELETE_USER_PENDING:
+      newState.status = 'deletingUser';
+      newState.statusMessage = 'Deleting account... Please wait...';
+      break;
+
+    case DELETE_USER_REJECTED:
+      newState.status = 'deleteUserFailed';
+      newState.statusMessage = action.payload.message || 'Failed to delete account. Please try again.';
+      break;
+
+    case DELETE_USER_FULFILLED:
+      newState.status = 'deletedUser';
+      newState.statusMessage = action.payload.message || 'Account successfully deleted.';
+      newState.allUsers = state.allUsers.filter(user =>
+        user.username !== action.payload.users[0].username
+      );
+      newState.deletedUserId = action.payload.users[0].id;
       break;
 
     default:

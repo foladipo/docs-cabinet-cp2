@@ -196,7 +196,8 @@ class UpdateDocument extends Component {
    */
   render() {
     // TODO: isValidDocument works fine, but why do these all become true once one of them is?
-    const isValidDocument = (this.hasValidAccess(this.state.access) &&
+    const isValidDocument = (
+      this.hasValidAccess(this.state.access) &&
       this.hasValidTitle(this.state.title) &&
       this.hasValidContent(this.state.content) &&
       this.hasValidCategories(this.state.categories) &&
@@ -241,6 +242,7 @@ class UpdateDocument extends Component {
           <div className="col s12">
             <textarea
               rows="10"
+              className="materialize-textarea"
               onChange={this.updateContent}
             />
             <br />

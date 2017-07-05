@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Preloader, Row } from 'react-materialize';
+import uuid from 'uuid';
 import { fetchUserDocuments } from '../actions/DocumentActions';
 import Document from './Document';
 
@@ -18,7 +19,7 @@ export default function DashboardPage(props) {
 
   const documentsComponents = props.documents.documents.map(doc => (
     <Document
-      key={doc.id}
+      key={uuid.v4()}
       dispatch={props.dispatch}
       token={props.user.token}
       documentsStatus={props.documents.status}
@@ -40,7 +41,7 @@ export default function DashboardPage(props) {
   };
 
   return (
-    <div className="dashboard-page">
+    <div className="scrollable-page dashboard-page">
       <div className="dashboard-welcome">
         <h3>Welcome to your dashboard!</h3>
         <h5 className={showStatusMessage ? '' : 'hide'}>{props.documents.statusMessage}</h5>
