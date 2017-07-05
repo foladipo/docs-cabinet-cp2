@@ -21,7 +21,7 @@ function User(props) {
   return (
     <div>
       <div className="col s12 m6 l4 hoverable">
-        <div className={props.roleId > 0 ? 'card small horizontal light-teal-border' : 'card small horizontal'}>
+        <div className={props.roleId > 0 ? 'card small horizontal admin-user-profile' : 'card small horizontal'}>
           <div className="card-image">
             <img
               src={props.imgUrl}
