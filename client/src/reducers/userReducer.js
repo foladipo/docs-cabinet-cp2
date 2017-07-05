@@ -102,6 +102,14 @@ export default function userReducer(state, action) {
     case UPDATE_USER_FULFILLED:
       newState.status = 'updatedUser';
       newState.statusMessage = 'Account successfully updated.';
+      newState.allUsers = state.allUsers.map((user) => {
+        const updatedUser = action.payload.users[0];
+        if (user.id === updatedUser.id) {
+          return updatedUser;
+        }
+
+        return user;
+      });
       break;
 
     case DELETE_USER_PENDING:
