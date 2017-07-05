@@ -354,25 +354,27 @@ export default class UsersController {
       profile.password = bcryptjs.hashSync(newProfile.password, saltLength);
     }
 
-    // Being explicit for when newProfile.roleId is undefined is necessary.
+    // Explicitly checking for when newProfile.roleId is undefined is necessary.
     // Not doing so introduces some (almost) latent bugs.
-    if (newProfile.roleId !== undefined && typeof newProfile.roleId === 'number') {
-      if (profileOfUpdater.roleId < 1) {
-        res.status(403)
+    if (newProfile.roleId !== undefined) {
+      if (typeof newProfile.roleId === 'number') {
+        if (profileOfUpdater.roleId < 1) {
+          res.status(403)
+            .json({
+              message: 'You, a regular user, cannot change your role or that of another user.',
+              error: 'ForbiddenOperationError'
+            });
+          return;
+        }
+        profile.roleId = Number.parseInt(newProfile.roleId, 10);
+      } else {
+        res.status(400)
           .json({
-            message: 'You, a regular user, cannot change your role or that of another user.',
-            error: 'ForbiddenOperationError'
+            message: 'The new role you supplied for this account is invalid.',
+            error: 'InvalidNewRoleIdError'
           });
         return;
       }
-      profile.roleId = Number.parseInt(newProfile.roleId, 10);
-    } else {
-      res.status(400)
-        .json({
-          message: 'The new role you supplied for this account is invalid.',
-          error: 'InvalidNewRoleIdError'
-        });
-      return;
     }
 
     User.update(
