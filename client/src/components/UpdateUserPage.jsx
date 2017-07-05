@@ -30,6 +30,7 @@ class UpdateUserPage extends Component {
     this.showDeleteAccountSection = this.showDeleteAccountSection.bind(this);
     this.showUpdateForm = this.showUpdateForm.bind(this);
     this.attemptProfileUpdate = this.attemptProfileUpdate.bind(this);
+    this.isUpdate = this.isUpdate.bind(this);
 
     this.updateRoleId = this.updateRoleId.bind(this);
     this.hasNewRoleId = this.hasNewRoleId.bind(this);
@@ -133,7 +134,13 @@ class UpdateUserPage extends Component {
    * IS an update, and false if otherwise.
    */
   hasNewRoleId() {
-    return this.state.newRoleId && this.state.newRoleId !== this.state.targetUser.roleId;
+    // Trust me, it is required to compare to undefined. Coz when
+    // this.state.newRoleId is a number, the code below returns a number,
+    // not a Boolean.
+    return (
+      this.state.newRoleId !== undefined &&
+      this.state.newRoleId !== this.state.targetUser.roleId
+    );
   }
 
   /**
@@ -296,20 +303,28 @@ class UpdateUserPage extends Component {
   }
 
   /**
+   * Checks whether or not any part of a user's profile (username,
+   * lastname etc) has changed.
+   * @return {Boolean} - Returns true if any part of a user profile has
+   * changed, and false if otherwise.
+   */
+  isUpdate() {
+    if (this.hasNewRoleId()) return true;
+    if (this.hasNewFirstName()) return true;
+    if (this.hasNewLastName()) return true;
+    if (this.hasNewUsername()) return true;
+    if (this.hasNewPassword()) return true;
+
+    return false;
+  }
+
+  /**
    * Called to show the profile update form if the target user has been determined.
    * @return {Component|null} - Returns the React Component to be rendered or
    * null if nothing is to be rendered.
    */
   showUpdateForm() {
     // TODO: Try and reset the update form when an update is successfully performed.
-    const isUpdate = () => (
-      this.hasNewRoleId() ||
-      this.hasNewFirstName() ||
-      this.hasNewLastName() ||
-      this.hasNewUsername() ||
-      this.hasNewPassword()
-    );
-
     if (this.state.targetUser) {
       return (
         <div className="container">
@@ -355,7 +370,7 @@ class UpdateUserPage extends Component {
                   <Icon>lock</Icon>
                 </Input>
                 <Button
-                  className={isUpdate() && this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'}
+                  className={this.isUpdate() && this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'}
                   waves="light"
                   onClick={this.attemptProfileUpdate}
                 >
