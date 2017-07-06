@@ -173,15 +173,21 @@ export default class DocumentsController {
 
     Document
       .findAll({
-        // TODO: Add restrictions for 'role' and admin access of private
-        // files, using hasMany(), belongsTo() etc.
+        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'username', 'roleId'] }],
         where: {
           $or: [
             { access: 'public' },
             { authorId: id },
+            {
+              $and: [
+                { access: 'role' },
+                { '$User.roleId$': req.decodedUserProfile.roleId }
+              ]
+            }
           ]
         },
         attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       })

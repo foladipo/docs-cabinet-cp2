@@ -91,17 +91,24 @@ export default class SearchController {
       return;
     }
 
-    // TODO: Add code for when access === 'role'.
     Document
       .findAll({
+        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'username', 'roleId'] }],
         where: {
           title: { $iLike: `%${documentTitleQuery}%` },
           $or: [
             { access: 'public' },
-            { access: 'private', authorId: userProfile.id }
+            { access: 'private', authorId: userProfile.id },
+            {
+              $and: [
+                { access: 'role' },
+                { '$User.roleId': req.decodedUserProfile.roleId }
+              ]
+            }
           ]
         },
         attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       })
