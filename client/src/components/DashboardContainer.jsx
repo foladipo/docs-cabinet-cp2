@@ -92,13 +92,21 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (!this.props.user.isLoggedIn) {
-      return <Redirect to="/" />;
+    if (this.props.user.status === 'deletedUser'
+      && this.props.user.user.id === this.props.user.deletedUserId) {
+      window.localStorage.clear();
+      $('#deleteAccountModal').modal('close');
+      Materialize.toast(this.props.user.statusMessage, 5000);
+      return <Redirect to="/dashboard" />;
     }
 
     if (this.props.documents.status === 'invalidTokenError') {
       window.localStorage.clear();
       Materialize.toast(this.props.documents.statusMessage, 5000);
+      return <Redirect to="/" />;
+    }
+
+    if (!this.props.user.isLoggedIn) {
       return <Redirect to="/" />;
     }
 

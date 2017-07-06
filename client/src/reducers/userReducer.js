@@ -129,6 +129,11 @@ export default function userReducer(state, action) {
         user.username !== action.payload.users[0].username
       );
       newState.deletedUserId = action.payload.users[0].id;
+      if (action.payload.users[0].id === state.user.id) {
+        newState.isLoggedIn = false;
+        newState.isLoggingIn = false;
+        newState.isLoggingOut = false;
+      }
       break;
 
     default:

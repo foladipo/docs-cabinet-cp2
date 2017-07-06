@@ -404,16 +404,6 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    // TODO: Log out a user when he/she deletes his/her own account.
-    if (this.state.targetUser) {
-      if (this.state.targetUser.id === this.props.user.deletedUserId
-        && this.props.user.status === 'deletedUser') {
-        $('#deleteAccountModal').modal('close');
-        Materialize.toast(this.props.user.statusMessage, 5000);
-        return <Redirect to="/dashboard" />;
-      }
-    }
-
     return (
       <div className="scrollable-page update-user-page">
         {this.showUpdateForm()}
