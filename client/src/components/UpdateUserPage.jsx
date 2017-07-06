@@ -270,7 +270,10 @@ class UpdateUserPage extends Component {
    */
   showDeleteAccountSection() {
     if (this.state.targetUser) {
-      if (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id) {
+      if (
+        (this.props.user.user.roleId < 1) ||
+        (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id)
+      ) {
         return (
           <div>
             {/* TODO: If a user deletes his or her own account, log him/her out immediately. */}

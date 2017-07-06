@@ -459,7 +459,8 @@ export default class UsersController {
           if (userCount > 0) {
             res.status(200)
               .json({
-                message: 'It\'s a pity, but you successfully deleted that account.'
+                message: 'We hate to see you go! But your account was successfully deleted.',
+                users: [req.decodedUserProfile]
               });
           } else {
             res.status(404)

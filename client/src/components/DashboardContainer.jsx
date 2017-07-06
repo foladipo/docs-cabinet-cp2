@@ -11,6 +11,8 @@ import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 
+// TODO: Auto logout a user when you get errors like NonExistentUserError, InvalidTokenError etc.
+
 /**
  * DashboardContainer - Renders the dashboard.
  */
@@ -153,14 +155,25 @@ class DashboardContainer extends React.Component {
               Home
             </NavLink>
           </li>
+          <li key={uuid.v4()}>
+            <NavLink
+              exact
+              to={`/dashboard/profile/${this.props.user.user.id}`}
+              activeClassName="teal lighten-2 white-text disabled"
+            >
+              <Icon left>person_outline</Icon>
+              Update profile
+            </NavLink>
+          </li>
           <SideNavItem divider />
           {this.getAdminSection()}
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
 
         <Switch>
-          <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
+          <Route path="/dashboard/profile" render={() => <UpdateUserPage {...this.props} />} />
           <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
+          <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
           <Route exact path="*" render={() => <DashboardPage {...this.props} />} />
         </Switch>
       </div>
