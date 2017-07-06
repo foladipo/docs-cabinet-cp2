@@ -10,7 +10,9 @@ import {
   CREATE_DOCUMENT_FULFILLED,
   DELETE_DOCUMENT_PENDING,
   DELETE_DOCUMENT_REJECTED,
-  DELETE_DOCUMENT_FULFILLED
+  DELETE_DOCUMENT_FULFILLED,
+
+  LOGOUT_PENDING
 } from '../constants';
 
 /**
@@ -23,6 +25,11 @@ import {
 export default function documentsReducer(state, action) {
   const newState = Object.assign({}, state);
   switch (action.type) {
+    case LOGOUT_PENDING:
+      newState.documents = [];
+      newState.count = 0;
+      break;
+
     case FETCH_USER_DOCUMENTS_PENDING:
     case FETCH_DOCUMENTS_PENDING:
       newState.status = 'fetchingDocuments';
