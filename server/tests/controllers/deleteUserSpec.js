@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import chai from 'chai';
 import dotenv from 'dotenv';
 import bcryptjs from 'bcryptjs';
 import JWT from 'jsonwebtoken';
@@ -8,6 +9,7 @@ import app from '../../app';
 dotenv.config();
 
 const request = supertest(app);
+const expect = chai.expect;
 const deleteUserEndpoint = '/api/users';
 
 describe('When it receives a DELETE request, the /api/users/<id> endpoint', () => {
@@ -118,8 +120,14 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        message: 'It\'s a pity, but you successfully deleted that account.'
-      }, done);
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.body.message).to.equal('We hate to see you go! But your account was successfully deleted.');
+        expect(Array.isArray(res.body.users)).to.equal(true);
+        const deletedUser = res.body.users[0];
+        expect(deletedUser.username).to.equal(dummyUser.username);
+        done();
+      });
   });
 });

@@ -102,7 +102,7 @@ export default class SearchController {
             {
               $and: [
                 { access: 'role' },
-                { '$User.roleId': req.decodedUserProfile.roleId }
+                { '$User.roleId$': req.decodedUserProfile.roleId }
               ]
             }
           ]
