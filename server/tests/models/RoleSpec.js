@@ -1,6 +1,6 @@
 import chai from 'chai';
 import dotenv from 'dotenv';
-import Role from '../../models/Role';
+import { Role } from '../../models/';
 
 dotenv.config();
 const expect = chai.expect;

@@ -1,7 +1,5 @@
-import Document from '../models/Document';
-import User from '../models/User';
+import { Document, User } from '../models/';
 import getLimitAndOffset from '../util/getLimitAndOffset';
-
 
 /**
  * Defines the controller for the /search route.

@@ -1,7 +1,7 @@
 import chai from 'chai';
 import dotenv from 'dotenv';
 import uuid from 'uuid';
-import Document from '../../models/Document';
+import { Document } from '../../models/';
 
 dotenv.config();
 const expect = chai.expect;

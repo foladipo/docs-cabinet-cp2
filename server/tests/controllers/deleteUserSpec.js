@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import dotenv from 'dotenv';
 import bcryptjs from 'bcryptjs';
 import JWT from 'jsonwebtoken';
-import User from '../../models/User';
+import { User } from '../../models/';
 import app from '../../app';
 
 dotenv.config();

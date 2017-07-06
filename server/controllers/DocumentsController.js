@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import Document from '../models/Document';
-import User from '../models/User';
+import { Document, User } from '../models/';
 import getLimitAndOffset from '../util/getLimitAndOffset';
 
 /**

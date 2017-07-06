@@ -3,17 +3,13 @@ import dotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
 
 import { DEFAULT_ROLE_ID } from '../constants';
-import Document from '../models/Document';
-import User from '../models/User';
+import { Document, User } from '../models/';
 import getLimitAndOffset from '../util/getLimitAndOffset';
 import isValidEmail from '../util/isValidEmail';
 import isValidName from '../util/isValidName';
 import isValidPassword from '../util/isValidPassword';
 
 dotenv.config();
-
-// TODO: De-link getUserDocuments, getUser and getAllUsers, at least in
-// the JSDoc of each.
 
 /**
  * Defines the controller for the /users route.

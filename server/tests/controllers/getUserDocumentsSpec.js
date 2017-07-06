@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import dotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
 import chai from 'chai';
-import Document from '../../models/Document';
+import { Document } from '../../models/';
 import app from '../../app';
 
 dotenv.config();

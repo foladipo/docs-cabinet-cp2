@@ -1,7 +1,7 @@
 import chai from 'chai';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
-import User from '../../models/User';
+import { User } from '../../models/';
 
 dotenv.config();
 const expect = chai.expect;
