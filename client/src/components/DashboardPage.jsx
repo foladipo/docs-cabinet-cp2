@@ -57,7 +57,12 @@ export default function DashboardPage(props) {
           {props.documents.statusMessage}
         </Button>
       </div>
-      <div className={props.documents.documents.length < 1 ? '' : 'hide'}>
+      <div
+        className={
+          props.documents.documents.length < 1 &&
+          props.documents.status !== 'fetchingDocuments' ? '' : 'hide'
+        }
+      >
         <h5 className="teal lighten-2 white-text center">
           You don&rsquo;t have any documents. Please create some.
         </h5>
