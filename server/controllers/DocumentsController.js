@@ -73,7 +73,7 @@ export default class DocumentsController {
     const pathInfo = req.path.split('/');
     const documentIdString = pathInfo[1];
 
-    const documentId = Number(documentIdString);
+    const documentId = Number.parseInt(documentIdString, 10);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
@@ -222,7 +222,7 @@ export default class DocumentsController {
 
     const documentIdString = req.path.split('/')[1];
 
-    const documentId = Number(documentIdString);
+    const documentId = Number.parseInt(documentIdString, 10);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({
@@ -325,7 +325,7 @@ export default class DocumentsController {
     const userProfile = req.decodedUserProfile;
     const documentIdString = req.path.split('/')[1];
 
-    const documentId = Number(documentIdString);
+    const documentId = Number.parseInt(documentIdString, 10);
     if (Number.isNaN(documentId)) {
       res.status(400)
         .json({

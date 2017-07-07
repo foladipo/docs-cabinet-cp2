@@ -14,7 +14,7 @@ const request = supertest(app);
 const updateUserProfileEndpoint = '/api/users';
 
 describe('When it receives a PUT request, the /api/users endpoint', () => {
-  const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+  const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
   const dummyUser = {
     firstName: 'Humpty',
     lastName: 'Dumpty',

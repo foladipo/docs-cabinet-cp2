@@ -22,14 +22,14 @@ describe('When it receives a GET request, the /api/users/<id> endpoint', () => {
   };
 
   const adminUserProfile = {
-    id: Number(process.env.DEFAULT_ADMIN_USER_USERID),
+    id: Number.parseInt(process.env.DEFAULT_ADMIN_USER_USERID, 10),
     firstName: process.env.DEFAULT_ADMIN_USER_FIRSTNAME,
     lastName: process.env.DEFAULT_ADMIN_USER_LASTNAME,
     username: process.env.DEFAULT_ADMIN_USER_USERNAME,
     roleId: process.env.DEFAULT_ADMIN_USER_ROLEID
   };
 
-  const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+  const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
   const dummyUser = {
     firstName: 'Humpty',
     lastName: 'Dumpty',

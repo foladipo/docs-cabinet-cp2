@@ -254,7 +254,7 @@ export default class UsersController {
             error: 'UserExistsError'
           });
         } else {
-          const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+          const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
           const hashedPassword = bcryptjs.hashSync(password, saltLength);
           const trimmedFirstname = firstName.trim().replace(/(\s{2,})/, ' ');
           const trimmedLastname = lastName.trim().replace(/(\s{2,})/, ' ');
@@ -315,7 +315,7 @@ export default class UsersController {
       return;
     }
 
-    const targetUserId = Number(targetUserIdString);
+    const targetUserId = Number.parseInt(targetUserIdString, 10);
     if (Number.isNaN(targetUserId)) {
       res.status(400)
         .json({
@@ -346,7 +346,7 @@ export default class UsersController {
       profile.username = newProfile.username;
     }
     if (newProfile.password) {
-      const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+      const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
       profile.password = bcryptjs.hashSync(newProfile.password, saltLength);
     }
 
@@ -438,7 +438,7 @@ export default class UsersController {
       return;
     }
 
-    const targetUserId = Number(targetUserIdString);
+    const targetUserId = Number.parseInt(targetUserIdString, 10);
     if (Number.isNaN(targetUserId)) {
       res.status(400)
         .json({
@@ -545,7 +545,7 @@ export default class UsersController {
     const pathInfo = req.path.split('/');
     const idString = pathInfo[1];
 
-    const id = Number(idString);
+    const id = Number.parseInt(idString, 10);
     if (Number.isNaN(id)) {
       res.status(400)
         .json({
@@ -603,7 +603,7 @@ export default class UsersController {
     const pathInfo = req.path.split('/');
     const idString = pathInfo[1];
 
-    const id = Number(idString);
+    const id = Number.parseInt(idString, 10);
     if (Number.isNaN(id)) {
       res.status(400)
         .json({

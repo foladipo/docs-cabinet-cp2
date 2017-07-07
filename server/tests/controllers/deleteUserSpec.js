@@ -13,7 +13,7 @@ const expect = chai.expect;
 const deleteUserEndpoint = '/api/users';
 
 describe('When it receives a DELETE request, the /api/users/<id> endpoint', () => {
-  const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+  const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
   const dummyUser = {
     firstName: 'Humpty',
     lastName: 'Dumpty',
