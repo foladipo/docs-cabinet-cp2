@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
 import uuid from 'uuid';
-import { fetchUserDocuments } from '../actions/DocumentActions';
 import { logout } from '../actions/UserActions';
-import DashboardPage from './DashboardPage';
+import ViewUserDocumentsPage from './ViewUserDocumentsPage';
 import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
+import ViewAllDocumentsPage from './ViewAllDocumentsPage';
 
 /**
  * MainContainer - Renders all the Components of the dashboard.
@@ -22,23 +22,8 @@ class MainContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      limit: 30,
-      offset: 0
-    };
-
-    this.startDocumentsFetch = this.startDocumentsFetch.bind(this);
     this.getAdminSection = this.getAdminSection.bind(this);
     this.logout = this.logout.bind(this);
-  }
-
-  // TODO: Move this to DashboardPage.
-  /**
-   * Called immediately after this Component is mounted.
-   * @return {null} - Returns nothing.
-   */
-  componentDidMount() {
-    this.startDocumentsFetch();
   }
 
   /**
@@ -62,19 +47,6 @@ class MainContainer extends React.Component {
         (<SideNavItem divider key={uuid.v4()} />)
       ];
     }
-  }
-
-  /**
-   * Attempts to fetch a user's documents.
-   * @return {null} - Returns nothing.
-   */
-  startDocumentsFetch() {
-    this.props.dispatch(fetchUserDocuments(
-      this.props.user.token,
-      this.props.user.user.id,
-      this.state.limit,
-      this.state.offset
-    ));
   }
 
   /**
@@ -158,6 +130,16 @@ class MainContainer extends React.Component {
           <li key={uuid.v4()}>
             <NavLink
               exact
+              to="/dashboard/myDocuments"
+              activeClassName="teal lighten-2 white-text disabled"
+            >
+              <Icon left>library_books</Icon>
+              My documents
+            </NavLink>
+          </li>
+          <li key={uuid.v4()}>
+            <NavLink
+              exact
               to={`/dashboard/profile/${this.props.user.user.id}`}
               activeClassName="teal lighten-2 white-text disabled"
             >
@@ -174,7 +156,8 @@ class MainContainer extends React.Component {
           <Route path="/dashboard/profile" render={() => <UpdateUserPage {...this.props} />} />
           <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
           <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
-          <Route exact path="*" render={() => <DashboardPage {...this.props} />} />
+          <Route path="/dashboard/myDocuments" render={() => <ViewUserDocumentsPage {...this.props} />} />
+          <Route exact path="*" render={() => <ViewAllDocumentsPage {...this.props} />} />
         </Switch>
       </div>
     );
