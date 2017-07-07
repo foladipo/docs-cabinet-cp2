@@ -12,11 +12,11 @@ import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 
 /**
- * DashboardContainer - Renders the dashboard.
+ * MainContainer - Renders all the Components of the dashboard.
  */
-class DashboardContainer extends React.Component {
+class MainContainer extends React.Component {
   /**
-   * Creates and initializes an instance of DashboardContainer.
+   * Creates and initializes an instance of MainContainer.
    * @param {Object} props - The data passed to this Component from its parent.
    */
   constructor(props) {
@@ -186,10 +186,10 @@ const mapStoreToProps = store => ({
   documents: store.documents
 });
 
-DashboardContainer.propTypes = {
+MainContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   documents: PropTypes.objectOf(PropTypes.any).isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default connect(mapStoreToProps)(DashboardContainer);
+export default connect(mapStoreToProps)(MainContainer);

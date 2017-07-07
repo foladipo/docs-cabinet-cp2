@@ -81,7 +81,7 @@ class DeleteUserPage extends Component {
           account will be lost forever.
         </p>
         <p>
-          Type <b className="white red-text">{this.props.targetUser.username}</b>
+          Type <b className="white red-text">{this.props.targetUser.username}</b>&nbsp;
           in the field below if you&rsquo;re sure you want to delete this account.
         </p>
         <div>

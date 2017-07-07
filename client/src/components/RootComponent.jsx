@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AuthenticatedRoute from './AuthenticatedRoute';
-import DashboardContainer from './DashboardContainer';
+import MainContainer from './MainContainer';
 import AuthenticationContainer from './AuthenticationContainer';
 import NotFound from './NotFound';
 
@@ -15,7 +15,7 @@ export default function RootComponent() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={AuthenticationContainer} />
-        <AuthenticatedRoute path="/dashboard*" component={DashboardContainer} />
+        <AuthenticatedRoute path="/dashboard*" component={MainContainer} />
         <AuthenticatedRoute exact path="*" component={NotFound} />
       </Switch>
     </BrowserRouter>
