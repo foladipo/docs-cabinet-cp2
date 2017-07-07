@@ -270,7 +270,10 @@ class UpdateUserPage extends Component {
    */
   showDeleteAccountSection() {
     if (this.state.targetUser) {
-      if (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id) {
+      if (
+        (this.props.user.user.roleId < 1) ||
+        (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id)
+      ) {
         return (
           <div>
             {/* TODO: If a user deletes his or her own account, log him/her out immediately. */}
@@ -401,16 +404,6 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    // TODO: Log out a user when he/she deletes his/her own account.
-    if (this.state.targetUser) {
-      if (this.state.targetUser.id === this.props.user.deletedUserId
-        && this.props.user.status === 'deletedUser') {
-        $('#deleteAccountModal').modal('close');
-        Materialize.toast(this.props.user.statusMessage, 5000);
-        return <Redirect to="/dashboard" />;
-      }
-    }
-
     return (
       <div className="scrollable-page update-user-page">
         {this.showUpdateForm()}

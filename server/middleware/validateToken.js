@@ -1,5 +1,6 @@
 import JWT from 'jsonwebtoken';
-import User from '../models/User';
+import { User } from '../models/';
+
 
 /**
  * Validates the token supplied to any HTTP request to a given route, before

@@ -56,7 +56,7 @@ class DeleteUserPage extends Component {
   attemptToDeleteUser(event) {
     event.preventDefault();
 
-    if (!this.hasConhasConfirmedDeletion()) {
+    if (!this.hasConfirmedDeletion()) {
       return;
     }
 

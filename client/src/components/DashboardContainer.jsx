@@ -11,6 +11,8 @@ import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 
+// TODO: Auto logout a user when you get errors like NonExistentUserError, InvalidTokenError etc.
+
 /**
  * DashboardContainer - Renders the dashboard.
  */
@@ -90,13 +92,21 @@ class DashboardContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (!this.props.user.isLoggedIn) {
-      return <Redirect to="/" />;
+    if (this.props.user.status === 'deletedUser'
+      && this.props.user.user.id === this.props.user.deletedUserId) {
+      window.localStorage.clear();
+      $('#deleteAccountModal').modal('close');
+      Materialize.toast(this.props.user.statusMessage, 5000);
+      return <Redirect to="/dashboard" />;
     }
 
     if (this.props.documents.status === 'invalidTokenError') {
       window.localStorage.clear();
       Materialize.toast(this.props.documents.statusMessage, 5000);
+      return <Redirect to="/" />;
+    }
+
+    if (!this.props.user.isLoggedIn) {
       return <Redirect to="/" />;
     }
 
@@ -153,14 +163,25 @@ class DashboardContainer extends React.Component {
               Home
             </NavLink>
           </li>
+          <li key={uuid.v4()}>
+            <NavLink
+              exact
+              to={`/dashboard/profile/${this.props.user.user.id}`}
+              activeClassName="teal lighten-2 white-text disabled"
+            >
+              <Icon left>person_outline</Icon>
+              Update profile
+            </NavLink>
+          </li>
           <SideNavItem divider />
           {this.getAdminSection()}
           <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
         </SideNav>
 
         <Switch>
-          <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
+          <Route path="/dashboard/profile" render={() => <UpdateUserPage {...this.props} />} />
           <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
+          <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
           <Route exact path="*" render={() => <DashboardPage {...this.props} />} />
         </Switch>
       </div>

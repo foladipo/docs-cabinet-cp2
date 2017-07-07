@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import Document from '../models/Document';
-import User from '../models/User';
+import { Document, User } from '../models/';
 import getLimitAndOffset from '../util/getLimitAndOffset';
 
 /**
@@ -26,7 +25,7 @@ export default class DocumentsController {
     const categories = reqBody.categories;
     const tags = reqBody.tags;
 
-    const createdBy = req.decodedUserProfile.id;
+    const authorId = req.decodedUserProfile.id;
 
     const newDocument = {
       title,
@@ -34,7 +33,7 @@ export default class DocumentsController {
       access,
       categories,
       tags,
-      createdBy
+      authorId
     };
     Document
       .create(newDocument)
@@ -50,7 +49,7 @@ export default class DocumentsController {
               categories: createdDocument.categories,
               tags: createdDocument.tags,
               createdAt: createdDocument.createdAt,
-              createdBy: createdDocument.createdBy
+              authorId: createdDocument.authorId
             }]
           });
       });
@@ -92,7 +91,7 @@ export default class DocumentsController {
         where: {
           id: documentId
         },
-        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy']
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId']
       })
       .then((foundDocument) => {
         if (foundDocument) {
@@ -106,7 +105,7 @@ export default class DocumentsController {
           }
 
           if (foundDocument.access === 'private') {
-            if (id === foundDocument.createdBy || roleId > 0) {
+            if (id === foundDocument.authorId || roleId > 0) {
               res.status(200)
                 .json({
                   message: 'Document found.',
@@ -126,7 +125,7 @@ export default class DocumentsController {
             User
               .findOne({
                 where: {
-                  id: foundDocument.createdBy
+                  id: foundDocument.authorId
                 },
                 attributes: ['id', 'roleId']
               })
@@ -174,15 +173,21 @@ export default class DocumentsController {
 
     Document
       .findAll({
-        // TODO: Add restrictions for 'role' and admin access of private
-        // files, using hasMany(), belongsTo() etc.
+        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'username', 'roleId'] }],
         where: {
           $or: [
             { access: 'public' },
-            { createdBy: id },
+            { authorId: id },
+            {
+              $and: [
+                { access: 'role' },
+                { '$User.roleId$': req.decodedUserProfile.roleId }
+              ]
+            }
           ]
         },
-        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       })
@@ -241,7 +246,7 @@ export default class DocumentsController {
       .then((foundDocument) => {
         if (foundDocument) {
           const updaterId = userProfile.id;
-          if (foundDocument.createdBy === updaterId) {
+          if (foundDocument.authorId === updaterId) {
             const document = {};
             if (documentUpdate.title) {
               document.title = documentUpdate.title;
@@ -279,7 +284,7 @@ export default class DocumentsController {
                       categories: updatedDocument.categories,
                       tags: updatedDocument.tags,
                       createdAt: updatedDocument.createdAt,
-                      createdBy: updatedDocument.createdBy,
+                      authorId: updatedDocument.authorId,
                     }]
                   });
               });
@@ -335,7 +340,7 @@ export default class DocumentsController {
       .then((foundDocument) => {
         if (foundDocument) {
           const deleterId = userProfile.id;
-          if (foundDocument.createdBy === deleterId || userProfile.roleId > 0) {
+          if (foundDocument.authorId === deleterId || userProfile.roleId > 0) {
             Document
               .destroy({
                 where: {

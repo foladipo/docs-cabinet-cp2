@@ -39,7 +39,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      createdBy: {
+      authorId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         onUpdate: 'CASCADE',

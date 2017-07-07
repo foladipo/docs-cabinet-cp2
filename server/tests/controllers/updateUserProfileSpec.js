@@ -3,7 +3,7 @@ import chai from 'chai';
 import JWT from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import dotenv from 'dotenv';
-import User from '../../models/User';
+import { User } from '../../models/';
 import app from '../../app';
 
 dotenv.config();

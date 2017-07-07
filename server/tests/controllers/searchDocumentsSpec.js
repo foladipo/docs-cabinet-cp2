@@ -4,7 +4,7 @@ import JWT from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import uuid from 'uuid';
 import { DEFAULT_REGULAR_USER } from '../../constants';
-import Document from '../../models/Document';
+import { Document } from '../../models/';
 import app from '../../app';
 
 dotenv.config();
@@ -20,7 +20,7 @@ describe('When it receives a GET request, the /api/search/documents endpoint', (
     access: 'public',
     categories: 'quuz',
     tags: 'qlat',
-    createdBy: 0
+    authorId: 0
   };
 
   before('Create the sample document to be used in this suite\'s specs', (done) => {

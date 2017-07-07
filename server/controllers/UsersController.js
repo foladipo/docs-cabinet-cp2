@@ -3,17 +3,13 @@ import dotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
 
 import { DEFAULT_ROLE_ID } from '../constants';
-import Document from '../models/Document';
-import User from '../models/User';
+import { Document, User } from '../models/';
 import getLimitAndOffset from '../util/getLimitAndOffset';
 import isValidEmail from '../util/isValidEmail';
 import isValidName from '../util/isValidName';
 import isValidPassword from '../util/isValidPassword';
 
 dotenv.config();
-
-// TODO: De-link getUserDocuments, getUser and getAllUsers, at least in
-// the JSDoc of each.
 
 /**
  * Defines the controller for the /users route.
@@ -463,7 +459,8 @@ export default class UsersController {
           if (userCount > 0) {
             res.status(200)
               .json({
-                message: 'It\'s a pity, but you successfully deleted that account.'
+                message: 'We hate to see you go! But your account was successfully deleted.',
+                users: [req.decodedUserProfile]
               });
           } else {
             res.status(404)
@@ -565,9 +562,9 @@ export default class UsersController {
           Document
             .findAll({
               where: {
-                createdBy: id
+                authorId: id
               },
-              attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+              attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
               order: [['createdAt', 'DESC']],
               returning: true
             })

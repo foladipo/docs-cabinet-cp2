@@ -1,7 +1,5 @@
-import Document from '../models/Document';
-import User from '../models/User';
+import { Document, User } from '../models/';
 import getLimitAndOffset from '../util/getLimitAndOffset';
-
 
 /**
  * Defines the controller for the /search route.
@@ -93,17 +91,24 @@ export default class SearchController {
       return;
     }
 
-    // TODO: Add code for when access === 'role'.
     Document
       .findAll({
+        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'username', 'roleId'] }],
         where: {
           title: { $iLike: `%${documentTitleQuery}%` },
           $or: [
             { access: 'public' },
-            { access: 'private', createdBy: userProfile.id }
+            { access: 'private', authorId: userProfile.id },
+            {
+              $and: [
+                { access: 'role' },
+                { '$User.roleId$': req.decodedUserProfile.roleId }
+              ]
+            }
           ]
         },
-        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'createdBy'],
+        attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       })
