@@ -11,8 +11,6 @@ import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 
-// TODO: Auto logout a user when you get errors like NonExistentUserError, InvalidTokenError etc.
-
 /**
  * DashboardContainer - Renders the dashboard.
  */
@@ -100,13 +98,8 @@ class DashboardContainer extends React.Component {
       return <Redirect to="/dashboard" />;
     }
 
-    if (this.props.documents.status === 'invalidTokenError') {
-      window.localStorage.clear();
-      Materialize.toast(this.props.documents.statusMessage, 5000);
-      return <Redirect to="/" />;
-    }
-
     if (!this.props.user.isLoggedIn) {
+      Materialize.toast(this.props.user.statusMessage, 5000);
       return <Redirect to="/" />;
     }
 
@@ -114,11 +107,10 @@ class DashboardContainer extends React.Component {
       $('#updateDocumentModal').modal('close');
     }
 
-    if (this.props.documents.status !== 'fetchingDocuments') {
-      Materialize.toast(this.props.documents.statusMessage, 3000);
-    }
-
-    const trigger = <Button className="dashboard-menu-btn">Menu<Icon left>menu</Icon></Button>;
+    const trigger = (<Button className="dashboard-menu-btn">
+      Menu
+      <Icon left>menu</Icon>
+    </Button>);
 
     return (
       <div className="authenticated-user-area grey lighten-3">

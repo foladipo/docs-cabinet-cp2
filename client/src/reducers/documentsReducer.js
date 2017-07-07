@@ -24,6 +24,7 @@ import {
  */
 export default function documentsReducer(state, action) {
   const newState = Object.assign({}, state);
+
   switch (action.type) {
     case LOGOUT_PENDING:
       newState.documents = [];
@@ -43,14 +44,14 @@ export default function documentsReducer(state, action) {
 
     case CREATE_DOCUMENT_REJECTED:
       newState.status = 'documentCreationFailed';
-      newState.statusMessage = 'Oops! Failed to create document.';
+      newState.statusMessage = action.payload.message;
       break;
 
     case CREATE_DOCUMENT_FULFILLED:
       newState.count = state.count + action.payload.documents.length;
       newState.documents = action.payload.documents.concat(state.documents);
       newState.status = 'documentCreated';
-      newState.statusMessage = 'Document created!';
+      newState.statusMessage = action.payload.message;
       break;
 
     case FETCH_USER_DOCUMENTS_FULFILLED:
@@ -58,18 +59,13 @@ export default function documentsReducer(state, action) {
       newState.count = state.count + action.payload.documents.length;
       newState.documents = state.documents.concat(action.payload.documents);
       newState.status = 'documentsFetched';
-      newState.statusMessage = 'Finished loading documents.';
+      newState.statusMessage = action.payload.message;
       break;
 
     case FETCH_USER_DOCUMENTS_REJECTED:
     case FETCH_DOCUMENTS_REJECTED:
-      if (action.payload.error === 'InvalidTokenError') {
-        newState.status = 'invalidTokenError';
-        newState.statusMessage = 'You\'re not logged in. Please log in again.';
-        break;
-      }
       newState.status = 'documentsFetchFailed';
-      newState.statusMessage = 'Failed to get documents. Ask again, but with nicer words.';
+      newState.statusMessage = action.payload.message;
       break;
 
     case DELETE_DOCUMENT_PENDING:
@@ -80,13 +76,13 @@ export default function documentsReducer(state, action) {
 
     case DELETE_DOCUMENT_REJECTED:
       newState.status = 'deleteDocumentFailed';
-      newState.statusMessage = 'Failed to delete document. Maybe it doesn\'t want to die.';
+      newState.statusMessage = action.payload.message;
       newState.targetDocument = '';
       break;
 
     case DELETE_DOCUMENT_FULFILLED:
       newState.status = 'documentDeleted';
-      newState.statusMessage = 'Phew! Got rid of that document.';
+      newState.statusMessage = action.payload.message;
       newState.documents = state.documents.filter(doc =>
         doc.id !== action.payload.targetDocument
       );
@@ -97,5 +93,18 @@ export default function documentsReducer(state, action) {
     default:
       break;
   }
+
+  if (action.payload !== undefined) {
+    if (
+      action.payload.error === 'ExpiredTokenError' ||
+      action.payload.error === 'InvalidTokenError'
+    ) {
+      window.localStorage.clear();
+      newState.documents = [];
+      newState.count = 0;
+      return newState;
+    }
+  }
+
   return newState;
 }
