@@ -136,7 +136,7 @@ export function deleteDocument(token, documentId) {
     dispatch({
       type: DELETE_DOCUMENT_PENDING,
       payload: {
-        targetDocument: documentId
+        targetDocumentId: documentId
       }
     });
 
@@ -150,7 +150,7 @@ export function deleteDocument(token, documentId) {
             type: DELETE_DOCUMENT_REJECTED,
             payload: {
               error: err.response.body.error,
-              targetDocument: documentId
+              targetDocumentId: documentId
             }
           });
           return;
@@ -159,7 +159,7 @@ export function deleteDocument(token, documentId) {
           type: DELETE_DOCUMENT_FULFILLED,
           payload: {
             response: res.body,
-            targetDocument: documentId
+            targetDocumentId: documentId
           }
         });
       });

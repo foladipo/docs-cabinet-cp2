@@ -71,23 +71,23 @@ export default function documentsReducer(state, action) {
     case DELETE_DOCUMENT_PENDING:
       newState.status = 'deletingDocument';
       newState.statusMessage = 'Deleting document... Please wait...';
-      newState.targetDocument = action.payload.targetDocument;
+      newState.targetDocumentId = action.payload.targetDocumentId;
       break;
 
     case DELETE_DOCUMENT_REJECTED:
       newState.status = 'deleteDocumentFailed';
       newState.statusMessage = action.payload.message;
-      newState.targetDocument = '';
+      newState.targetDocumentId = '';
       break;
 
     case DELETE_DOCUMENT_FULFILLED:
       newState.status = 'documentDeleted';
       newState.statusMessage = action.payload.message;
       newState.documents = state.documents.filter(doc =>
-        doc.id !== action.payload.targetDocument
+        doc.id !== action.payload.targetDocumentId
       );
       newState.count = newState.documents.length;
-      newState.targetDocument = '';
+      newState.targetDocumentId = -1;
       break;
 
     default:

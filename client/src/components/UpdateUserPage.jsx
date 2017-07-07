@@ -275,7 +275,7 @@ class UpdateUserPage extends Component {
       ) {
         return (
           <div>
-            {/* TODO: If a user deletes his or her own account, log him/her out immediately. */}
+            {/* TODO: Move this to a separate Component. */}
             <h3 className="red-text">Danger zone</h3>
             <div className="divider" />
             <div className="delete-user-section red-border all-corners-rounded">
