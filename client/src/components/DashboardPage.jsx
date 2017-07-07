@@ -17,13 +17,13 @@ export default function DashboardPage(props) {
   const showStatusMessage = props.documents.status === 'fetchingDocuments' ||
     props.documents.status === 'documentsFetchFailed';
 
-  const documentsComponents = props.documents.documents.map(doc => (
+  const documentComponents = props.documents.documents.map(doc => (
     <Document
       key={uuid.v4()}
       dispatch={props.dispatch}
       token={props.user.token}
       documentsStatus={props.documents.status}
-      targetDocument={props.documents.targetDocument}
+      targetDocumentId={props.documents.targetDocumentId}
       {...doc}
     />
   ));
@@ -39,6 +39,11 @@ export default function DashboardPage(props) {
       OFFSET
     ));
   };
+
+  if (props.documents.status === 'documentDeleted') {
+    $('.deleteDocumentModal').modal('close');
+    Materialize.toast(props.documents.statusMessage, 5000);
+  }
 
   return (
     <div className="scrollable-page dashboard-page">
@@ -67,7 +72,7 @@ export default function DashboardPage(props) {
           You don&rsquo;t have any documents. Please create some.
         </h5>
       </div>
-      <div className="dashboard-documents row">{documentsComponents}</div>
+      <div className="dashboard-documents row">{documentComponents}</div>
     </div>
   );
 }
