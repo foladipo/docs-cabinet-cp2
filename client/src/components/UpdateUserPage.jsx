@@ -72,7 +72,6 @@ class UpdateUserPage extends Component {
         hasValidTargetUserId: true,
         targetUser: this.props.user.user
       });
-      this.setState();
       return;
     }
 
