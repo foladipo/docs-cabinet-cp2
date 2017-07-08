@@ -14,7 +14,7 @@
  */
 export default function adminsOnly(req, res, next) {
   const path = req.path;
-  const targetUserId = Number(path.split('/')[1]);
+  const targetUserId = Number.parseInt(path.split('/')[1], 10);
   if (Number.isNaN(targetUserId)) {
     res.status(400)
       .json({

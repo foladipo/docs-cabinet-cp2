@@ -28,6 +28,7 @@ import {
  */
 export default function userReducer(state, action) {
   const newState = Object.assign({}, state);
+
   switch (action.type) {
     case SIGN_UP_PENDING:
     case LOGIN_PENDING:
@@ -138,6 +139,22 @@ export default function userReducer(state, action) {
 
     default:
       break;
+  }
+
+  if (action.payload !== undefined) {
+    if (action.payload.error === 'ExpiredTokenError' ||
+      action.payload.error === 'InvalidTokenError') {
+      if (action.payload.error === 'ExpiredTokenError') {
+        newState.status = 'expiredToken';
+      }
+      if (action.payload.error === 'InvalidTokenError') {
+        newState.status = 'invalidToken';
+      }
+      window.localStorage.clear();
+      newState.isLoggedIn = false;
+      newState.isLoggingIn = false;
+      newState.isLoggingOut = false;
+    }
   }
 
   return newState;

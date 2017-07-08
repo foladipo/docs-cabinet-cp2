@@ -21,7 +21,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
   };
 
   const adminUserProfile = {
-    id: Number(process.env.DEFAULT_ADMIN_USER_USERID),
+    id: Number.parseInt(process.env.DEFAULT_ADMIN_USER_USERID, 10),
     firstName: process.env.DEFAULT_ADMIN_USER_FIRSTNAME,
     lastName: process.env.DEFAULT_ADMIN_USER_LASTNAME,
     username: process.env.DEFAULT_ADMIN_USER_USERNAME,

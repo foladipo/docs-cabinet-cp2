@@ -7,7 +7,7 @@ dotenv.config();
 const expect = chai.expect;
 
 describe('The User model', () => {
-  const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+  const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
   const dummyUser = {
     firstName: 'Don',
     lastName: 'Quixote',

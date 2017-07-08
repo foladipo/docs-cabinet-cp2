@@ -13,7 +13,7 @@ const request = supertest(app);
 const searchUsersEndpoint = '/api/search/users';
 
 describe('When it receives a GET request, the /api/search/users endpoint', () => {
-  const saltLength = Number(process.env.PASSWORD_SALT_LENGTH);
+  const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
   const dummyUser = {
     firstName: 'Humpty',
     lastName: 'Dumpty',

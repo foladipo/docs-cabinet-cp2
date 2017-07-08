@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-materialize';
-import { deleteDocument } from '../actions/DocumentActions';
+import { Button, Modal } from 'react-materialize';
+import ConfirmDocumentDeletion from './ConfirmDocumentDeletion';
 
 /**
  * Document - Renders a single document.
@@ -16,24 +16,21 @@ function Document(props) {
       img = props.docImage;
     } else {
       if (props.access === 'public') {
-        img = '/img/notice-board.png';
+        img = '/img/public-documents.png';
       }
       if (props.access === 'private') {
-        img = '/img/PdfViewer_Illustration_Password_Protected_Documents.png';
+        img = '/img/private-documents.png';
       }
       if (props.access === 'role') {
-        img = '/img/flat-business-team-with-documents-and-laptops_23-2147552538.jpg';
+        img = '/img/role-documents.jpg';
       }
     }
     return img;
   };
 
-  const deleteMe = () => {
-    props.dispatch(deleteDocument(props.token, props.id));
-  };
-
   const isDeletingMe = () => {
-    if (props.documentsStatus === 'deletingDocument' && props.targetDocument === props.id) {
+    if (props.documentsStatus === 'deletingDocument' &&
+      props.targetDocumentId === props.id) {
       return true;
     }
     return false;
@@ -44,7 +41,11 @@ function Document(props) {
       <div className="col s12 m6 l4 hoverable">
         <div className="card small">
           <div className="card-image">
-            <img className="materialboxed responsive-img" src={getDocImage()} alt={props.title} />
+            <img
+              className="materialboxed responsive-img"
+              src={getDocImage()}
+              alt={props.title}
+            />
             <span className="card-title black-text">{props.title}</span>
           </div>
           <div className="card-content">
@@ -61,13 +62,26 @@ function Document(props) {
                 />
               </li>
               <li>
-                <Button
-                  floating
-                  className="red quarter-side-margin"
-                  waves="light"
-                  icon="delete_forever"
-                  onClick={deleteMe}
-                />
+                <Modal
+                  className="deleteDocumentModal"
+                  header="Delete document"
+                  trigger={
+                    <Button
+                      floating
+                      className="red quarter-side-margin"
+                      waves="light"
+                      icon="delete_forever"
+                    />
+                  }
+                >
+                  <ConfirmDocumentDeletion
+                    dispatch={props.dispatch}
+                    token={props.token}
+                    id={props.id}
+                    documentsStatus={props.documentsStatus}
+                    targetDocumentId={props.targetDocumentId}
+                  />
+                </Modal>
               </li>
             </ul>
           </div>
@@ -78,19 +92,13 @@ function Document(props) {
 }
 
 Document.propTypes = {
-  content: PropTypes.string,
-  documentsStatus: PropTypes.string,
-  id: PropTypes.number,
-  title: PropTypes.string,
-  targetDocument: PropTypes.string,
-};
-
-Document.defaultProps = {
-  content: undefined,
-  documentsStatus: undefined,
-  id: undefined,
-  targetDocument: undefined,
-  title: undefined
+  content: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  documentsStatus: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  targetDocumentId: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired
 };
 
 export default Document;

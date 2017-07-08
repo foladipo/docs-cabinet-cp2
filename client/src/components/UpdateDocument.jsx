@@ -19,12 +19,11 @@ class UpdateDocument extends Component {
       errorMessage: '',
       title: props.title,
       content: props.content,
-      access: props.access,
+      access: 'public',
       categories: props.categories,
       tags: props.tags
     };
 
-    this.hasValidAccess = this.hasValidAccess.bind(this);
     this.hasValidTitle = this.hasValidTitle.bind(this);
     this.hasValidContent = this.hasValidContent.bind(this);
     this.hasValidCategories = this.hasValidCategories.bind(this);
@@ -38,14 +37,25 @@ class UpdateDocument extends Component {
   }
 
   /**
-   * Tests the validity of a document's access type.
-   * @return {Boolean} - Whether or not a document's access type is valid.
+   * Called immediately before rendering, when new props are or
+   * state is being received.
+   * @param {Object} nextProps - The new props this Component
+   * will receive when re-rendered.
+   * @return {null} - Returns nothing.
    */
-  hasValidAccess() {
-    const access = this.state.access;
-    if (!access) return false;
-    const knownAccessTypes = ['public', 'private', 'role'];
-    return knownAccessTypes.indexOf(access) > -1;
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.documents.status === 'documentCreated') {
+      this.setState({
+        errorMessage: '',
+        title: this.props.title,
+        content: this.props.content,
+        access: 'public',
+        categories: this.props.categories,
+        tags: this.props.tags
+      });
+      $('#updateDocumentForm .update-doc-text-input').val('');
+      $('#updateDocumentForm .update-doc-select-access').val('public');
+    }
   }
 
   /**
@@ -56,7 +66,7 @@ class UpdateDocument extends Component {
     const title = this.state.title;
     if (!title) return false;
     const strippedTitle = title.replace(/(\s+)/, '');
-    return strippedTitle.length > 0;
+    return strippedTitle.length > 1;
   }
 
   /**
@@ -67,7 +77,7 @@ class UpdateDocument extends Component {
     const content = this.state.content;
     if (!content) return false;
     const strippedContent = content.replace(/(\s+)/, '');
-    return strippedContent.length > 0;
+    return strippedContent.length > 1;
   }
 
   /**
@@ -78,7 +88,7 @@ class UpdateDocument extends Component {
     const categories = this.state.categories;
     if (!categories) return false;
     const strippedCategories = categories.replace(/(\s+)/, '');
-    return strippedCategories.length > 0;
+    return strippedCategories.length > 1;
   }
 
   /**
@@ -89,7 +99,7 @@ class UpdateDocument extends Component {
     const tags = this.state.tags;
     if (!tags) return false;
     const strippedTags = tags.replace(/(\s+)/, '');
-    return strippedTags.length > 0;
+    return strippedTags.length > 1;
   }
 
   /**
@@ -152,11 +162,6 @@ class UpdateDocument extends Component {
     event.preventDefault();
 
     // Needed because a form can be submitted without the submit button.
-    const access = this.state.access;
-    if (!this.hasValidAccess(access)) {
-      this.setState({ errorMessage: 'Please choose a valid access type.' });
-      return;
-    }
     const title = this.state.title;
     if (!this.hasValidTitle(title)) {
       this.setState({ errorMessage: 'Supply a title that has one or more characters that are not whitespace.' });
@@ -197,7 +202,6 @@ class UpdateDocument extends Component {
   render() {
     // TODO: isValidDocument works fine, but why do these all become true once one of them is?
     const isValidDocument = (
-      this.hasValidAccess(this.state.access) &&
       this.hasValidTitle(this.state.title) &&
       this.hasValidContent(this.state.content) &&
       this.hasValidCategories(this.state.categories) &&
@@ -206,7 +210,7 @@ class UpdateDocument extends Component {
 
     return (
       <div className="row">
-        <form>
+        <form id="updateDocumentForm">
           <h6 className="red-text text-lighten-2">**All fields are required.</h6>
           <div className="red lighten-2">
             <p className="white-text center">
@@ -220,6 +224,7 @@ class UpdateDocument extends Component {
               m={6}
               type="select"
               label="Access type"
+              className="update-doc-select-access"
               defaultValue="public"
               onChange={this.updateAccess}
             >
@@ -228,13 +233,13 @@ class UpdateDocument extends Component {
               <option value="role">Role</option>
             </Input>
           </div>
-          <Input s={12} label="Title" type="text" onChange={this.updateTitle}>
+          <Input s={12} className="update-doc-text-input" label="Title" type="text" onChange={this.updateTitle}>
             <Icon>title</Icon>
           </Input>
-          <Input s={12} label="Categories" type="text" onChange={this.updateCategories}>
+          <Input s={12} className="update-doc-text-input" label="Categories" type="text" onChange={this.updateCategories}>
             <Icon>bookmark_border</Icon>
           </Input>
-          <Input s={12} label="Tags" type="text" onChange={this.updateTags}>
+          <Input s={12} className="update-doc-text-input" label="Tags" type="text" onChange={this.updateTags}>
             <Icon>label_outline</Icon>
           </Input>
           <span className="col s12">Document content<Icon left>mode_edit</Icon></span>
@@ -242,7 +247,7 @@ class UpdateDocument extends Component {
           <div className="col s12">
             <textarea
               rows="10"
-              className="materialize-textarea"
+              className="materialize-textarea update-doc-text-input"
               onChange={this.updateContent}
             />
             <br />
@@ -264,27 +269,24 @@ class UpdateDocument extends Component {
 }
 
 UpdateDocument.propTypes = {
-  access: PropTypes.string,
-  categories: PropTypes.string,
-  dispatch: PropTypes.func,
+  title: PropTypes.string,
   content: PropTypes.string,
+  categories: PropTypes.string,
+  tags: PropTypes.string,
   mode: PropTypes.string,
   modeMessage: PropTypes.string,
-  user: PropTypes.objectOf(PropTypes.any),
-  tags: PropTypes.string,
-  title: PropTypes.string
+  dispatch: PropTypes.func.isRequired,
+  user: PropTypes.objectOf(PropTypes.any).isRequired,
+  documents: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
 UpdateDocument.defaultProps = {
-  access: undefined,
-  categories: undefined,
-  dispatch: undefined,
+  title: undefined,
   content: undefined,
-  mode: undefined,
-  modeMessage: undefined,
-  user: {},
+  categories: undefined,
   tags: undefined,
-  title: undefined
+  mode: undefined,
+  modeMessage: undefined
 };
 
 export default UpdateDocument;

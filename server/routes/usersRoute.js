@@ -42,15 +42,11 @@ const usersRouter = express.Router();
  *   NewUser:
  *     type: object
  *     required:
- *       - id
  *       - username
  *       - password
  *       - firstName
  *       - lastName
- *       - roleId
  *     properties:
- *       id:
- *         type: integer
  *       username:
  *         type: string
  *       password:
@@ -59,8 +55,6 @@ const usersRouter = express.Router();
  *         type: string
  *       lastName:
  *         type: string
- *       roleId:
- *         type: integer
  *   User:
  *      allOf:
  *       - $ref: '#definitions/NewUser'
@@ -266,7 +260,7 @@ usersRouter.route('/:id/documents')
 usersRouter.route('/login')
   /**
    * @swagger
-   * /api/login:
+   * /api/users/login:
    *   post:
    *     description: Logs a user in.
    *     tags:
@@ -300,7 +294,7 @@ usersRouter.route('/login')
 usersRouter.route('/logout')
   /**
    * @swagger
-   * /api/logout:
+   * /api/users/logout:
    *   post:
    *     description: Logs a user out
    *     tags:

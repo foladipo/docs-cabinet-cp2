@@ -72,7 +72,6 @@ class UpdateUserPage extends Component {
         hasValidTargetUserId: true,
         targetUser: this.props.user.user
       });
-      this.setState();
       return;
     }
 
@@ -276,7 +275,7 @@ class UpdateUserPage extends Component {
       ) {
         return (
           <div>
-            {/* TODO: If a user deletes his or her own account, log him/her out immediately. */}
+            {/* TODO: Move this to a separate Component. */}
             <h3 className="red-text">Danger zone</h3>
             <div className="divider" />
             <div className="delete-user-section red-border all-corners-rounded">
@@ -332,10 +331,10 @@ class UpdateUserPage extends Component {
       return (
         <div className="container">
           <div className="center-align white-text">
-            <h3 className={this.props.user.status === 'updatingUser' ? 'orange' : 'hide'}>{this.props.user.statusMessage}</h3>
-            <h3 className={this.props.user.status === 'updateUserFailed' ? 'red lighten-2' : 'hide'}>{this.props.user.statusMessage}</h3>
-            <h3 className={this.state.hasValidTargetUserId ? 'hide' : 'red lighten-2 white-text'}>{this.state.message}</h3>
-            <h4 className={this.props.user.status === 'updatedUser' ? 'teal lighten-3' : 'hide'}>{this.props.user.statusMessage}</h4>
+            <h5 className={this.props.user.status === 'updatingUser' ? 'orange' : 'hide'}>{this.props.user.statusMessage}</h5>
+            <h5 className={this.props.user.status === 'updateUserFailed' ? 'red lighten-2' : 'hide'}>{this.props.user.statusMessage}</h5>
+            <h5 className={this.state.hasValidTargetUserId ? 'hide' : 'red lighten-2 white-text'}>{this.state.message}</h5>
+            <h5 className={this.props.user.status === 'updatedUser' ? 'teal lighten-3' : 'hide'}>{this.props.user.statusMessage}</h5>
           </div>
           <div>
             <h3>Update profile</h3>
@@ -404,6 +403,11 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
+    if (!this.props.user.isLoggedIn) {
+      Materialize.toast(this.props.user.statusMessage, 5000);
+      return <Redirect to="/" />;
+    }
+
     return (
       <div className="scrollable-page update-user-page">
         {this.showUpdateForm()}

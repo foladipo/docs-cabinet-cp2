@@ -36,15 +36,11 @@ const searchRouter = express.Router();
  *   NewUser:
  *     type: object
  *     required:
- *       - id
  *       - username
  *       - password
  *       - firstName
  *       - lastName
- *       - roleId
  *     properties:
- *       id:
- *         type: integer
  *       username:
  *         type: string
  *       password:
@@ -53,8 +49,6 @@ const searchRouter = express.Router();
  *         type: string
  *       lastName:
  *         type: string
- *       roleId:
- *         type: integer
  *   User:
  *      allOf:
  *        - $ref: '#definitions/NewUser'
