@@ -48,15 +48,15 @@ export default function validateToken(req, res, next) {
     if (errorType === 'TokenExpiredError') {
       res.status(401)
         .json({
-          message: 'Your login record has expired. Please sign in to get a new one.',
+          message: 'Your authentication record has expired. Please log in to get a new one.',
           error: 'ExpiredTokenError'
         });
     } else {
       res.status(401)
-      .json({
-        message: 'You don\'t have a valid login record. Please sign in to get a new one.',
-        error: 'InvalidTokenError'
-      });
+        .json({
+          message: 'You don\'t have a valid authentication record. Please log in to get a new one.',
+          error: 'InvalidTokenError'
+        });
     }
     return;
   }

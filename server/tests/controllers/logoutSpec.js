@@ -41,7 +41,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
-        message: 'Your token is invalid. Please sign in to get a new one.',
+        message: 'You don\'t have a valid authentication record. Please log in to get a new one.',
         error: 'InvalidTokenError'
       }, done);
   });
@@ -62,7 +62,7 @@ describe('When POST\'ed to, the /api/users/logout endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(401)
       .expect({
-        message: 'Your identification token is expired. Please sign in to get a new one.',
+        message: 'Your authentication record has expired. Please log in to get a new one.',
         error: 'ExpiredTokenError'
       }, done);
   });

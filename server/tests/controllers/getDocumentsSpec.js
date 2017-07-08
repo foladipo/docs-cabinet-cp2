@@ -24,7 +24,7 @@ describe('When a user GET\'s it, the /api/documents endpoint', () => {
       .set('x-docs-cabinet-authentication', 'SOME_RANDOM_INCORRECT_TOKEN')
       .expect(401)
       .expect({
-        message: 'Your token is invalid. Please sign in to get a new one.',
+        message: 'You don\'t have a valid authentication record. Please log in to get a new one.',
         error: 'InvalidTokenError'
       }, done);
   });
