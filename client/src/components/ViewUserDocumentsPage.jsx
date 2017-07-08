@@ -7,8 +7,7 @@ import { fetchUserDocuments } from '../actions/DocumentActions';
 import { DOCUMENT_LIMIT, DOCUMENT_OFFSET } from '../constants/';
 
 /**
- * ViewUserDocumentsPage - Renders the dashboard, which is mainly a list of
- * public, personal or 'role' documents.
+ * ViewUserDocumentsPage - Shows a user a list of his/her own documents.
  */
 class ViewUserDocumentsPage extends Component {
   /**
@@ -26,8 +25,12 @@ class ViewUserDocumentsPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
-    // TODO: Check the store for user documents first.
-    this.startDocumentsFetch();
+    if (
+      this.props.documents.userDocuments === undefined ||
+      this.props.documents.userDocuments.length < 1
+    ) {
+      this.startDocumentsFetch();
+    }
   }
 
   /**
@@ -48,11 +51,12 @@ class ViewUserDocumentsPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
+    console.log('second', this.props);
     const showStatusMessage =
-      this.props.documents.status === 'fetchingDocuments' ||
-      this.props.documents.status === 'documentsFetchFailed';
+      this.props.documents.status === 'fetchingUserDocuments' ||
+      this.props.documents.status === 'fetchUserDocumentsFailed';
 
-    const documentComponents = this.props.documents.documents.map(doc => (
+    const documentComponents = this.props.documents.userDocuments.map(doc => (
       <Document
         key={uuid.v4()}
         dispatch={this.props.dispatch}
@@ -64,39 +68,38 @@ class ViewUserDocumentsPage extends Component {
     ));
 
     return (
-      <div className="scrollable-page dashboard-page">
-        <div className="dashboard-welcome">
+      <div className="scrollable-page user-documents-page">
+        <div>
           <h5 className={showStatusMessage ? '' : 'hide'}>
             {this.props.documents.statusMessage}
           </h5>
-          <Row className={this.props.documents.status === 'fetchingDocuments' ? '' : 'hide'}>
+          <Row className={this.props.documents.status === 'fetchingUserDocuments' ? '' : 'hide'}>
             <Col s={4} offset="s4">
               <Preloader size="big" flashing />
             </Col>
           </Row>
           <Button
             onClick={this.startDocumentsFetch}
-            className={this.props.documents.status === 'documentsFetchFailed' ? '' : 'hide'}
+            className={this.props.documents.status === 'fetchUserDocumentsFailed' ? '' : 'hide'}
           >
             {this.props.documents.statusMessage}
           </Button>
         </div>
         <div
           className={
-            this.props.documents.documents.length < 1 &&
-            this.props.documents.status !== 'fetchingDocuments' ? '' : 'hide'
+            this.props.documents.userDocuments.length < 1 &&
+            this.props.documents.status !== 'fetchingUserDocuments' ? '' : 'hide'
           }
         >
           <h5 className="teal lighten-2 white-text center">
             You don&rsquo;t have any documents. Please create some.
           </h5>
         </div>
-        <div className="dashboard-documents row">{documentComponents}</div>
+        <div className="user-documents row">{documentComponents}</div>
       </div>
     );
   }
 }
-
 
 ViewUserDocumentsPage.propTypes = {
   dispatch: PropTypes.func.isRequired,

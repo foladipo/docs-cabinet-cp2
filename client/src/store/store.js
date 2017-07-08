@@ -32,9 +32,11 @@ const store = createStore(
       deletedUserId: -1
     },
     documents: {
-      count: 0,
-      documents: [],
-      status: 'fetchingDocuments',
+      userDocumentsCount: 0,
+      userDocuments: [],
+      allDocumentsCount: 0,
+      allDocuments: [],
+      status: 'fetchingAllDocuments',
       statusMessage: 'Loading documents... Please wait...',
       targetDocumentId: -1
     }

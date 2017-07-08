@@ -173,7 +173,7 @@ export default class DocumentsController {
 
     Document
       .findAll({
-        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'username', 'roleId'] }],
+        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'roleId'] }],
         where: {
           $or: [
             { access: 'public' },

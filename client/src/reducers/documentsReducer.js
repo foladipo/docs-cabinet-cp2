@@ -1,7 +1,7 @@
 import {
-  FETCH_DOCUMENTS_PENDING,
-  FETCH_DOCUMENTS_REJECTED,
-  FETCH_DOCUMENTS_FULFILLED,
+  FETCH_ALL_DOCUMENTS_PENDING,
+  FETCH_ALL_DOCUMENTS_REJECTED,
+  FETCH_ALL_DOCUMENTS_FULFILLED,
   FETCH_USER_DOCUMENTS_PENDING,
   FETCH_USER_DOCUMENTS_REJECTED,
   FETCH_USER_DOCUMENTS_FULFILLED,
@@ -27,13 +27,19 @@ export default function documentsReducer(state, action) {
 
   switch (action.type) {
     case LOGOUT_PENDING:
-      newState.documents = [];
-      newState.count = 0;
+      newState.userDocumentsCount = 0;
+      newState.userDocuments = [];
+      newState.allDocumentsCount = 0;
+      newState.allDocuments = [];
       break;
 
     case FETCH_USER_DOCUMENTS_PENDING:
-    case FETCH_DOCUMENTS_PENDING:
-      newState.status = 'fetchingDocuments';
+      newState.status = 'fetchingUserDocuments';
+      newState.statusMessage = 'Loading documents... Please wait...';
+      break;
+
+    case FETCH_ALL_DOCUMENTS_PENDING:
+      newState.status = 'fetchingAllDocuments';
       newState.statusMessage = 'Loading documents... Please wait...';
       break;
 
@@ -48,23 +54,33 @@ export default function documentsReducer(state, action) {
       break;
 
     case CREATE_DOCUMENT_FULFILLED:
-      newState.count = state.count + action.payload.documents.length;
-      newState.documents = action.payload.documents.concat(state.documents);
+      newState.userDocumentsCount = state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments = action.payload.documents.concat(state.userDocuments);
       newState.status = 'documentCreated';
       newState.statusMessage = action.payload.message;
       break;
 
     case FETCH_USER_DOCUMENTS_FULFILLED:
-    case FETCH_DOCUMENTS_FULFILLED:
-      newState.count = state.count + action.payload.documents.length;
-      newState.documents = state.documents.concat(action.payload.documents);
-      newState.status = 'documentsFetched';
+      newState.userDocumentsCount = state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments = state.userDocuments.concat(action.payload.documents);
+      newState.status = 'userDocumentsFetched';
+      newState.statusMessage = action.payload.message;
+      break;
+
+    case FETCH_ALL_DOCUMENTS_FULFILLED:
+      newState.allDocumentsCount = state.allDocumentsCount + action.payload.documents.length;
+      newState.allDocuments = state.allDocuments.concat(action.payload.documents);
+      newState.status = 'allDocumentsFetched';
       newState.statusMessage = action.payload.message;
       break;
 
     case FETCH_USER_DOCUMENTS_REJECTED:
-    case FETCH_DOCUMENTS_REJECTED:
-      newState.status = 'documentsFetchFailed';
+      newState.status = 'fetchUserDocumentsFailed';
+      newState.statusMessage = action.payload.message;
+      break;
+
+    case FETCH_ALL_DOCUMENTS_REJECTED:
+      newState.status = 'fetchAllDocumentsFailed';
       newState.statusMessage = action.payload.message;
       break;
 
@@ -83,10 +99,10 @@ export default function documentsReducer(state, action) {
     case DELETE_DOCUMENT_FULFILLED:
       newState.status = 'documentDeleted';
       newState.statusMessage = action.payload.message;
-      newState.documents = state.documents.filter(doc =>
+      newState.userDocuments = state.userDocuments.filter(doc =>
         doc.id !== action.payload.targetDocumentId
       );
-      newState.count = newState.documents.length;
+      newState.userDocumentsCount = newState.userDocuments.length;
       newState.targetDocumentId = -1;
       break;
 
@@ -100,8 +116,10 @@ export default function documentsReducer(state, action) {
       action.payload.error === 'InvalidTokenError'
     ) {
       window.localStorage.clear();
-      newState.documents = [];
-      newState.count = 0;
+      newState.userDocuments = [];
+      newState.userDocumentsCount = 0;
+      newState.allDocumentsCount = 0;
+      newState.allDocuments = [];
       return newState;
     }
   }

@@ -1,8 +1,8 @@
 import request from 'superagent';
 import {
-  FETCH_DOCUMENTS_PENDING,
-  FETCH_DOCUMENTS_REJECTED,
-  FETCH_DOCUMENTS_FULFILLED,
+  FETCH_ALL_DOCUMENTS_PENDING,
+  FETCH_ALL_DOCUMENTS_REJECTED,
+  FETCH_ALL_DOCUMENTS_FULFILLED,
   FETCH_USER_DOCUMENTS_PENDING,
   FETCH_USER_DOCUMENTS_REJECTED,
   FETCH_USER_DOCUMENTS_FULFILLED,
@@ -58,7 +58,7 @@ export function createDocument(token, title, content, access, categories, tags) 
 }
 
 /**
- * fetchDocuments - Fetches all documents.
+ * fetchAllDocuments - Fetches all documents.
  * @param {String} token - A token for the user making the request.
  * @param {String} limit - Number of documents to return per request.
  * @param {String} offset - Number of documents to skip before
@@ -66,9 +66,9 @@ export function createDocument(token, title, content, access, categories, tags) 
  * @return {Function} - Returns a function that dispatches actions based
  * on the state of the document fetching process (commencement, success or failure).
  */
-export function fetchDocuments(token, limit, offset) {
+export function fetchAllDocuments(token, limit, offset) {
   return (dispatch) => {
-    dispatch({ type: FETCH_DOCUMENTS_PENDING });
+    dispatch({ type: FETCH_ALL_DOCUMENTS_PENDING });
 
     request
       .get(`/api/documents?limit=${limit}&offset=${offset}`)
@@ -77,13 +77,13 @@ export function fetchDocuments(token, limit, offset) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: FETCH_DOCUMENTS_REJECTED,
+            type: FETCH_ALL_DOCUMENTS_REJECTED,
             payload: { error: err.response.body.error }
           });
           return;
         }
         dispatch({
-          type: FETCH_DOCUMENTS_FULFILLED,
+          type: FETCH_ALL_DOCUMENTS_FULFILLED,
           payload: res.body
         });
       });
