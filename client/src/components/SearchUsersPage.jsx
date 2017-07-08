@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Icon, Input } from 'react-materialize';
+import uuid from 'uuid';
+import searchUsers from '../actions/SearchActions';
+import PlainUser from './PlainUser';
 
 /**
  * SearchUsersPage - Renders a page for searching for users.
@@ -12,7 +15,9 @@ class SearchUsersPage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      searchQuery: props.user.lastSearchQuery || ''
+    };
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
     this.hasSearchQuery = this.hasSearchQuery.bind(this);
@@ -37,7 +42,7 @@ class SearchUsersPage extends Component {
    * Component's state is valid, and false if otherwise.
    */
   hasSearchQuery() {
-    if (this.state.searchQuery === undefined) return false;
+    if (typeof this.state.searchQuery !== 'string') return false;
 
     const query = this.state.searchQuery;
     const strippedQuery = query.replace(/(\s+)/, '');
@@ -53,9 +58,15 @@ class SearchUsersPage extends Component {
   attemptUsersSearch(event) {
     event.preventDefault();
 
-    if (!this.hasSearchQuery()) return;
+    if (!this.hasSearchQuery()) {
+      this.setState({ showErrorMessage: true });
+      return;
+    }
 
-    // Dispstch an action tosearch for users.
+    this.props.dispatch(
+      searchUsers(this.props.user.token, this.state.searchQuery)
+    );
+    this.setState({ showErrorMessage: false });
   }
 
   /**
@@ -63,12 +74,21 @@ class SearchUsersPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
+    const userProfiles = this.props.search.users.lastSearchResults.map(user => <PlainUser key={uuid.v4()} {...user} />);
+
     return (
       <div>
         <h4>Search users</h4>
         <div className="row">
           <div className="search-form-container col s12 m3">
             <h5 className="teal-text text-lighten-2">Search form</h5>
+            <h6
+              className={
+                this.state.showErrorMessage ? 'red lighten-2 white-text center-align' : 'hide'
+              }
+            >
+              Please enter a search with at least one non-whitespace character.
+            </h6>
             <p>
               Search for any user using part or all of his/her first name,&nbsp;
               last name or email.
@@ -81,7 +101,7 @@ class SearchUsersPage extends Component {
                   onChange={this.updateSearchQuery}
                 />
                 <Button
-                  className={this.hasSearchQuery() ? 'col s6' : 'col s6 disabled'}
+                  className={this.hasSearchQuery() ? 'col s10' : 'col s10 disabled'}
                   onClick={this.attemptUsersSearch}
                 >
                   <Icon left>search</Icon>
@@ -90,8 +110,12 @@ class SearchUsersPage extends Component {
               </div>
             </form>
           </div>
-          <div className="scrollable-page search-results-container col s12 m9">
-            Search results
+          {/* TODO: This section below is not scrollable yet. */}
+          <div className="search-results-container col s12 m9 scrollable-page">
+            <h6>Search results</h6>
+            <div>
+              {userProfiles}
+            </div>
           </div>
         </div>
       </div>

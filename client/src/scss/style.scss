@@ -111,3 +111,20 @@ body {
 .plain-document {
   cursor: pointer;
 }
+
+.search-results-container {
+  padding-bottom: 5em;
+}
+
+.card {
+  word-wrap: break-word;
+  word-break: break-all;
+
+  .chip {
+    height: auto;
+  }
+}
+
+.card.card-content {
+  overflow-y: scroll;
+}
