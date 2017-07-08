@@ -39,6 +39,13 @@ const store = createStore(
       status: 'fetchingAllDocuments',
       statusMessage: 'Loading documents... Please wait...',
       targetDocumentId: -1
+    },
+    search: {
+      users: {
+        lastSearchQuery: '',
+        lastSearchResultsCount: 0,
+        lastSearchResults: []
+      }
     }
   },
   middleware

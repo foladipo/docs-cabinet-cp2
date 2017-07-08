@@ -202,8 +202,9 @@ class MainContainer extends React.Component {
 }
 
 const mapStoreToProps = store => ({
-  user: store.user,
-  documents: store.documents
+  documents: store.documents,
+  search: store.search,
+  user: store.user
 });
 
 MainContainer.propTypes = {

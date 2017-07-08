@@ -17,7 +17,7 @@ import {
 
 /**
  * Creates a new state that has info about an Action this reducer received.
- * @param {state} state - the previous state of the store.
+ * @param {Object} state - the previous state of the store.
  * @param {Object} action - the Action that happened and which needs to
  * be used to update the store.
  * @return {Object} - Returns a new state.
@@ -54,22 +54,28 @@ export default function documentsReducer(state, action) {
       break;
 
     case CREATE_DOCUMENT_FULFILLED:
-      newState.userDocumentsCount = state.userDocumentsCount + action.payload.documents.length;
-      newState.userDocuments = action.payload.documents.concat(state.userDocuments);
+      newState.userDocumentsCount =
+        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments =
+        action.payload.documents.concat(state.userDocuments);
       newState.status = 'documentCreated';
       newState.statusMessage = action.payload.message;
       break;
 
     case FETCH_USER_DOCUMENTS_FULFILLED:
-      newState.userDocumentsCount = state.userDocumentsCount + action.payload.documents.length;
-      newState.userDocuments = state.userDocuments.concat(action.payload.documents);
+      newState.userDocumentsCount =
+        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments =
+        state.userDocuments.concat(action.payload.documents);
       newState.status = 'userDocumentsFetched';
       newState.statusMessage = action.payload.message;
       break;
 
     case FETCH_ALL_DOCUMENTS_FULFILLED:
-      newState.allDocumentsCount = state.allDocumentsCount + action.payload.documents.length;
-      newState.allDocuments = state.allDocuments.concat(action.payload.documents);
+      newState.allDocumentsCount =
+        state.allDocumentsCount + action.payload.documents.length;
+      newState.allDocuments =
+        state.allDocuments.concat(action.payload.documents);
       newState.status = 'allDocumentsFetched';
       newState.statusMessage = action.payload.message;
       break;
