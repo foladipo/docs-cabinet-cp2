@@ -261,7 +261,6 @@ class UpdateDocument extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    console.log('props', this.props);
     if (this.props.documentsStatus === 'documentUpdated') {
       Materialize.toast(this.props.documentsStatusMessage, 3000);
       $('.modal').modal('close');
@@ -287,7 +286,7 @@ class UpdateDocument extends Component {
               type="select"
               label="Access type"
               className="update-doc-select-access"
-              value={this.state.access}
+              defaultValue={this.props.access}
               onChange={this.updateAccess}
             >
               <option value="public">Public</option>
@@ -300,7 +299,7 @@ class UpdateDocument extends Component {
             className="update-doc-text-input"
             label="Title"
             type="text"
-            value={this.state.title}
+            defaultValue={this.props.title}
             onChange={this.updateTitle}
           >
             <Icon>title</Icon>
@@ -310,7 +309,7 @@ class UpdateDocument extends Component {
             className="update-doc-text-input"
             label="Categories"
             type="text"
-            value={this.state.categories}
+            defaultValue={this.props.categories}
             onChange={this.updateCategories}
           >
             <Icon>bookmark_border</Icon>
@@ -320,7 +319,7 @@ class UpdateDocument extends Component {
             className="update-doc-text-input"
             label="Tags"
             type="text"
-            value={this.state.tags}
+            defaultValue={this.props.tags}
             onChange={this.updateTags}
           >
             <Icon>label_outline</Icon>
@@ -333,7 +332,7 @@ class UpdateDocument extends Component {
             <textarea
               rows="10"
               className="materialize-textarea update-doc-text-input"
-              value={this.state.content}
+              defaultValue={this.props.content}
               onChange={this.updateContent}
             />
             <br />
