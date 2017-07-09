@@ -8,7 +8,7 @@ import { logout } from '../actions/UserActions';
 import ViewUserDocumentsPage from './ViewUserDocumentsPage';
 import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
-import UpdateDocument from './UpdateDocument';
+import CreateDocument from './CreateDocument';
 import ViewAllDocumentsPage from './ViewAllDocumentsPage';
 import SearchUsersPage from './SearchUsersPage';
 import SearchDocumentsPage from './SearchDocumentsPage';
@@ -78,7 +78,7 @@ class MainContainer extends React.Component {
     }
 
     if (this.props.documents.status === 'documentCreated') {
-      $('#updateDocumentModal').modal('close');
+      $('#createDocumentModal').modal('close');
     }
 
     const trigger = (<Button className="dashboard-menu-btn">
@@ -110,15 +110,18 @@ class MainContainer extends React.Component {
           <SideNavItem className="row">
             <Modal
               header="Create Document"
-              id="updateDocumentModal"
+              id="createDocumentModal"
               trigger={
                 <Button className="col s12">Compose</Button>
               }
             >
-              <UpdateDocument
+              <CreateDocument
                 mode="create"
                 modeMessage="Create document"
-                {...this.props}
+                token={this.props.user.token}
+                dispatch={this.props.dispatch}
+                documentsStatus={this.props.documents.status}
+                from="MainContainer"
               />
             </Modal>
           </SideNavItem>

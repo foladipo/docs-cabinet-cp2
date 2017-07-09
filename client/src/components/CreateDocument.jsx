@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
-import { updateDocument } from '../actions/DocumentActions';
+import { createDocument } from '../actions/DocumentActions';
 
 /**
- * UpdateDocument - Used to update a document. If that document
- * doesn't exist, it will create it.
+ * CreateDocument - Used to create a document.
  */
-class UpdateDocument extends Component {
+class CreateDocument extends Component {
   /**
-   * Creates and initializes an instance of UpdateDocument.
+   * Creates and initializes an instance of CreateDocument.
    * @param {Object} props - The data passed to this component from its parent.
    */
   constructor(props) {
@@ -33,7 +32,7 @@ class UpdateDocument extends Component {
     this.updateContent = this.updateContent.bind(this);
     this.updateCategories = this.updateCategories.bind(this);
     this.updateTags = this.updateTags.bind(this);
-    this.submitUpdate = this.submitUpdate.bind(this);
+    this.attemptDocumentCreation = this.attemptDocumentCreation.bind(this);
   }
 
   /**
@@ -49,12 +48,12 @@ class UpdateDocument extends Component {
         errorMessage: '',
         title: this.props.title,
         content: this.props.content,
-        access: this.props.access || 'public',
+        access: this.props.access,
         categories: this.props.categories,
         tags: this.props.tags
       });
-      $('#updateDocumentForm .update-doc-text-input').val('');
-      $('#updateDocumentForm .update-doc-select-access').val('public');
+      $('#createDocumentForm .create-doc-text-input').val('');
+      $('#createDocumentForm .create-doc-select-access').val('public');
     }
   }
 
@@ -153,12 +152,12 @@ class UpdateDocument extends Component {
   }
 
   /**
-   * Attempts to update or create a document.
+   * Attempts to create a document.
    * @param {JqueryEvent} event - Info about the event that occurred on the
    * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  submitUpdate(event) {
+  attemptDocumentCreation(event) {
     event.preventDefault();
 
     // Needed because a form might be submitted without using the submit button.
@@ -183,7 +182,7 @@ class UpdateDocument extends Component {
       return;
     }
 
-    this.props.dispatch(updateDocument(
+    this.props.dispatch(createDocument(
       this.props.token,
       this.state.title,
       this.state.content,
@@ -209,7 +208,7 @@ class UpdateDocument extends Component {
 
     return (
       <div className="row">
-        <form id="updateDocumentForm">
+        <form id="createDocumentForm">
           <h6 className="red-text text-lighten-2">
             **All fields are required.
           </h6>
@@ -225,8 +224,8 @@ class UpdateDocument extends Component {
               m={6}
               type="select"
               label="Access type"
-              className="update-doc-select-access"
-              value={this.state.access}
+              className="create-doc-select-access"
+              defaultValue="public"
               onChange={this.updateAccess}
             >
               <option value="public">Public</option>
@@ -236,30 +235,27 @@ class UpdateDocument extends Component {
           </div>
           <Input
             s={12}
-            className="update-doc-text-input"
+            className="create-doc-text-input"
             label="Title"
             type="text"
-            value={this.state.title}
             onChange={this.updateTitle}
           >
             <Icon>title</Icon>
           </Input>
           <Input
             s={12}
-            className="update-doc-text-input"
+            className="create-doc-text-input"
             label="Categories"
             type="text"
-            value={this.state.categories}
             onChange={this.updateCategories}
           >
             <Icon>bookmark_border</Icon>
           </Input>
           <Input
             s={12}
-            className="update-doc-text-input"
+            className="create-doc-text-input"
             label="Tags"
             type="text"
-            value={this.state.tags}
             onChange={this.updateTags}
           >
             <Icon>label_outline</Icon>
@@ -271,20 +267,19 @@ class UpdateDocument extends Component {
           <div className="col s12">
             <textarea
               rows="10"
-              className="materialize-textarea update-doc-text-input"
-              value={this.state.content}
+              className="materialize-textarea create-doc-text-input"
               onChange={this.updateContent}
             />
             <br />
           </div>
           <div className="quarter-vertical-margin" />
           <Button
-            onClick={this.submitUpdate}
+            onClick={this.attemptDocumentCreation}
             modal="confirm"
             className={isValidDocument ? 'quarter-vertical-margin' : 'quarter-vertical-margin disabled'}
           >
             {this.props.modeMessage}
-            <Icon left>{this.props.mode === 'update' ? 'update' : ''}</Icon>
+            <Icon left>{this.props.mode === 'create' ? 'note_add' : ''}</Icon>
           </Button>
         </form>
       </div>
@@ -292,17 +287,25 @@ class UpdateDocument extends Component {
   }
 }
 
-UpdateDocument.propTypes = {
-  access: PropTypes.string.isRequired,
-  categories: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+CreateDocument.propTypes = {
+  access: PropTypes.string,
+  categories: PropTypes.string,
+  content: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
   mode: PropTypes.string.isRequired,
   modeMessage: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  tags: PropTypes.string,
+  title: PropTypes.string,
   token: PropTypes.string.isRequired,
 };
 
-export default UpdateDocument;
+CreateDocument.defaultProps = {
+  access: 'public',
+  categories: undefined,
+  content: undefined,
+  tags: undefined,
+  title: undefined
+};
+
+export default CreateDocument;

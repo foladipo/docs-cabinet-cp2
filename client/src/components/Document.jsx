@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-materialize';
+import UpdateDocument from './UpdateDocument';
 import ConfirmDocumentDeletion from './ConfirmDocumentDeletion';
 
 /**
@@ -36,6 +37,8 @@ function Document(props) {
     return false;
   };
 
+  console.log('Document props', props);
+
   return (
     <div className={isDeletingMe() ? 'disabled' : ''}>
       <div className="col s12 m6 l4 hoverable">
@@ -54,12 +57,25 @@ function Document(props) {
           <div className="card-action">
             <ul className="document-actions valign-wrapper">
               <li>
-                <Button
-                  floating
-                  className="teal lighten-2 quarter-side-margin"
-                  waves="light"
-                  icon="mode_edit"
-                />
+                <Modal
+                  header="Update Document"
+                  id="updateDocumentModal"
+                  trigger={
+                    <Button
+                      floating
+                      className="teal lighten-2 quarter-side-margin"
+                      waves="light"
+                      icon="mode_edit"
+                    />
+                  }
+                >
+                  <UpdateDocument
+                    mode="update"
+                    modeMessage="Update document"
+                    from="Document"
+                    {...props}
+                  />
+                </Modal>
               </li>
               <li>
                 <Modal
