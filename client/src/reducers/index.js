@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import documentsReducer from './documentsReducer';
+import searchReducer from './searchReducer';
 import userReducer from './userReducer';
 
 const reducers = combineReducers({
-  user: userReducer,
-  documents: documentsReducer
+  documents: documentsReducer,
+  search: searchReducer,
+  user: userReducer
 });
 
 export default reducers;

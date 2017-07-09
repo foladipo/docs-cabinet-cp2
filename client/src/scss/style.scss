@@ -58,7 +58,7 @@ body {
 .scrollable-page {
   width: 100%;
   height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .user-documents-page,
@@ -110,4 +110,21 @@ body {
 
 .plain-document {
   cursor: pointer;
+}
+
+.search-results-container {
+  padding-bottom: 5em;
+}
+
+.card {
+  word-wrap: break-word;
+  word-break: break-all;
+
+  .chip {
+    height: auto;
+  }
+}
+
+.card.card-content {
+  overflow-y: scroll;
 }

@@ -23,9 +23,11 @@ import {
  * @param {String} categories - The categories of the new document.
  * @param {String} tags - The tags of the new document.
  * @return {Function} - Returns a function that dispatches actions based
- * on the state of the document creation process (commencement, success or failure).
+ * on the state of the document creation process (commencement, success
+ * or failure).
  */
-export function createDocument(token, title, content, access, categories, tags) {
+export function createDocument(token, title, content, access, categories,
+  tags) {
   return (dispatch) => {
     dispatch({ type: CREATE_DOCUMENT_PENDING });
     const newDocument = {
@@ -64,7 +66,8 @@ export function createDocument(token, title, content, access, categories, tags) 
  * @param {String} offset - Number of documents to skip before
  * beginning the fetch.
  * @return {Function} - Returns a function that dispatches actions based
- * on the state of the document fetching process (commencement, success or failure).
+ * on the state of the document fetching process (commencement, success
+ * or failure).
  */
 export function fetchAllDocuments(token, limit, offset) {
   return (dispatch) => {
@@ -98,7 +101,8 @@ export function fetchAllDocuments(token, limit, offset) {
  * @param {String} offset - Number of documents to skip before
  * beginning the fetch.
  * @return {Function} - Returns a function that dispatches actions based
- * on the state of the document fetching process (commencement, success or failure).
+ * on the state of the document fetching process (commencement, success
+ * or failure).
  */
 export function fetchUserDocuments(token, id, limit, offset) {
   return (dispatch) => {

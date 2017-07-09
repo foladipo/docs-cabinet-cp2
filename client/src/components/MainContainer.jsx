@@ -10,6 +10,7 @@ import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 import ViewAllDocumentsPage from './ViewAllDocumentsPage';
+import SearchUsersPage from './SearchUsersPage';
 
 /**
  * MainContainer - Renders all the Components of the dashboard.
@@ -113,7 +114,11 @@ class MainContainer extends React.Component {
                 <Button className="col s12">Compose</Button>
               }
             >
-              <UpdateDocument {...this.props} mode="create" modeMessage="Create document" />
+              <UpdateDocument
+                mode="create"
+                modeMessage="Create document"
+                {...this.props}
+              />
             </Modal>
           </SideNavItem>
           <SideNavItem divider />
@@ -125,6 +130,16 @@ class MainContainer extends React.Component {
             >
               <Icon left>home</Icon>
               Home
+            </NavLink>
+          </li>
+          <li key={uuid.v4()}>
+            <NavLink
+              exact
+              to="/dashboard/searchUsers"
+              activeClassName="teal lighten-2 white-text disabled"
+            >
+              <Icon left>search</Icon>
+              Search for users
             </NavLink>
           </li>
           <li key={uuid.v4()}>
@@ -149,15 +164,37 @@ class MainContainer extends React.Component {
           </li>
           <SideNavItem divider />
           {this.getAdminSection()}
-          <SideNavItem waves onClick={this.logout} icon="input">Logout</SideNavItem>
+          <SideNavItem waves onClick={this.logout} icon="input">
+            Logout
+          </SideNavItem>
         </SideNav>
 
         <Switch>
-          <Route path="/dashboard/profile" render={() => <UpdateUserPage {...this.props} />} />
-          <Route path="/dashboard/users" render={() => <UsersPage {...this.props} />} />
-          <Route path="/dashboard/updateUser" render={() => <UpdateUserPage {...this.props} />} />
-          <Route path="/dashboard/myDocuments" render={() => <ViewUserDocumentsPage {...this.props} />} />
-          <Route exact path="*" render={() => <ViewAllDocumentsPage {...this.props} />} />
+          <Route
+            path="/dashboard/users"
+            render={() => <UsersPage {...this.props} />}
+          />
+          <Route
+            path="/dashboard/updateUser"
+            render={() => <UpdateUserPage{...this.props} />}
+          />
+          <Route
+            path="/dashboard/profile"
+            render={() => <UpdateUserPage {...this.props} />}
+          />
+          <Route
+            path="/dashboard/myDocuments"
+            render={() => <ViewUserDocumentsPage {...this.props} />}
+          />
+          <Route
+            path="/dashboard/searchUsers"
+            render={() => <SearchUsersPage {...this.props} />}
+          />
+          <Route
+            exact
+            path="*"
+            render={() => <ViewAllDocumentsPage {...this.props} />}
+          />
         </Switch>
       </div>
     );
@@ -165,8 +202,9 @@ class MainContainer extends React.Component {
 }
 
 const mapStoreToProps = store => ({
-  user: store.user,
-  documents: store.documents
+  documents: store.documents,
+  search: store.search,
+  user: store.user
 });
 
 MainContainer.propTypes = {
