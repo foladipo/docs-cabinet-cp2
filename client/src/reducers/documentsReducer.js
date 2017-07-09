@@ -11,6 +11,9 @@ import {
   DELETE_DOCUMENT_PENDING,
   DELETE_DOCUMENT_REJECTED,
   DELETE_DOCUMENT_FULFILLED,
+  UPDATE_DOCUMENT_PENDING,
+  UPDATE_DOCUMENT_REJECTED,
+  UPDATE_DOCUMENT_FULFILLED,
 
   LOGOUT_PENDING
 } from '../constants';
@@ -99,7 +102,7 @@ export default function documentsReducer(state, action) {
     case DELETE_DOCUMENT_REJECTED:
       newState.status = 'deleteDocumentFailed';
       newState.statusMessage = action.payload.message;
-      newState.targetDocumentId = '';
+      newState.targetDocumentId = -1;
       break;
 
     case DELETE_DOCUMENT_FULFILLED:
@@ -108,6 +111,31 @@ export default function documentsReducer(state, action) {
       newState.userDocuments = state.userDocuments.filter(doc =>
         doc.id !== action.payload.targetDocumentId
       );
+      newState.userDocumentsCount = newState.userDocuments.length;
+      newState.targetDocumentId = -1;
+      break;
+
+    case UPDATE_DOCUMENT_PENDING:
+      newState.status = 'updatingDocument';
+      newState.statusMessage = 'Updating document... Please wait...';
+      newState.targetDocumentId = action.payload.targetDocumentId;
+      break;
+
+    case UPDATE_DOCUMENT_REJECTED:
+      newState.status = 'updateDocumentFailed';
+      newState.statusMessage = action.payload.message;
+      newState.targetDocumentId = -1;
+      break;
+
+    case UPDATE_DOCUMENT_FULFILLED:
+      newState.status = 'documentUpdated';
+      newState.statusMessage = action.payload.message;
+      newState.userDocuments = state.userDocuments.map((doc) => {
+        if (doc.id === action.payload.documents[0].id) {
+          return action.payload.documents[0];
+        }
+        return doc;
+      });
       newState.userDocumentsCount = newState.userDocuments.length;
       newState.targetDocumentId = -1;
       break;

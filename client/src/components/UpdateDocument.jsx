@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input } from 'react-materialize';
+import { Button, Icon, Input, ProgressBar } from 'react-materialize';
 import { updateDocument } from '../actions/DocumentActions';
 
 /**
@@ -33,6 +33,8 @@ class UpdateDocument extends Component {
     this.updateContent = this.updateContent.bind(this);
     this.updateCategories = this.updateCategories.bind(this);
     this.updateTags = this.updateTags.bind(this);
+    this.isUpdate = this.isUpdate.bind(this);
+    this.isValidDocument = this.isValidDocument.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
   }
 
@@ -45,18 +47,18 @@ class UpdateDocument extends Component {
    * @return {null} - Returns nothing.
    */
   componentWillReceiveProps(nextProps) {
-    if (nextProps.documentsStatus === 'documentCreated') {
-      this.setState({
-        errorMessage: '',
-        title: this.props.title,
-        content: this.props.content,
-        access: this.props.access || 'public',
-        categories: this.props.categories,
-        tags: this.props.tags
-      });
-      $('#updateDocumentForm .update-doc-text-input').val('');
-      $('#updateDocumentForm .update-doc-select-access').val('public');
-    }
+    // if (nextProps.documentsStatus === 'documentCreated') {
+    //   this.setState({
+    //     errorMessage: '',
+    //     title: this.props.title,
+    //     content: this.props.content,
+    //     access: this.props.access || 'public',
+    //     categories: this.props.categories,
+    //     tags: this.props.tags
+    //   });
+    //   $('#updateDocumentForm .update-doc-text-input').val('');
+    //   $('#updateDocumentForm .update-doc-select-access').val('public');
+    // }
   }
 
   /**
@@ -249,7 +251,7 @@ class UpdateDocument extends Component {
 
     this.props.dispatch(updateDocument(
       this.props.token,
-      this.props.targetDocumentId,
+      this.props.id,
       updateInfo
     ));
   }
@@ -259,6 +261,13 @@ class UpdateDocument extends Component {
    * null if nothing is to be rendered.
    */
   render() {
+    console.log('props', this.props);
+    if (this.props.documentsStatus === 'documentUpdated') {
+      Materialize.toast(this.props.documentsStatusMessage, 3000);
+      $('.modal').modal('close');
+      // $('.modal-overlay').attr({ 'display': 'none' });
+      return null;
+    }
     return (
       <div className="row">
         <form id="updateDocumentForm">
@@ -343,6 +352,13 @@ class UpdateDocument extends Component {
             <Icon left>update</Icon>
           </Button>
         </form>
+        <ProgressBar
+          className={
+            this.props.documentsStatus === 'updatingDocument' ?
+            '' :
+            'hide'
+          }
+        />
       </div>
     );
   }
@@ -354,9 +370,9 @@ UpdateDocument.propTypes = {
   content: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   modeMessage: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
-  targetDocumentId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired,
 };
