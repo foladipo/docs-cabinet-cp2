@@ -59,14 +59,14 @@ function PlainDocument(props) {
                     Categories:
                   </span>
                   &nbsp;
-                  {props.title}
+                  {props.categories}
                 </span>
               </Col>
               <Col s={12}>
                 <Icon>bookmark</Icon>
                 <span>
                   <span className="teal-text text-lighten-2">Tags:</span>&nbsp;
-                  {props.title}
+                  {props.tags}
                 </span>
               </Col>
               <Col s={12}>
@@ -93,10 +93,12 @@ function PlainDocument(props) {
 
 PlainDocument.propTypes = {
   access: PropTypes.string.isRequired,
+  categories: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   currentUserId: PropTypes.number.isRequired,
   docImage: PropTypes.string,
   User: PropTypes.objectOf(PropTypes.any).isRequired,
+  tags: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired
 };
 

@@ -1,7 +1,10 @@
 import {
   SEARCH_USERS_PENDING,
   SEARCH_USERS_REJECTED,
-  SEARCH_USERS_FULFILLED
+  SEARCH_USERS_FULFILLED,
+  SEARCH_DOCUMENTS_PENDING,
+  SEARCH_DOCUMENTS_REJECTED,
+  SEARCH_DOCUMENTS_FULFILLED
 } from '../constants/';
 
 /**
@@ -34,6 +37,26 @@ export default function searchReducer(state, action) {
       };
       break;
 
+    case SEARCH_DOCUMENTS_PENDING:
+      newState.status = 'searchingDocuments';
+      newState.statusMessage = 'Searching... Please wait...';
+      break;
+
+    case SEARCH_DOCUMENTS_REJECTED:
+      newState.status = 'searchDocumentsFailed';
+      newState.statusMessage = action.payload.message || 'Search failed. Please try again.';
+      break;
+
+    case SEARCH_DOCUMENTS_FULFILLED:
+      newState.status = 'searchedDocuments';
+      newState.statusMessage = action.payload.message || 'Search completed.';
+      newState.documents = {
+        lastSearchQuery: action.query,
+        lastSearchResultsCount: action.payload.documents.length,
+        lastSearchResults: action.payload.documents
+      };
+      break;
+
     default:
       break;
   }
@@ -49,6 +72,11 @@ export default function searchReducer(state, action) {
       }
       window.localStorage.clear();
       newState.users = {
+        lastSearchQuery: '',
+        lastSearchResultsCount: 0,
+        lastSearchResults: []
+      };
+      newState.documents = {
         lastSearchQuery: '',
         lastSearchResultsCount: 0,
         lastSearchResults: []
