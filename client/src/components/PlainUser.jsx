@@ -18,7 +18,7 @@ function PlainUser(props) {
 
   return (
     <div>
-      <div className="col s12 m4 hoverable">
+      <div className="col s12 m6 l4 hoverable">
         <div
           className={
             props.roleId > 0 ?

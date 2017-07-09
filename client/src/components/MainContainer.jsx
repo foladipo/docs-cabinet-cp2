@@ -11,6 +11,7 @@ import UsersPage from './UsersPage';
 import UpdateDocument from './UpdateDocument';
 import ViewAllDocumentsPage from './ViewAllDocumentsPage';
 import SearchUsersPage from './SearchUsersPage';
+import SearchDocumentsPage from './SearchDocumentsPage';
 
 /**
  * MainContainer - Renders all the Components of the dashboard.
@@ -145,6 +146,16 @@ class MainContainer extends React.Component {
           <li key={uuid.v4()}>
             <NavLink
               exact
+              to="/dashboard/searchDocuments"
+              activeClassName="teal lighten-2 white-text disabled"
+            >
+              <Icon left>search</Icon>
+              Search for documents
+            </NavLink>
+          </li>
+          <li key={uuid.v4()}>
+            <NavLink
+              exact
               to="/dashboard/myDocuments"
               activeClassName="teal lighten-2 white-text disabled"
             >
@@ -185,6 +196,10 @@ class MainContainer extends React.Component {
           <Route
             path="/dashboard/myDocuments"
             render={() => <ViewUserDocumentsPage {...this.props} />}
+          />
+          <Route
+            path="/dashboard/searchDocuments"
+            render={() => <SearchDocumentsPage {...this.props} />}
           />
           <Route
             path="/dashboard/searchUsers"

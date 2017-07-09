@@ -2,27 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
 import uuid from 'uuid';
-import { searchUsers } from '../actions/SearchActions';
-import PlainUser from './PlainUser';
+import { searchDocuments } from '../actions/SearchActions';
+import PlainDocument from './PlainDocument';
 
 /**
- * SearchUsersPage - Renders a page for searching for users.
+ * SearchDocumentsPage - Renders a page for searching for documents.
  */
-class SearchUsersPage extends Component {
+class SearchDocumentsPage extends Component {
   /**
-   * Creates and initializes an instance of SearchUsersPage.
+   * Creates and initializes an instance of SearchDocumentsPage.
    * @param {Object} props - The data passed to this Component from its parent.
    */
   constructor(props) {
     super(props);
 
     this.state = {
-      searchQuery: props.search.users.lastSearchQuery || ''
+      searchQuery: props.search.documents.lastSearchQuery || ''
     };
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
     this.hasSearchQuery = this.hasSearchQuery.bind(this);
-    this.attemptUsersSearch = this.attemptUsersSearch.bind(this);
+    this.attemptDocumentsSearch = this.attemptDocumentsSearch.bind(this);
   }
 
   /**
@@ -51,12 +51,12 @@ class SearchUsersPage extends Component {
   }
 
   /**
-   * Attempts to search for users.
+   * Attempts to search for documents.
    * @param {JqueryEvent} event - Info about the event that occurred on the
    * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  attemptUsersSearch(event) {
+  attemptDocumentsSearch(event) {
     event.preventDefault();
 
     if (!this.hasSearchQuery()) {
@@ -65,7 +65,7 @@ class SearchUsersPage extends Component {
     }
 
     this.props.dispatch(
-      searchUsers(this.props.user.token, this.state.searchQuery)
+      searchDocuments(this.props.user.token, this.state.searchQuery)
     );
     this.setState({ showErrorMessage: false });
   }
@@ -75,13 +75,18 @@ class SearchUsersPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const userProfiles = this.props.search.users.lastSearchResults.map(user =>
-      <PlainUser key={uuid.v4()} {...user} />
-    );
+    const documentProfiles =
+      this.props.search.documents.lastSearchResults.map(document =>
+        (<PlainDocument
+          key={uuid.v4()}
+          currentUserId={this.props.user.user.id}
+          {...document}
+        />)
+      );
 
     return (
       <div>
-        <h4>Search users</h4>
+        <h4>Search documents</h4>
         <div className="row">
           <div className="search-form-container col s12 m3">
             <h5 className="teal-text text-lighten-2">Search form</h5>
@@ -95,8 +100,7 @@ class SearchUsersPage extends Component {
               Please enter a search with at least one non-whitespace character.
             </h6>
             <p>
-              Search for any user using part or all of his/her first name,&nbsp;
-              last name or email.
+              Search for any document using part or all of its title.
             </p>
             <form>
               <div className="row">
@@ -108,10 +112,10 @@ class SearchUsersPage extends Component {
                 <Button
                   className={
                     this.hasSearchQuery() ?
-                    'col s10 center-align' :
-                    'col s10 center-align disabled'
+                    'col s10' :
+                    'col s10 disabled'
                   }
-                  onClick={this.attemptUsersSearch}
+                  onClick={this.attemptDocumentsSearch}
                 >
                   <span className=""><Icon>search</Icon>Search</span>
                 </Button>
@@ -122,7 +126,7 @@ class SearchUsersPage extends Component {
           <div className="search-results-container col s12 m9 scrollable-page">
             <h6>Search results</h6>
             <div>
-              {userProfiles}
+              {documentProfiles}
             </div>
           </div>
         </div>
@@ -131,10 +135,10 @@ class SearchUsersPage extends Component {
   }
 }
 
-SearchUsersPage.propTypes = {
+SearchDocumentsPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   search: PropTypes.objectOf(PropTypes.any).isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default SearchUsersPage;
+export default SearchDocumentsPage;

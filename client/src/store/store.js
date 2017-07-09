@@ -45,6 +45,11 @@ const store = createStore(
         lastSearchQuery: '',
         lastSearchResultsCount: 0,
         lastSearchResults: []
+      },
+      documents: {
+        lastSearchQuery: '',
+        lastSearchResultsCount: 0,
+        lastSearchResults: []
       }
     }
   },
