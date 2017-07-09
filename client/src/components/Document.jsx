@@ -37,8 +37,6 @@ function Document(props) {
     return false;
   };
 
-  console.log('Document props', props);
-
   return (
     <div className={isDeletingMe() ? 'disabled' : ''}>
       <div className="col s12 m6 l4 hoverable">
@@ -72,7 +70,6 @@ function Document(props) {
                   <UpdateDocument
                     mode="update"
                     modeMessage="Update document"
-                    from="Document"
                     {...props}
                   />
                 </Modal>

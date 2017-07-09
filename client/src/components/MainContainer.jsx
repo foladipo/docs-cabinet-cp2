@@ -121,7 +121,6 @@ class MainContainer extends React.Component {
                 token={this.props.user.token}
                 dispatch={this.props.dispatch}
                 documentsStatus={this.props.documents.status}
-                from="MainContainer"
               />
             </Modal>
           </SideNavItem>

@@ -163,22 +163,22 @@ class CreateDocument extends Component {
     // Needed because a form might be submitted without using the submit button.
     const title = this.state.title;
     if (!this.hasValidTitle(title)) {
-      this.setState({ errorMessage: 'Supply a title that has one or more characters that are not whitespace.' });
+      this.setState({ errorMessage: 'Supply a title that has two or more characters that are not whitespace.' });
       return;
     }
     const content = this.state.content;
     if (!this.hasValidContent(content)) {
-      this.setState({ errorMessage: 'Supply a document content that has one or more characters that are not whitespace.' });
+      this.setState({ errorMessage: 'Supply a document content that has two or more characters that are not whitespace.' });
       return;
     }
     const categories = this.state.categories;
     if (!this.hasValidCategories(categories)) {
-      this.setState({ errorMessage: 'Add one or more comma-separated categories that aren\'t merely whitespace.' });
+      this.setState({ errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.' });
       return;
     }
     const tags = this.state.tags;
     if (!this.hasValidTags(tags)) {
-      this.setState({ errorMessage: 'Please supply one or more comma-separated tags that aren\'t merely whitespace.' });
+      this.setState({ errorMessage: 'Please supply two or more comma-separated tags that aren\'t merely whitespace.' });
       return;
     }
 
@@ -279,7 +279,7 @@ class CreateDocument extends Component {
             className={isValidDocument ? 'quarter-vertical-margin' : 'quarter-vertical-margin disabled'}
           >
             {this.props.modeMessage}
-            <Icon left>{this.props.mode === 'create' ? 'note_add' : ''}</Icon>
+            <Icon left>note_add</Icon>
           </Button>
         </form>
       </div>
@@ -293,7 +293,6 @@ CreateDocument.propTypes = {
   content: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
-  mode: PropTypes.string.isRequired,
   modeMessage: PropTypes.string.isRequired,
   tags: PropTypes.string,
   title: PropTypes.string,

@@ -36,6 +36,7 @@ class UpdateDocument extends Component {
     this.submitUpdate = this.submitUpdate.bind(this);
   }
 
+  // TODO: Is this needed?
   /**
    * Called immediately before rendering, when new props are or
    * state is being received.
@@ -153,6 +154,37 @@ class UpdateDocument extends Component {
   }
 
   /**
+   * Checks whether or not any part of a document (title,
+   * tags etc) has changed.
+   * @return {Boolean} - Returns true if any part of a document has
+   * changed, and false if otherwise.
+   */
+  isUpdate() {
+    return (
+      this.props.title !== this.state.title ||
+      this.props.content !== this.state.content ||
+      this.props.access !== this.state.access ||
+      this.props.categories !== this.state.categories ||
+      this.props.tags !== this.state.tags
+    );
+  }
+
+  /**
+   * Checks whether or not a submitted document is valid i.e all its fields
+   * satisfy certain standards.
+   * @return {Boolean} - Returns true if the document is valid and false
+   * if otherwise.
+   */
+  isValidDocument() {
+    return (
+      this.hasValidTitle(this.state.title) &&
+      this.hasValidContent(this.state.content) &&
+      this.hasValidCategories(this.state.categories) &&
+      this.hasValidTags(this.state.tags)
+    );
+  }
+
+  /**
    * Attempts to update or create a document.
    * @param {JqueryEvent} event - Info about the event that occurred on the
    * DOM element this is attached to.
@@ -164,32 +196,61 @@ class UpdateDocument extends Component {
     // Needed because a form might be submitted without using the submit button.
     const title = this.state.title;
     if (!this.hasValidTitle(title)) {
-      this.setState({ errorMessage: 'Supply a title that has one or more characters that are not whitespace.' });
+      this.setState({
+        errorMessage: 'Supply a title that has two or more characters that are not whitespace.'
+      });
       return;
     }
     const content = this.state.content;
     if (!this.hasValidContent(content)) {
-      this.setState({ errorMessage: 'Supply a document content that has one or more characters that are not whitespace.' });
+      this.setState({
+        errorMessage: 'Supply a document content that has two or more characters that are not whitespace.'
+      });
       return;
     }
     const categories = this.state.categories;
     if (!this.hasValidCategories(categories)) {
-      this.setState({ errorMessage: 'Add one or more comma-separated categories that aren\'t merely whitespace.' });
+      this.setState({
+        errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.'
+      });
       return;
     }
     const tags = this.state.tags;
     if (!this.hasValidTags(tags)) {
-      this.setState({ errorMessage: 'Please supply one or more comma-separated tags that aren\'t merely whitespace.' });
+      this.setState({ errorMessage:
+        'Please supply two or more comma-separated tags that aren\'t merely whitespace.'
+      });
       return;
+    }
+
+    if (!this.isUpdate()) {
+      this.setState({
+        errorMessage: 'Oops. You haven\'t updated any part of this document.'
+      });
+      return;
+    }
+
+    const updateInfo = {};
+    if (this.state.title !== this.props.title) {
+      updateInfo.title = this.state.title;
+    }
+    if (this.state.content !== this.props.content) {
+      updateInfo.content = this.state.content;
+    }
+    if (this.state.access !== this.props.access) {
+      updateInfo.access = this.state.access;
+    }
+    if (this.state.categories !== this.props.categories) {
+      updateInfo.categories = this.state.categories;
+    }
+    if (this.state.tags !== this.props.tags) {
+      updateInfo.tags = this.state.tags;
     }
 
     this.props.dispatch(updateDocument(
       this.props.token,
-      this.state.title,
-      this.state.content,
-      this.state.access,
-      this.state.categories,
-      this.state.tags
+      this.props.targetDocumentId,
+      updateInfo
     ));
   }
 
@@ -198,15 +259,6 @@ class UpdateDocument extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    // TODO: isValidDocument works fine, but why do these all become true
-    // once one of them is?
-    const isValidDocument = (
-      this.hasValidTitle(this.state.title) &&
-      this.hasValidContent(this.state.content) &&
-      this.hasValidCategories(this.state.categories) &&
-      this.hasValidTags(this.state.tags)
-    );
-
     return (
       <div className="row">
         <form id="updateDocumentForm">
@@ -281,10 +333,14 @@ class UpdateDocument extends Component {
           <Button
             onClick={this.submitUpdate}
             modal="confirm"
-            className={isValidDocument ? 'quarter-vertical-margin' : 'quarter-vertical-margin disabled'}
+            className={
+              this.isValidDocument() && this.isUpdate() ?
+              'quarter-vertical-margin' :
+              'quarter-vertical-margin disabled'
+            }
           >
             {this.props.modeMessage}
-            <Icon left>{this.props.mode === 'update' ? 'update' : ''}</Icon>
+            <Icon left>update</Icon>
           </Button>
         </form>
       </div>
@@ -298,9 +354,9 @@ UpdateDocument.propTypes = {
   content: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
-  mode: PropTypes.string.isRequired,
   modeMessage: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
+  targetDocumentId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired,
 };
