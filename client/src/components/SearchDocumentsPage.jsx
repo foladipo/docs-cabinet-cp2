@@ -17,10 +17,14 @@ class SearchDocumentsPage extends Component {
     super(props);
 
     this.state = {
-      searchQuery: props.search.documents.lastSearchQuery || ''
+      categoriesFilter: '',
+      searchQuery: props.search.documents.lastSearchQuery || '',
+      tagsFilter: ''
     };
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
+    this.updateCategoriesFilter = this.updateCategoriesFilter.bind(this);
+    this.updateTagsFilter = this.updateTagsFilter.bind(this);
     this.hasSearchQuery = this.hasSearchQuery.bind(this);
     this.attemptDocumentsSearch = this.attemptDocumentsSearch.bind(this);
   }
@@ -34,6 +38,28 @@ class SearchDocumentsPage extends Component {
   updateSearchQuery(event) {
     event.preventDefault();
     this.setState({ searchQuery: event.target.value });
+  }
+
+  /**
+   * Updates the categories filter stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateCategoriesFilter(event) {
+    event.preventDefault();
+    this.setState({ categoriesFilter: event.target.value });
+  }
+
+  /**
+   * Updates the tags filter stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateTagsFilter(event) {
+    event.preventDefault();
+    this.setState({ tagsFilter: event.target.value });
   }
 
   /**
@@ -75,8 +101,20 @@ class SearchDocumentsPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
+    const allDocuments = this.props.search.documents.lastSearchResults;
+
+    const filteredByCategories = allDocuments.filter(document =>
+      document.categories.toLowerCase()
+        .includes(this.state.categoriesFilter.toLowerCase())
+    );
+
+    const filteredByTags = filteredByCategories.filter(document =>
+      document.tags.toLowerCase()
+        .includes(this.state.tagsFilter.toLowerCase())
+    );
+
     const documentProfiles =
-      this.props.search.documents.lastSearchResults.map(document =>
+      filteredByTags.map(document =>
         (<PlainDocument
           key={uuid.v4()}
           currentUserId={this.props.user.user.id}
@@ -121,6 +159,20 @@ class SearchDocumentsPage extends Component {
                 </Button>
               </div>
             </form>
+            <div className="divider" />
+            <h6 className="teal-text text-lighten-2">Filters</h6>
+            <div className="row">
+              <Input
+                s={12}
+                label="Filter by categories"
+                onChange={this.updateCategoriesFilter}
+              />
+              <Input
+                s={12}
+                label="Filter by tags"
+                onChange={this.updateTagsFilter}
+              />
+            </div>
           </div>
           {/* TODO: This section below is not scrollable yet. */}
           <div className="search-results-container col s12 m9 scrollable-page">
