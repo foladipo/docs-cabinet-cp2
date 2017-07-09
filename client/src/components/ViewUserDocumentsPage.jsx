@@ -51,7 +51,6 @@ class ViewUserDocumentsPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    console.log('second', this.props);
     const showStatusMessage =
       this.props.documents.status === 'fetchingUserDocuments' ||
       this.props.documents.status === 'fetchUserDocumentsFailed';
@@ -63,6 +62,7 @@ class ViewUserDocumentsPage extends Component {
         token={this.props.user.token}
         documentsStatus={this.props.documents.status}
         targetDocumentId={this.props.documents.targetDocumentId}
+        documentsStatusMessage={this.props.documents.statusMessage}
         {...doc}
       />
     ));

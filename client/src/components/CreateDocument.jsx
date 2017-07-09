@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input, ProgressBar } from 'react-materialize';
-import { updateDocument } from '../actions/DocumentActions';
+import { Button, Icon, Input } from 'react-materialize';
+import { createDocument } from '../actions/DocumentActions';
 
 /**
- * UpdateDocument - Used to update a document. If that document
- * doesn't exist, it will create it.
+ * CreateDocument - Used to create a document.
  */
-class UpdateDocument extends Component {
+class CreateDocument extends Component {
   /**
-   * Creates and initializes an instance of UpdateDocument.
+   * Creates and initializes an instance of CreateDocument.
    * @param {Object} props - The data passed to this component from its parent.
    */
   constructor(props) {
@@ -33,12 +32,9 @@ class UpdateDocument extends Component {
     this.updateContent = this.updateContent.bind(this);
     this.updateCategories = this.updateCategories.bind(this);
     this.updateTags = this.updateTags.bind(this);
-    this.isUpdate = this.isUpdate.bind(this);
-    this.isValidDocument = this.isValidDocument.bind(this);
-    this.submitUpdate = this.submitUpdate.bind(this);
+    this.attemptDocumentCreation = this.attemptDocumentCreation.bind(this);
   }
 
-  // TODO: Is this needed?
   /**
    * Called immediately before rendering, when new props are or
    * state is being received.
@@ -47,18 +43,18 @@ class UpdateDocument extends Component {
    * @return {null} - Returns nothing.
    */
   componentWillReceiveProps(nextProps) {
-    // if (nextProps.documentsStatus === 'documentCreated') {
-    //   this.setState({
-    //     errorMessage: '',
-    //     title: this.props.title,
-    //     content: this.props.content,
-    //     access: this.props.access || 'public',
-    //     categories: this.props.categories,
-    //     tags: this.props.tags
-    //   });
-    //   $('#updateDocumentForm .update-doc-text-input').val('');
-    //   $('#updateDocumentForm .update-doc-select-access').val('public');
-    // }
+    if (nextProps.documentsStatus === 'documentCreated') {
+      this.setState({
+        errorMessage: '',
+        title: this.props.title,
+        content: this.props.content,
+        access: this.props.access,
+        categories: this.props.categories,
+        tags: this.props.tags
+      });
+      $('#createDocumentForm .create-doc-text-input').val('');
+      $('#createDocumentForm .create-doc-select-access').val('public');
+    }
   }
 
   /**
@@ -156,103 +152,43 @@ class UpdateDocument extends Component {
   }
 
   /**
-   * Checks whether or not any part of a document (title,
-   * tags etc) has changed.
-   * @return {Boolean} - Returns true if any part of a document has
-   * changed, and false if otherwise.
-   */
-  isUpdate() {
-    return (
-      this.props.title !== this.state.title ||
-      this.props.content !== this.state.content ||
-      this.props.access !== this.state.access ||
-      this.props.categories !== this.state.categories ||
-      this.props.tags !== this.state.tags
-    );
-  }
-
-  /**
-   * Checks whether or not a submitted document is valid i.e all its fields
-   * satisfy certain standards.
-   * @return {Boolean} - Returns true if the document is valid and false
-   * if otherwise.
-   */
-  isValidDocument() {
-    return (
-      this.hasValidTitle(this.state.title) &&
-      this.hasValidContent(this.state.content) &&
-      this.hasValidCategories(this.state.categories) &&
-      this.hasValidTags(this.state.tags)
-    );
-  }
-
-  /**
-   * Attempts to update or create a document.
+   * Attempts to create a document.
    * @param {JqueryEvent} event - Info about the event that occurred on the
    * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  submitUpdate(event) {
+  attemptDocumentCreation(event) {
     event.preventDefault();
 
     // Needed because a form might be submitted without using the submit button.
     const title = this.state.title;
     if (!this.hasValidTitle(title)) {
-      this.setState({
-        errorMessage: 'Supply a title that has two or more characters that are not whitespace.'
-      });
+      this.setState({ errorMessage: 'Supply a title that has two or more characters that are not whitespace.' });
       return;
     }
     const content = this.state.content;
     if (!this.hasValidContent(content)) {
-      this.setState({
-        errorMessage: 'Supply a document content that has two or more characters that are not whitespace.'
-      });
+      this.setState({ errorMessage: 'Supply a document content that has two or more characters that are not whitespace.' });
       return;
     }
     const categories = this.state.categories;
     if (!this.hasValidCategories(categories)) {
-      this.setState({
-        errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.'
-      });
+      this.setState({ errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.' });
       return;
     }
     const tags = this.state.tags;
     if (!this.hasValidTags(tags)) {
-      this.setState({ errorMessage:
-        'Please supply two or more comma-separated tags that aren\'t merely whitespace.'
-      });
+      this.setState({ errorMessage: 'Please supply two or more comma-separated tags that aren\'t merely whitespace.' });
       return;
     }
 
-    if (!this.isUpdate()) {
-      this.setState({
-        errorMessage: 'Oops. You haven\'t updated any part of this document.'
-      });
-      return;
-    }
-
-    const updateInfo = {};
-    if (this.state.title !== this.props.title) {
-      updateInfo.title = this.state.title;
-    }
-    if (this.state.content !== this.props.content) {
-      updateInfo.content = this.state.content;
-    }
-    if (this.state.access !== this.props.access) {
-      updateInfo.access = this.state.access;
-    }
-    if (this.state.categories !== this.props.categories) {
-      updateInfo.categories = this.state.categories;
-    }
-    if (this.state.tags !== this.props.tags) {
-      updateInfo.tags = this.state.tags;
-    }
-
-    this.props.dispatch(updateDocument(
+    this.props.dispatch(createDocument(
       this.props.token,
-      this.props.id,
-      updateInfo
+      this.state.title,
+      this.state.content,
+      this.state.access,
+      this.state.categories,
+      this.state.tags
     ));
   }
 
@@ -261,15 +197,18 @@ class UpdateDocument extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (this.props.documentsStatus === 'documentUpdated') {
-      Materialize.toast(this.props.documentsStatusMessage, 3000);
-      $('.modal').modal('close');
-      // $('.modal-overlay').attr({ 'display': 'none' });
-      return null;
-    }
+    // TODO: isValidDocument works fine, but why do these all become true
+    // once one of them is?
+    const isValidDocument = (
+      this.hasValidTitle(this.state.title) &&
+      this.hasValidContent(this.state.content) &&
+      this.hasValidCategories(this.state.categories) &&
+      this.hasValidTags(this.state.tags)
+    );
+
     return (
       <div className="row">
-        <form id="updateDocumentForm">
+        <form id="createDocumentForm">
           <h6 className="red-text text-lighten-2">
             **All fields are required.
           </h6>
@@ -285,8 +224,8 @@ class UpdateDocument extends Component {
               m={6}
               type="select"
               label="Access type"
-              className="update-doc-select-access"
-              defaultValue={this.props.access}
+              className="create-doc-select-access"
+              defaultValue="public"
               onChange={this.updateAccess}
             >
               <option value="public">Public</option>
@@ -296,30 +235,27 @@ class UpdateDocument extends Component {
           </div>
           <Input
             s={12}
-            className="update-doc-text-input"
+            className="create-doc-text-input"
             label="Title"
             type="text"
-            defaultValue={this.props.title}
             onChange={this.updateTitle}
           >
             <Icon>title</Icon>
           </Input>
           <Input
             s={12}
-            className="update-doc-text-input"
+            className="create-doc-text-input"
             label="Categories"
             type="text"
-            defaultValue={this.props.categories}
             onChange={this.updateCategories}
           >
             <Icon>bookmark_border</Icon>
           </Input>
           <Input
             s={12}
-            className="update-doc-text-input"
+            className="create-doc-text-input"
             label="Tags"
             type="text"
-            defaultValue={this.props.tags}
             onChange={this.updateTags}
           >
             <Icon>label_outline</Icon>
@@ -331,49 +267,44 @@ class UpdateDocument extends Component {
           <div className="col s12">
             <textarea
               rows="10"
-              className="materialize-textarea update-doc-text-input"
-              defaultValue={this.props.content}
+              className="materialize-textarea create-doc-text-input"
               onChange={this.updateContent}
             />
             <br />
           </div>
           <div className="quarter-vertical-margin" />
           <Button
-            onClick={this.submitUpdate}
+            onClick={this.attemptDocumentCreation}
             modal="confirm"
-            className={
-              this.isValidDocument() && this.isUpdate() ?
-              'quarter-vertical-margin' :
-              'quarter-vertical-margin disabled'
-            }
+            className={isValidDocument ? 'quarter-vertical-margin' : 'quarter-vertical-margin disabled'}
           >
             {this.props.modeMessage}
-            <Icon left>update</Icon>
+            <Icon left>note_add</Icon>
           </Button>
         </form>
-        <ProgressBar
-          className={
-            this.props.documentsStatus === 'updatingDocument' ?
-            '' :
-            'hide'
-          }
-        />
       </div>
     );
   }
 }
 
-UpdateDocument.propTypes = {
-  access: PropTypes.string.isRequired,
-  categories: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+CreateDocument.propTypes = {
+  access: PropTypes.string,
+  categories: PropTypes.string,
+  content: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
   modeMessage: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  tags: PropTypes.string,
+  title: PropTypes.string,
   token: PropTypes.string.isRequired,
 };
 
-export default UpdateDocument;
+CreateDocument.defaultProps = {
+  access: 'public',
+  categories: undefined,
+  content: undefined,
+  tags: undefined,
+  title: undefined
+};
+
+export default CreateDocument;

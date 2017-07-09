@@ -11,7 +11,10 @@ import {
   CREATE_DOCUMENT_FULFILLED,
   DELETE_DOCUMENT_PENDING,
   DELETE_DOCUMENT_REJECTED,
-  DELETE_DOCUMENT_FULFILLED
+  DELETE_DOCUMENT_FULFILLED,
+  UPDATE_DOCUMENT_PENDING,
+  UPDATE_DOCUMENT_REJECTED,
+  UPDATE_DOCUMENT_FULFILLED
 } from '../constants';
 
 /**
@@ -165,6 +168,46 @@ export function deleteDocument(token, documentId) {
             response: res.body,
             targetDocumentId: documentId
           }
+        });
+      });
+  };
+}
+
+/**
+ * updateDocument - Updates document.
+ * @param {String} token - A token for this document's author.
+ * @param {Number} targetDocumentId - The id of the document to update.
+ * @param {Object} updateInfo - Info about the fields of the document which
+ * are to be updated.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the document creation process (commencement, success
+ * or failure).
+ */
+export function updateDocument(token, targetDocumentId, updateInfo) {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_DOCUMENT_PENDING,
+      payload: {
+        targetDocumentId
+      }
+    });
+
+    request
+      .put(`/api/documents/${targetDocumentId}`)
+      .send(updateInfo)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: UPDATE_DOCUMENT_REJECTED,
+            payload: { error: err.response.body.error }
+          });
+          return;
+        }
+        dispatch({
+          type: UPDATE_DOCUMENT_FULFILLED,
+          payload: res.body
         });
       });
   };
