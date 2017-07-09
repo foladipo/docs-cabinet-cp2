@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
 import uuid from 'uuid';
 import searchUsers from '../actions/SearchActions';
@@ -16,7 +17,7 @@ class SearchUsersPage extends Component {
     super(props);
 
     this.state = {
-      searchQuery: props.user.lastSearchQuery || ''
+      searchQuery: props.search.users.lastSearchQuery || ''
     };
 
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
@@ -74,7 +75,9 @@ class SearchUsersPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const userProfiles = this.props.search.users.lastSearchResults.map(user => <PlainUser key={uuid.v4()} {...user} />);
+    const userProfiles = this.props.search.users.lastSearchResults.map(user =>
+      <PlainUser key={uuid.v4()} {...user} />
+    );
 
     return (
       <div>
@@ -84,7 +87,9 @@ class SearchUsersPage extends Component {
             <h5 className="teal-text text-lighten-2">Search form</h5>
             <h6
               className={
-                this.state.showErrorMessage ? 'red lighten-2 white-text center-align' : 'hide'
+                this.state.showErrorMessage ?
+                'red lighten-2 white-text center-align' :
+                'hide'
               }
             >
               Please enter a search with at least one non-whitespace character.
@@ -101,7 +106,11 @@ class SearchUsersPage extends Component {
                   onChange={this.updateSearchQuery}
                 />
                 <Button
-                  className={this.hasSearchQuery() ? 'col s10' : 'col s10 disabled'}
+                  className={
+                    this.hasSearchQuery() ?
+                    'col s10' :
+                    'col s10 disabled'
+                  }
                   onClick={this.attemptUsersSearch}
                 >
                   <Icon left>search</Icon>
@@ -122,5 +131,11 @@ class SearchUsersPage extends Component {
     );
   }
 }
+
+SearchUsersPage.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  search: PropTypes.objectOf(PropTypes.any).isRequired,
+  user: PropTypes.objectOf(PropTypes.any).isRequired
+};
 
 export default SearchUsersPage;
