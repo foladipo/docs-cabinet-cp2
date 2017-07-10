@@ -62,7 +62,10 @@ export function logout() {
 
     // TODO: Send a request to /api/users/logout?
     dispatch({
-      type: LOGOUT_FULFILLED
+      type: LOGOUT_FULFILLED,
+      payload: {
+        message: 'You\'re now logged out.'
+      }
     });
   };
 }

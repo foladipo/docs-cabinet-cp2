@@ -37,11 +37,14 @@ class DeleteUserPage extends Component {
   /**
    * Determines whether or not the user deleting an account has confirmed
    * that he/she REALLY wants to do so.
-   * @return {Boolean} - Returns true if the account deletion has been confirmed,
-   * and false if otherwise.
+   * @return {Boolean} - Returns true if the account deletion has been
+   * confirmed, and false if otherwise.
    */
   hasConfirmedDeletion() {
-    if (this.state.targetUsername && this.state.targetUsername === this.props.targetUser.username) {
+    if (
+      this.state.targetUsername &&
+      this.state.targetUsername === this.props.targetUser.username
+    ) {
       return true;
     }
     return false;
@@ -60,7 +63,9 @@ class DeleteUserPage extends Component {
       return;
     }
 
-    this.props.dispatch(deleteUser(this.props.user.token, this.props.targetUser.id));
+    this.props.dispatch(
+      deleteUser(this.props.user.token, this.props.targetUser.id)
+    );
   }
 
   /**
@@ -71,7 +76,7 @@ class DeleteUserPage extends Component {
     return (
       <div>
         <h5
-          className={this.props.user.status === 'deleteUserFailed' ? 'red lighten-2 white-text center-align' : 'hide'}
+          className={this.props.user.status === 'userDeletionFailed' ? 'red lighten-2 white-text center-align' : 'hide'}
         >
           {this.props.user.statusMessage}
         </h5>
@@ -81,12 +86,20 @@ class DeleteUserPage extends Component {
           account will be lost forever.
         </p>
         <p>
-          Type <b className="white red-text">{this.props.targetUser.username}</b>&nbsp;
-          in the field below if you&rsquo;re sure you want to delete this account.
+          Type&nbsp;
+          <b className="white red-text">
+            {this.props.targetUser.username}
+          </b>&nbsp;
+          in the field below if you&rsquo;re sure you want to delete&nbsp;
+          this account.
         </p>
         <div>
           <form>
-            <Input type="text" label="Username" onChange={this.updateTargetUsername}>
+            <Input
+              type="text"
+              label="Username"
+              onChange={this.updateTargetUsername}
+            >
               <Icon>delete</Icon>
             </Input>
             <Button
