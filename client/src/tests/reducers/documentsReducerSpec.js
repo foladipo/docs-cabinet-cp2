@@ -214,4 +214,27 @@ describe('documentsReducer', () => {
     expect(Array.isArray(newState.userDocuments)).to.equal(true);
     expect(newState.userDocuments.length === 1).to.equal(true);
   });
+
+  it('should reset the store for an InvalidTokenError', () => {
+    const state = {
+      userDocumentsCount: 1,
+      userDocuments: [{ id: 1, title: 'Foobar' }],
+      allDocumentsCount: 1,
+      allDocuments: [{ id: 2, title: 'Quux' }, { id: 1, title: 'Foobar' }],
+      status: 'userDocumentsFetched',
+      statusMessage: 'Updating document... Please wait...',
+      targetDocumentId: 1
+    };
+    const action = {
+      type: ActionTypes.UPDATE_DOCUMENT_REJECTED,
+      payload: {
+        error: 'InvalidTokenError'
+      }
+    };
+    const newState = documentsReducer(state, action);
+    expect(newState.userDocumentsCount).to.equal(0);
+    expect(newState.userDocuments.length).to.equal(0);
+    expect(newState.allDocumentsCount).to.equal(0);
+    expect(newState.allDocuments.length).to.equal(0);
+  });
 });

@@ -281,4 +281,31 @@ describe('userReducer', () => {
     expect(newState.token).to.equal(null);
     expect(newState.user).to.equal(null);
   });
+
+  it('should reset the store for an InvalidTokenError', () => {
+    const state = {
+      isLoggedIn: true,
+      isLoggingIn: false,
+      isLoggingOut: false,
+      token: 'foobar',
+      user: { id: 1, firstName: 'Don Quixote' },
+      allUsers: [{ id: 2, firstName: 'Madam Quixote' }],
+      status: 'loggedIn',
+      statusMessage: 'Logged in successfully.',
+      deletedUserId: -1
+    };
+    const action = {
+      type: ActionTypes.UPDATE_DOCUMENT_REJECTED,
+      payload: {
+        error: 'InvalidTokenError'
+      }
+    };
+    const newState = userReducer(state, action);
+    expect(newState.user.id).to.equal(undefined);
+    expect(newState.isLoggedIn).to.equal(false);
+    expect(newState.isLoggingIn).to.equal(false);
+    expect(newState.isLoggingOut).to.equal(false);
+    expect(newState.token).to.equal(null);
+    expect(newState.allUsers[0]).to.equal(undefined);
+  });
 });

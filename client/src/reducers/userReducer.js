@@ -192,6 +192,9 @@ export default function userReducer(state, action) {
       newState.isLoggedIn = false;
       newState.isLoggingIn = false;
       newState.isLoggingOut = false;
+      newState.token = null;
+      newState.user = {};
+      newState.allUsers = [];
     }
   }
 
