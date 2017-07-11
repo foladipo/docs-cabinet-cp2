@@ -40,7 +40,7 @@ export function login(username, password) {
         if (err) {
           dispatch({
             type: LOGIN_REJECTED,
-            payload: { error: err.response.body.error }
+            payload: err.response.body
           });
           return;
         }
@@ -96,7 +96,7 @@ export function signUp(firstName, lastName, username, password) {
         if (err) {
           dispatch({
             type: SIGN_UP_REJECTED,
-            payload: { error: err.response.body.error }
+            payload: err.response.body
           });
           return;
         }
