@@ -31,7 +31,7 @@ export default function searchReducer(state, action) {
       newState.status = 'searchedUsers';
       newState.statusMessage = action.payload.message || 'Search completed.';
       newState.users = {
-        lastSearchQuery: action.query,
+        lastSearchQuery: action.payload.query,
         lastSearchResultsCount: action.payload.users.length,
         lastSearchResults: action.payload.users
       };
@@ -51,7 +51,7 @@ export default function searchReducer(state, action) {
       newState.status = 'searchedDocuments';
       newState.statusMessage = action.payload.message || 'Search completed.';
       newState.documents = {
-        lastSearchQuery: action.query,
+        lastSearchQuery: action.payload.query,
         lastSearchResultsCount: action.payload.documents.length,
         lastSearchResults: action.payload.documents
       };

@@ -24,8 +24,6 @@ const store = createStore(
       isLoggingOut,
       token,
       user,
-      signUpError: '',
-      loginError: '',
       allUsers: [],
       status: '',
       statusMessage: '',

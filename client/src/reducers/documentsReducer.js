@@ -36,42 +36,15 @@ export default function documentsReducer(state, action) {
       newState.allDocuments = [];
       break;
 
-    case FETCH_USER_DOCUMENTS_PENDING:
-      newState.status = 'fetchingUserDocuments';
-      newState.statusMessage = 'Loading documents... Please wait...';
-      break;
-
     case FETCH_ALL_DOCUMENTS_PENDING:
       newState.status = 'fetchingAllDocuments';
       newState.statusMessage = 'Loading documents... Please wait...';
       break;
 
-    case CREATE_DOCUMENT_PENDING:
-      newState.status = 'creatingDocument';
-      newState.statusMessage = 'Creating document... Please wait...';
-      break;
-
-    case CREATE_DOCUMENT_REJECTED:
-      newState.status = 'documentCreationFailed';
-      newState.statusMessage = action.payload.message;
-      break;
-
-    case CREATE_DOCUMENT_FULFILLED:
-      newState.userDocumentsCount =
-        state.userDocumentsCount + action.payload.documents.length;
-      newState.userDocuments =
-        action.payload.documents.concat(state.userDocuments);
-      newState.status = 'documentCreated';
-      newState.statusMessage = action.payload.message;
-      break;
-
-    case FETCH_USER_DOCUMENTS_FULFILLED:
-      newState.userDocumentsCount =
-        state.userDocumentsCount + action.payload.documents.length;
-      newState.userDocuments =
-        state.userDocuments.concat(action.payload.documents);
-      newState.status = 'userDocumentsFetched';
-      newState.statusMessage = action.payload.message;
+    case FETCH_ALL_DOCUMENTS_REJECTED:
+      newState.status = 'fetchAllDocumentsFailed';
+      newState.statusMessage = action.payload.message ||
+        'Failed to load documents. Please try again.';
       break;
 
     case FETCH_ALL_DOCUMENTS_FULFILLED:
@@ -83,13 +56,43 @@ export default function documentsReducer(state, action) {
       newState.statusMessage = action.payload.message;
       break;
 
+    case FETCH_USER_DOCUMENTS_PENDING:
+      newState.status = 'fetchingUserDocuments';
+      newState.statusMessage = 'Loading documents... Please wait...';
+      break;
+
     case FETCH_USER_DOCUMENTS_REJECTED:
       newState.status = 'fetchUserDocumentsFailed';
+      newState.statusMessage = action.payload.message ||
+        'Failed to load documents. Please try again.';
+      break;
+
+    case FETCH_USER_DOCUMENTS_FULFILLED:
+      newState.userDocumentsCount =
+        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments =
+        state.userDocuments.concat(action.payload.documents);
+      newState.status = 'userDocumentsFetched';
       newState.statusMessage = action.payload.message;
       break;
 
-    case FETCH_ALL_DOCUMENTS_REJECTED:
-      newState.status = 'fetchAllDocumentsFailed';
+    case CREATE_DOCUMENT_PENDING:
+      newState.status = 'creatingDocument';
+      newState.statusMessage = 'Creating document... Please wait...';
+      break;
+
+    case CREATE_DOCUMENT_REJECTED:
+      newState.status = 'documentCreationFailed';
+      newState.statusMessage = action.payload.message ||
+        'Failed to create document. Please try again.';
+      break;
+
+    case CREATE_DOCUMENT_FULFILLED:
+      newState.userDocumentsCount =
+        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments =
+        action.payload.documents.concat(state.userDocuments);
+      newState.status = 'documentCreated';
       newState.statusMessage = action.payload.message;
       break;
 
@@ -100,8 +103,9 @@ export default function documentsReducer(state, action) {
       break;
 
     case DELETE_DOCUMENT_REJECTED:
-      newState.status = 'deleteDocumentFailed';
-      newState.statusMessage = action.payload.message;
+      newState.status = 'documentDeletionFailed';
+      newState.statusMessage = action.payload.message ||
+        'Failed to delete document. Please try again.';
       newState.targetDocumentId = -1;
       break;
 
@@ -122,8 +126,9 @@ export default function documentsReducer(state, action) {
       break;
 
     case UPDATE_DOCUMENT_REJECTED:
-      newState.status = 'updateDocumentFailed';
-      newState.statusMessage = action.payload.message;
+      newState.status = 'documentUpdateFailed';
+      newState.statusMessage = action.payload.message ||
+        'Failed to update document. Please try again.';
       newState.targetDocumentId = -1;
       break;
 

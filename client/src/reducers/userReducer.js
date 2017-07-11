@@ -6,7 +6,6 @@ import {
   LOGIN_REJECTED,
   LOGIN_FULFILLED,
   LOGOUT_PENDING,
-  LOGOUT_REJECTED,
   LOGOUT_FULFILLED,
   FETCH_ALL_USERS_PENDING,
   FETCH_ALL_USERS_REJECTED,
@@ -31,36 +30,59 @@ export default function userReducer(state, action) {
 
   switch (action.type) {
     case SIGN_UP_PENDING:
-    case LOGIN_PENDING:
+      newState.status = 'signingUp';
+      newState.statusMessage = 'Creating your account... Please wait...';
       newState.isLoggingIn = true;
       newState.isLoggedIn = false;
       break;
 
+    case SIGN_UP_REJECTED:
+      newState.status = 'signUpFailed';
+      newState.statusMessage = action.payload.message || 'Failed to sign up. Please try again.';
+      newState.isLoggingIn = false;
+      newState.isLoggedIn = false;
+      break;
+
     case SIGN_UP_FULFILLED:
-    case LOGIN_FULFILLED:
+      newState.status = 'signedUp';
+      newState.statusMessage = action.payload.message;
       newState.isLoggingIn = false;
       newState.isLoggedIn = true;
       newState.token = action.payload.token;
       newState.user = action.payload.user;
-      newState.signUpError = '';
-      newState.loginError = '';
       window.localStorage.setItem('token', action.payload.token);
       window.localStorage.setItem('user', JSON.stringify(action.payload.user));
       break;
 
-    case SIGN_UP_REJECTED:
-      newState.isLoggingIn = false;
+    case LOGIN_PENDING:
+      newState.status = 'loggingIn';
+      newState.statusMessage = 'Logging in... Please wait...';
+      newState.isLoggingIn = true;
       newState.isLoggedIn = false;
-      newState.signUpError = action.payload.error;
       break;
 
     case LOGIN_REJECTED:
+      newState.status = 'loginFailed';
+      newState.statusMessage = action.payload.message ||
+        'Failed to login. Please try again.';
       newState.isLoggingIn = false;
       newState.isLoggedIn = false;
-      newState.loginError = action.payload.error;
+      break;
+
+    case LOGIN_FULFILLED:
+      newState.status = 'loggedIn';
+      newState.statusMessage = action.payload.message;
+      newState.isLoggingIn = false;
+      newState.isLoggedIn = true;
+      newState.token = action.payload.token;
+      newState.user = action.payload.user;
+      window.localStorage.setItem('token', action.payload.token);
+      window.localStorage.setItem('user', JSON.stringify(action.payload.user));
       break;
 
     case LOGOUT_PENDING:
+      newState.status = 'loggingOut';
+      newState.statusMessage = 'Logging out... Please wait...';
       newState.isLoggingOut = true;
       newState.isLoggedIn = false;
       newState.token = null;
@@ -68,9 +90,9 @@ export default function userReducer(state, action) {
       window.localStorage.clear();
       break;
 
-     // TODO: Maybe split these cases? E.g show an error for the rejection.
-    case LOGOUT_REJECTED:
     case LOGOUT_FULFILLED:
+      newState.status = 'loggedOut';
+      newState.statusMessage = action.payload.message;
       newState.isLoggingOut = false;
       break;
 
@@ -86,7 +108,15 @@ export default function userReducer(state, action) {
 
     case FETCH_ALL_USERS_FULFILLED:
       newState.status = 'fetchedAllUsers';
-      newState.statusMessage = action.payload.users.length > 0 ? 'Successfully fetched users.' : 'Oops! There are no users yet.';
+      if (action.payload.users.length > 0) {
+        newState.statusMessage = 'Successfully fetched users.';
+      } else {
+        if (state.allUsers.length > 0) {
+          newState.statusMessage = 'Oops! There are no users left.';
+        } else {
+          newState.statusMessage = 'There are no users yet.';
+        }
+      }
       newState.allUsers = state.allUsers.concat(action.payload.users);
       break;
 
@@ -97,12 +127,14 @@ export default function userReducer(state, action) {
 
     case UPDATE_USER_REJECTED:
       newState.status = 'updateUserFailed';
-      newState.statusMessage = action.payload.message || 'Failed to update this profile. Please try again.';
+      newState.statusMessage = action.payload.message ||
+        'Failed to update this profile. Please try again.';
       break;
 
+    // TODO: Update state.token etc when a user updates his/her own profile.
     case UPDATE_USER_FULFILLED:
       newState.status = 'updatedUser';
-      newState.statusMessage = 'Account successfully updated.';
+      newState.statusMessage = action.payload.message;
       newState.allUsers = state.allUsers.map((user) => {
         const updatedUser = action.payload.users[0];
         if (user.id === updatedUser.id) {
@@ -111,6 +143,9 @@ export default function userReducer(state, action) {
 
         return user;
       });
+      if (action.payload.users[0] === state.user.id) {
+        newState.user = action.payload.users[0];
+      }
       break;
 
     case DELETE_USER_PENDING:
@@ -119,13 +154,13 @@ export default function userReducer(state, action) {
       break;
 
     case DELETE_USER_REJECTED:
-      newState.status = 'deleteUserFailed';
+      newState.status = 'userDeletionFailed';
       newState.statusMessage = action.payload.message || 'Failed to delete account. Please try again.';
       break;
 
     case DELETE_USER_FULFILLED:
       newState.status = 'deletedUser';
-      newState.statusMessage = action.payload.message || 'Account successfully deleted.';
+      newState.statusMessage = action.payload.message;
       newState.allUsers = state.allUsers.filter(user =>
         user.username !== action.payload.users[0].username
       );
@@ -134,6 +169,9 @@ export default function userReducer(state, action) {
         newState.isLoggedIn = false;
         newState.isLoggingIn = false;
         newState.isLoggingOut = false;
+        newState.token = null;
+        newState.user = null;
+        window.localStorage.clear();
       }
       break;
 
@@ -154,6 +192,9 @@ export default function userReducer(state, action) {
       newState.isLoggedIn = false;
       newState.isLoggingIn = false;
       newState.isLoggingOut = false;
+      newState.token = null;
+      newState.user = {};
+      newState.allUsers = [];
     }
   }
 

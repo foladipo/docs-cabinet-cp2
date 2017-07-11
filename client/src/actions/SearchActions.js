@@ -1,4 +1,4 @@
-import request from 'superagent';
+import superagent from 'superagent';
 import {
   SEARCH_USERS_PENDING,
   SEARCH_USERS_REJECTED,
@@ -17,8 +17,10 @@ import {
  * on the state of the search process (commencement, success or failure).
  */
 export function searchUsers(token, query) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: SEARCH_USERS_PENDING });
+
+    const request = httpClient || superagent;
 
     request.get(`/api/search/users?q=${query}`)
       .set('Accept', 'application/json')
@@ -34,8 +36,10 @@ export function searchUsers(token, query) {
 
         dispatch({
           type: SEARCH_USERS_FULFILLED,
-          payload: res.body,
-          query
+          payload: {
+            query,
+            ...res.body
+          }
         });
       });
   };
@@ -49,8 +53,10 @@ export function searchUsers(token, query) {
  * on the state of the search process (commencement, success or failure).
  */
 export function searchDocuments(token, query) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: SEARCH_DOCUMENTS_PENDING });
+
+    const request = httpClient || superagent;
 
     request.get(`/api/search/documents?q=${query}`)
       .set('Accept', 'application/json')
@@ -66,8 +72,10 @@ export function searchDocuments(token, query) {
 
         dispatch({
           type: SEARCH_DOCUMENTS_FULFILLED,
-          payload: res.body,
-          query
+          payload: {
+            query,
+            ...res.body
+          }
         });
       });
   };

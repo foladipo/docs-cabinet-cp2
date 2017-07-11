@@ -23,7 +23,6 @@ class LoginContainer extends React.Component {
     this.updateUsername = this.updateUsername.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
     this.login = this.login.bind(this);
-    this.simpleErrorMessage = this.simpleErrorMessage.bind(this);
   }
 
   /**
@@ -61,46 +60,9 @@ class LoginContainer extends React.Component {
   login(event) {
     // TODO: Validate form input here and, if appropriate, show an error
     event.preventDefault();
-    this.props.dispatch(UserActions.login(this.state.username, this.state.password));
-  }
-
-  /**
-   * Returns a simplified error message for failed login attempts.
-   * @return {String} - A simplified error message.
-   */
-  simpleErrorMessage() {
-    const technicalError = this.props.user.loginError;
-    let simplifiedError;
-    switch (technicalError) {
-      case 'IncorrectPasswordError':
-        simplifiedError = 'Oops! You supplied an incorrect password.';
-        break;
-
-      case 'NonExistentUserError':
-        simplifiedError = 'We don\'t remember you. Please check the details below or create an account.';
-        break;
-
-      case 'InvalidUsernameError':
-        simplifiedError = 'Please enter a valid email address in the "username" field.';
-        break;
-
-      case 'MissingPasswordError':
-        simplifiedError = 'Please enter your password.';
-        break;
-
-      case 'MissingUsernameError':
-        simplifiedError = 'Please enter your username.';
-        break;
-
-      case 'MissingLoginDetailsError':
-        simplifiedError = 'Please fill the form below.';
-        break;
-
-      default:
-        simplifiedError = '';
-    }
-
-    return simplifiedError;
+    this.props.dispatch(
+      UserActions.login(this.state.username, this.state.password)
+    );
   }
 
   /**
@@ -114,7 +76,7 @@ class LoginContainer extends React.Component {
         <form>
           <div className="red lighten-2">
             <p className="white-text center">
-              {this.simpleErrorMessage()}
+              {this.props.user.statusMessage}
             </p>
           </div>
           <Row>

@@ -99,53 +99,6 @@ class SignUpContainer extends React.Component {
   }
 
   /**
-   * Returns a simplified error message for failed sign up attempts.
-   * @return {String} - A simplified error message.
-   */
-  simpleErrorMessage() {
-    const technicalError = this.props.user.signUpError;
-    let simplifiedError;
-    switch (technicalError) {
-      case 'InvalidFirstNameError':
-      case 'MissingFirstNameError':
-      case 'EmptyFirstNameError':
-        simplifiedError = 'Please enter a first name that has two or more letters (no white space please).';
-        break;
-
-      case 'InvalidLastNameError':
-      case 'MissingLastNameError':
-      case 'EmptyLastNameError':
-        simplifiedError = 'Please enter last name that has two or more letters (no white space please).';
-        break;
-
-      case 'InvalidUsernameError':
-      case 'MissingUsernameError':
-      case 'EmptyUsernameError':
-        simplifiedError = 'Please enter a valid email address in the form below.';
-        break;
-
-
-      case 'MissingPasswordError':
-      case 'EmptyPasswordError':
-        simplifiedError = 'Please enter a strong password in the form below.';
-        break;
-
-      case 'InvalidPasswordError':
-        simplifiedError = 'Oops, that password isn\'t good enough. Use something stronger.';
-        break;
-
-      case 'UserExistsError':
-        simplifiedError = 'This email is taken. Use another one or log in.';
-        break;
-
-      default:
-        simplifiedError = '';
-    }
-
-    return simplifiedError;
-  }
-
-  /**
    * @return {Component|null} - Returns the React Component to be rendered or
    * null if nothing is to be rendered.
    */
@@ -156,7 +109,7 @@ class SignUpContainer extends React.Component {
         <form>
           <div className="red lighten-2">
             <p className="white-text center">
-              {this.simpleErrorMessage()}
+              {this.props.user.statusMessage}
             </p>
           </div>
           <Row>
