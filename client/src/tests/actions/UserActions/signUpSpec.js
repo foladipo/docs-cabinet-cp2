@@ -33,11 +33,7 @@ describe('signUp', () => {
   });
 
   it('should dispatch its failure actions correctly', () => {
-    const firstName = 'Segun';
-    const lastName = 'Akinwande';
-    const email = 'segun@example.com';
-    const password = '12ab!@AB';
-    const signUpActions = signUp(firstName, lastName, email, password);
+    const signUpActions = signUp();
     const spy = sinon.spy();
     signUpActions(spy, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);

@@ -32,10 +32,7 @@ describe('fetchAllUsers', () => {
   });
 
   it('should dispatch its failure actions correctly', () => {
-    const token = 'RANDOM_TOKEN';
-    const limit = 10;
-    const offset = 0;
-    const fetchAllUsersActions = fetchAllUsers(token, limit, offset);
+    const fetchAllUsersActions = fetchAllUsers();
     const spy = sinon.spy();
     fetchAllUsersActions(spy, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);

@@ -31,9 +31,7 @@ describe('deleteUser', () => {
   });
 
   it('should dispatch its failure actions correctly', () => {
-    const token = 'RANDOM_TOKEN';
-    const targetUserId = 12;
-    const deleteUserActions = deleteUser(token, targetUserId);
+    const deleteUserActions = deleteUser();
     const spy = sinon.spy();
     deleteUserActions(spy, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);

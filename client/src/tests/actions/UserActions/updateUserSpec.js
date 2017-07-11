@@ -32,10 +32,7 @@ describe('updateUser', () => {
   });
 
   it('should dispatch its failure actions correctly', () => {
-    const token = 'RANDOM_TOKEN';
-    const targetUserId = 12;
-    const updateInfo = { firstName: 'Crawford' };
-    const updateUserActions = updateUser(token, targetUserId, updateInfo);
+    const updateUserActions = updateUser();
     const spy = sinon.spy();
     updateUserActions(spy, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
