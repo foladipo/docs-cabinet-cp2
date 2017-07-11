@@ -1,4 +1,4 @@
-import request from 'superagent';
+import superagent from 'superagent';
 import {
   FETCH_ALL_DOCUMENTS_PENDING,
   FETCH_ALL_DOCUMENTS_REJECTED,
@@ -31,7 +31,7 @@ import {
  */
 export function createDocument(token, title, content, access, categories,
   tags) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: CREATE_DOCUMENT_PENDING });
     const newDocument = {
       title,
@@ -40,6 +40,8 @@ export function createDocument(token, title, content, access, categories,
       categories,
       tags
     };
+
+    const request = httpClient || superagent;
 
     request
       .post('/api/documents')
@@ -50,10 +52,11 @@ export function createDocument(token, title, content, access, categories,
         if (err) {
           dispatch({
             type: CREATE_DOCUMENT_REJECTED,
-            payload: { error: err.response.body.error }
+            payload: err.response.body
           });
           return;
         }
+
         dispatch({
           type: CREATE_DOCUMENT_FULFILLED,
           payload: res.body
@@ -73,8 +76,10 @@ export function createDocument(token, title, content, access, categories,
  * or failure).
  */
 export function fetchAllDocuments(token, limit, offset) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: FETCH_ALL_DOCUMENTS_PENDING });
+
+    const request = httpClient || superagent;
 
     request
       .get(`/api/documents?limit=${limit}&offset=${offset}`)
@@ -84,10 +89,11 @@ export function fetchAllDocuments(token, limit, offset) {
         if (err) {
           dispatch({
             type: FETCH_ALL_DOCUMENTS_REJECTED,
-            payload: { error: err.response.body.error }
+            payload: err.response.body
           });
           return;
         }
+
         dispatch({
           type: FETCH_ALL_DOCUMENTS_FULFILLED,
           payload: res.body
@@ -99,7 +105,8 @@ export function fetchAllDocuments(token, limit, offset) {
 /**
  * fetchUserDocuments - Fetches the documents that belong to a user.
  * @param {String} token - A token for the user making the request.
- * @param {Number} id - The id of the user making the request.
+ * @param {Number} targetUserId - The id of the user whose documents are
+ * to be fetched.
  * @param {String} limit - Number of documents to return per request.
  * @param {String} offset - Number of documents to skip before
  * beginning the fetch.
@@ -107,22 +114,25 @@ export function fetchAllDocuments(token, limit, offset) {
  * on the state of the document fetching process (commencement, success
  * or failure).
  */
-export function fetchUserDocuments(token, id, limit, offset) {
-  return (dispatch) => {
+export function fetchUserDocuments(token, targetUserId, limit, offset) {
+  return (dispatch, httpClient) => {
     dispatch({ type: FETCH_USER_DOCUMENTS_PENDING });
 
+    const request = httpClient || superagent;
+
     request
-      .get(`/api/users/${id}/documents?limit=${limit}&offset=${offset}`)
+      .get(`/api/users/${targetUserId}/documents?limit=${limit}&offset=${offset}`)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', token)
       .end((err, res) => {
         if (err) {
           dispatch({
             type: FETCH_USER_DOCUMENTS_REJECTED,
-            payload: { error: err.response.body.error }
+            payload: err.response.body
           });
           return;
         }
+
         dispatch({
           type: FETCH_USER_DOCUMENTS_FULFILLED,
           payload: res.body
@@ -134,21 +144,23 @@ export function fetchUserDocuments(token, id, limit, offset) {
 /**
  * deleteDocument - Deletes a document.
  * @param {String} token - A token for the user making the request.
- * @param {String} documentId - The id of the document to be deleted.
+ * @param {String} targetDocumentId - The id of the document to be deleted.
  * @return {Function} - Returns a function that dispatches actions based
  * on the state of the deletion process (commencement, success or failure).
  */
-export function deleteDocument(token, documentId) {
-  return (dispatch) => {
+export function deleteDocument(token, targetDocumentId) {
+  return (dispatch, httpClient) => {
     dispatch({
       type: DELETE_DOCUMENT_PENDING,
       payload: {
-        targetDocumentId: documentId
+        targetDocumentId
       }
     });
 
+    const request = httpClient || superagent;
+
     request
-      .delete(`/api/documents/${documentId}`)
+      .delete(`/api/documents/${targetDocumentId}`)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', token)
       .end((err, res) => {
@@ -156,18 +168,16 @@ export function deleteDocument(token, documentId) {
           dispatch({
             type: DELETE_DOCUMENT_REJECTED,
             payload: {
-              error: err.response.body.error,
-              targetDocumentId: documentId
+              targetDocumentId,
+              ...err.response.body
             }
           });
           return;
         }
+
         dispatch({
           type: DELETE_DOCUMENT_FULFILLED,
-          payload: {
-            response: res.body,
-            targetDocumentId: documentId
-          }
+          payload: res.body
         });
       });
   };
@@ -184,13 +194,15 @@ export function deleteDocument(token, documentId) {
  * or failure).
  */
 export function updateDocument(token, targetDocumentId, updateInfo) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({
       type: UPDATE_DOCUMENT_PENDING,
       payload: {
         targetDocumentId
       }
     });
+
+    const request = httpClient || superagent;
 
     request
       .put(`/api/documents/${targetDocumentId}`)
@@ -201,10 +213,14 @@ export function updateDocument(token, targetDocumentId, updateInfo) {
         if (err) {
           dispatch({
             type: UPDATE_DOCUMENT_REJECTED,
-            payload: { error: err.response.body.error }
+            payload: {
+              targetDocumentId,
+              ...err.response.body
+            }
           });
           return;
         }
+
         dispatch({
           type: UPDATE_DOCUMENT_FULFILLED,
           payload: res.body
