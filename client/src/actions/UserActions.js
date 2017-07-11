@@ -1,4 +1,4 @@
-import request from 'superagent';
+import superagent from 'superagent';
 import {
   SIGN_UP_PENDING,
   SIGN_UP_REJECTED,
@@ -27,8 +27,11 @@ import {
  * on the state of the login process (commencement, success or failure).
  */
 export function login(username, password) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: LOGIN_PENDING });
+
+    const request = httpClient || superagent;
+
     request
       .post('/api/users/login')
       .send({ username, password })
@@ -49,6 +52,7 @@ export function login(username, password) {
   };
 }
 
+
 /**
  * login - Starts the log out process.
  * @return {Function} - Returns a function that dispatches actions based
@@ -60,7 +64,6 @@ export function logout() {
       type: LOGOUT_PENDING
     });
 
-    // TODO: Send a request to /api/users/logout?
     dispatch({
       type: LOGOUT_FULFILLED,
       payload: {
@@ -80,8 +83,11 @@ export function logout() {
  * on the state of the sign up process (commencement, success or failure).
  */
 export function signUp(firstName, lastName, username, password) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: SIGN_UP_PENDING });
+
+    const request = httpClient || superagent;
+
     request
       .post('/api/users/')
       .send({ firstName, lastName, username, password })
@@ -112,10 +118,12 @@ export function signUp(firstName, lastName, username, password) {
  * on the state of the fetching process (commencement, success or failure).
  */
 export function fetchAllUsers(token, limit, offset) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({
       type: FETCH_ALL_USERS_PENDING
     });
+
+    const request = httpClient || superagent;
 
     request.get(`/api/users?limit=${limit}&offset=${offset}`)
       .set('Accept', 'application/json')
@@ -146,8 +154,10 @@ export function fetchAllUsers(token, limit, offset) {
  * on the state of the update process (commencement, success or failure).
  */
 export function updateUser(token, targetUserId, updateInfo) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: UPDATE_USER_PENDING });
+
+    const request = httpClient || superagent;
 
     request.put(`/api/users/${targetUserId}`)
       .send(updateInfo)
@@ -178,8 +188,10 @@ export function updateUser(token, targetUserId, updateInfo) {
  * on the state of the deletion process (commencement, success or failure).
  */
 export function deleteUser(token, targetUserId) {
-  return (dispatch) => {
+  return (dispatch, httpClient) => {
     dispatch({ type: DELETE_USER_PENDING });
+
+    const request = httpClient || superagent;
 
     request.delete(`/api/users/${targetUserId}`)
       .set('Accept', 'application/json')
