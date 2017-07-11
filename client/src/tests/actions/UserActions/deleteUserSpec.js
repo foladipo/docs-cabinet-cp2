@@ -1,29 +1,28 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import MockHttpClient from '../MockHttpClient';
-import MockHttpErrorClient from '../MockHttpErrorClient';
-import * as ActionTypes from '../../constants';
-import { updateUser } from '../../actions/UserActions';
+import MockHttpClient from '../../MockHttpClient';
+import MockHttpErrorClient from '../../MockHttpErrorClient';
+import * as ActionTypes from '../../../constants';
+import { deleteUser } from '../../../actions/UserActions';
 
 const expect = chai.expect;
 
-describe('updateUser', () => {
+describe('deleteUser', () => {
   it('should dispatch its success actions correctly', () => {
     const token = 'RANDOM_TOKEN';
     const targetUserId = 12;
-    const updateInfo = { firstName: 'Crawford' };
-    const updateUserActions = updateUser(token, targetUserId, updateInfo);
+    const deleteUserActions = deleteUser(token, targetUserId);
     const spy = sinon.spy();
-    updateUserActions(spy, MockHttpClient);
+    deleteUserActions(spy, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
-        type: ActionTypes.UPDATE_USER_PENDING
+        type: ActionTypes.DELETE_USER_PENDING
       }
     )).to.equal(true);
     expect(spy.calledWith(
       {
-        type: ActionTypes.UPDATE_USER_FULFILLED,
+        type: ActionTypes.DELETE_USER_FULFILLED,
         payload: {
           message: 'Request successful.'
         }
@@ -34,19 +33,18 @@ describe('updateUser', () => {
   it('should dispatch its failure actions correctly', () => {
     const token = 'RANDOM_TOKEN';
     const targetUserId = 12;
-    const updateInfo = { firstName: 'Crawford' };
-    const updateUserActions = updateUser(token, targetUserId, updateInfo);
+    const deleteUserActions = deleteUser(token, targetUserId);
     const spy = sinon.spy();
-    updateUserActions(spy, MockHttpErrorClient);
+    deleteUserActions(spy, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
-        type: ActionTypes.UPDATE_USER_PENDING
+        type: ActionTypes.DELETE_USER_PENDING
       }
     )).to.equal(true);
     expect(spy.calledWith(
       {
-        type: ActionTypes.UPDATE_USER_REJECTED,
+        type: ActionTypes.DELETE_USER_REJECTED,
         payload: {
           message: 'Request failed.'
         }

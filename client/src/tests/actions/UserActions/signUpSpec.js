@@ -1,9 +1,9 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import * as ActionTypes from '../../constants';
-import MockHttpClient from '../MockHttpClient';
-import MockHttpErrorClient from '../MockHttpErrorClient';
-import { signUp } from '../../actions/UserActions';
+import * as ActionTypes from '../../../constants';
+import MockHttpClient from '../../MockHttpClient';
+import MockHttpErrorClient from '../../MockHttpErrorClient';
+import { signUp } from '../../../actions/UserActions';
 
 const expect = chai.expect;
 
