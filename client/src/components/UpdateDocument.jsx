@@ -4,8 +4,7 @@ import { Button, Icon, Input, ProgressBar } from 'react-materialize';
 import { updateDocument } from '../actions/DocumentActions';
 
 /**
- * UpdateDocument - Used to update a document. If that document
- * doesn't exist, it will create it.
+ * UpdateDocument - Used to update a document.
  */
 class UpdateDocument extends Component {
   /**
@@ -16,49 +15,88 @@ class UpdateDocument extends Component {
     super(props);
 
     this.state = {
-      errorMessage: '',
-      title: props.title,
-      content: props.content,
-      access: props.access,
-      categories: props.categories,
-      tags: props.tags
+      hasFoundTargetDocument: false,
+      targetDocument: {}
     };
+
+    this.determineTargetDocument = this.determineTargetDocument.bind(this);
 
     this.hasValidTitle = this.hasValidTitle.bind(this);
     this.hasValidContent = this.hasValidContent.bind(this);
     this.hasValidCategories = this.hasValidCategories.bind(this);
     this.hasValidTags = this.hasValidTags.bind(this);
+    this.isValidDocument = this.isValidDocument.bind(this);
+    this.isUpdate = this.isUpdate.bind(this);
+
     this.updateAccess = this.updateAccess.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateCategories = this.updateCategories.bind(this);
     this.updateTags = this.updateTags.bind(this);
-    this.isUpdate = this.isUpdate.bind(this);
-    this.isValidDocument = this.isValidDocument.bind(this);
+
     this.submitUpdate = this.submitUpdate.bind(this);
   }
 
-  // TODO: Is this needed?
   /**
-   * Called immediately before rendering, when new props are or
-   * state is being received.
-   * @param {Object} nextProps - The new props this Component
-   * will receive when re-rendered.
+   * Called immediately after this Component is mounted.
    * @return {null} - Returns nothing.
    */
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.documentsStatus === 'documentCreated') {
-    //   this.setState({
-    //     errorMessage: '',
-    //     title: this.props.title,
-    //     content: this.props.content,
-    //     access: this.props.access || 'public',
-    //     categories: this.props.categories,
-    //     tags: this.props.tags
-    //   });
-    //   $('#updateDocumentForm .update-doc-text-input').val('');
-    //   $('#updateDocumentForm .update-doc-select-access').val('public');
-    // }
+  componentDidMount() {
+    this.determineTargetDocument();
+  }
+
+  /**
+   * Determines the target document of this update.
+   * @return {null} - Returns nothing.
+   */
+  determineTargetDocument() {
+    const targetDocumentId =
+      Number.parseInt(this.props.location.pathname.split('/')[3], 10);
+
+    if (Number.isNaN(targetDocumentId)) {
+      this.setState({
+        hasValidTargetDocumentId: false,
+        errorMessage: 'Yikes! The id of the document you wish to update is not a number.'
+      });
+      return;
+    }
+
+    const targetDocumentInArray =
+      this.props.documents.userDocuments.filter(
+        doc => doc.id === targetDocumentId
+      );
+    if (targetDocumentInArray.length === 1) {
+      const targetDocument = targetDocumentInArray[0];
+      this.setState({
+        hasFoundTargetDocument: true,
+        hasValidTargetDocumentId: true,
+        targetDocument,
+        title: targetDocument.title,
+        content: targetDocument.content,
+        access: targetDocument.access,
+        categories: targetDocument.categories,
+        tags: targetDocument.tags
+      });
+      return;
+    }
+
+    // TODO: Try to fetch the target user instead.
+    this.state = {
+      hasValidTargetUserId: true,
+      hasFoundTargetUser: false
+    };
+
+    // TODO: Add a catch-all with target document not found or something.
+  }
+
+  /**
+   * Updates the title stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateTitle(event) {
+    this.setState({ title: event.target.value });
   }
 
   /**
@@ -73,6 +111,16 @@ class UpdateDocument extends Component {
   }
 
   /**
+   * Updates the document content stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateContent(event) {
+    this.setState({ content: event.target.value });
+  }
+
+  /**
    * Tests the validity of a document's content.
    * @return {Boolean} - Whether or not a document's content is valid.
    */
@@ -84,6 +132,16 @@ class UpdateDocument extends Component {
   }
 
   /**
+   * Updates the categories stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateCategories(event) {
+    this.setState({ categories: event.target.value });
+  }
+
+  /**
    * Tests the validity of a document's categories.
    * @return {Boolean} - Whether or not a document's categories are valid.
    */
@@ -92,6 +150,16 @@ class UpdateDocument extends Component {
     if (!categories) return false;
     const strippedCategories = categories.replace(/(\s+)/, '');
     return strippedCategories.length > 1;
+  }
+
+  /**
+   * Updates the tags stored in this Component's state.
+   * @param {JqueryEvent} event - Info about the event that occurred on the
+   * DOM element this is attached to.
+   * @return {null} - Returns nothing.
+   */
+  updateTags(event) {
+    this.setState({ tags: event.target.value });
   }
 
   /**
@@ -116,46 +184,6 @@ class UpdateDocument extends Component {
   }
 
   /**
-   * Updates the title stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
-   * @return {null} - Returns nothing.
-   */
-  updateTitle(event) {
-    this.setState({ title: event.target.value });
-  }
-
-  /**
-   * Updates the document content stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
-   * @return {null} - Returns nothing.
-   */
-  updateContent(event) {
-    this.setState({ content: event.target.value });
-  }
-
-  /**
-   * Updates the categories stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
-   * @return {null} - Returns nothing.
-   */
-  updateCategories(event) {
-    this.setState({ categories: event.target.value });
-  }
-
-  /**
-   * Updates the tags stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
-   * @return {null} - Returns nothing.
-   */
-  updateTags(event) {
-    this.setState({ tags: event.target.value });
-  }
-
-  /**
    * Checks whether or not any part of a document (title,
    * tags etc) has changed.
    * @return {Boolean} - Returns true if any part of a document has
@@ -163,11 +191,11 @@ class UpdateDocument extends Component {
    */
   isUpdate() {
     return (
-      this.props.title !== this.state.title ||
-      this.props.content !== this.state.content ||
-      this.props.access !== this.state.access ||
-      this.props.categories !== this.state.categories ||
-      this.props.tags !== this.state.tags
+      this.state.targetDocument.title !== this.state.title ||
+      this.state.targetDocument.content !== this.state.content ||
+      this.state.targetDocument.access !== this.state.access ||
+      this.state.targetDocument.categories !== this.state.categories ||
+      this.state.targetDocument.tags !== this.state.tags
     );
   }
 
@@ -233,25 +261,25 @@ class UpdateDocument extends Component {
     }
 
     const updateInfo = {};
-    if (this.state.title !== this.props.title) {
+    if (this.state.title !== this.state.targetDocument.title) {
       updateInfo.title = this.state.title;
     }
-    if (this.state.content !== this.props.content) {
+    if (this.state.content !== this.state.targetDocument.content) {
       updateInfo.content = this.state.content;
     }
-    if (this.state.access !== this.props.access) {
+    if (this.state.access !== this.state.targetDocument.access) {
       updateInfo.access = this.state.access;
     }
-    if (this.state.categories !== this.props.categories) {
+    if (this.state.categories !== this.state.targetDocument.categories) {
       updateInfo.categories = this.state.categories;
     }
-    if (this.state.tags !== this.props.tags) {
+    if (this.state.tags !== this.state.targetDocument.tags) {
       updateInfo.tags = this.state.tags;
     }
 
     this.props.dispatch(updateDocument(
-      this.props.token,
-      this.props.id,
+      this.props.user.token,
+      this.state.targetDocument.id,
       updateInfo
     ));
   }
@@ -261,32 +289,32 @@ class UpdateDocument extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (this.props.documentsStatus === 'documentUpdated') {
-      Materialize.toast(this.props.documentsStatusMessage, 3000);
-      $('.modal').modal('close');
-      // $('.modal-overlay').attr({ 'display': 'none' });
-      return null;
+    if (this.props.documents.status === 'documentUpdated') {
+      Materialize.toast(this.props.documents.statusMessage, 3000);
     }
+
     return (
       <div className="row">
-        <form id="updateDocumentForm">
+        <div className="red lighten-2">
+          <h5 className="white-text center">
+            {this.state.errorMessage}
+          </h5>
+        </div>
+        <form id="updateDocumentForm" className={this.state.hasValidTargetDocumentId ? '' : 'hide'}>
           <h6 className="red-text text-lighten-2">
             **All fields are required.
           </h6>
-          <div className="red lighten-2">
-            <p className="white-text center">
-              {this.state.errorMessage}
-            </p>
-          </div>
           <div className="row">
+            <label htmlFor="update-access">
+              <h6>Access types</h6>
+            </label>
             <Icon s={1} left>visibility</Icon>
             <Input
               s={12}
               m={6}
               type="select"
-              label="Access type"
+              id="update-access"
               className="update-doc-select-access"
-              defaultValue={this.props.access}
               onChange={this.updateAccess}
             >
               <option value="public">Public</option>
@@ -294,48 +322,59 @@ class UpdateDocument extends Component {
               <option value="role">Role</option>
             </Input>
           </div>
-          <Input
-            s={12}
-            className="update-doc-text-input"
-            label="Title"
-            type="text"
-            defaultValue={this.props.title}
-            onChange={this.updateTitle}
-          >
-            <Icon>title</Icon>
-          </Input>
-          <Input
-            s={12}
-            className="update-doc-text-input"
-            label="Categories"
-            type="text"
-            defaultValue={this.props.categories}
-            onChange={this.updateCategories}
-          >
-            <Icon>bookmark_border</Icon>
-          </Input>
-          <Input
-            s={12}
-            className="update-doc-text-input"
-            label="Tags"
-            type="text"
-            defaultValue={this.props.tags}
-            onChange={this.updateTags}
-          >
-            <Icon>label_outline</Icon>
-          </Input>
-          <span className="col s12">
-            Document content<Icon left>mode_edit</Icon>
-          </span>
-          <br />
-          <div className="col s12">
-            <textarea
-              rows="10"
-              className="materialize-textarea update-doc-text-input"
-              defaultValue={this.props.content}
-              onChange={this.updateContent}
-            />
+          <div>
+            <label htmlFor="update-title">Title</label>
+            <Input
+              s={12}
+              id="update-title"
+              className="update-doc-text-input"
+              type="text"
+              placeholder={this.state.targetDocument.title}
+              onChange={this.updateTitle}
+            >
+              <Icon>title</Icon>
+            </Input>
+          </div>
+          <div>
+            <label htmlFor="update-categories">Categories</label>
+            <Input
+              s={12}
+              id="update-categories"
+              className="update-doc-text-input"
+              type="text"
+              placeholder={this.state.targetDocument.categories}
+              onChange={this.updateCategories}
+            >
+              <Icon>bookmark_border</Icon>
+            </Input>
+          </div>
+          <div>
+            <label htmlFor="update-tags">Tags</label>
+            <Input
+              s={12}
+              id="update-tags"
+              className="update-doc-text-input"
+              type="text"
+              placeholder={this.state.targetDocument.tags}
+              onChange={this.updateTags}
+            >
+              <Icon>label_outline</Icon>
+            </Input>
+          </div>
+          <div>
             <br />
+            <label htmlFor="update-content">Content</label>
+            <Icon left>mode_edit</Icon>
+            <div className="col s12">
+              <textarea
+                rows="10"
+                id="update-content"
+                className="materialize-textarea update-doc-text-input"
+                placeholder={this.state.targetDocument.content}
+                onChange={this.updateContent}
+              />
+              <br />
+            </div>
           </div>
           <div className="quarter-vertical-margin" />
           <Button
@@ -347,13 +386,13 @@ class UpdateDocument extends Component {
               'quarter-vertical-margin disabled'
             }
           >
-            {this.props.modeMessage}
+            Update
             <Icon left>update</Icon>
           </Button>
         </form>
         <ProgressBar
           className={
-            this.props.documentsStatus === 'updatingDocument' ?
+            this.props.documents.status === 'updatingDocument' ?
             '' :
             'hide'
           }
@@ -364,16 +403,10 @@ class UpdateDocument extends Component {
 }
 
 UpdateDocument.propTypes = {
-  access: PropTypes.string.isRequired,
-  categories: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  documentsStatus: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
-  modeMessage: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  token: PropTypes.string.isRequired,
+  documents: PropTypes.objectOf(PropTypes.any).isRequired,
+  location: PropTypes.objectOf(PropTypes.any).isRequired,
+  user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
 export default UpdateDocument;

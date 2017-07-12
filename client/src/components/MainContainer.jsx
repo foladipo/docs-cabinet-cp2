@@ -9,6 +9,7 @@ import ViewUserDocumentsPage from './ViewUserDocumentsPage';
 import UpdateUserPage from './UpdateUserPage';
 import UsersPage from './UsersPage';
 import CreateDocument from './CreateDocument';
+import UpdateDocument from './UpdateDocument';
 import ViewAllDocumentsPage from './ViewAllDocumentsPage';
 import SearchUsersPage from './SearchUsersPage';
 import SearchDocumentsPage from './SearchDocumentsPage';
@@ -183,6 +184,10 @@ class MainContainer extends React.Component {
         </SideNav>
 
         <Switch>
+          <Route
+            path="/dashboard/updateDocument"
+            render={() => <UpdateDocument {...this.props} />}
+          />
           <Route
             path="/dashboard/users"
             render={() => <UsersPage {...this.props} />}
