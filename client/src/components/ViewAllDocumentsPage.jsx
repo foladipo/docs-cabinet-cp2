@@ -17,6 +17,11 @@ class ViewAllDocumentsPage extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      limit: DOCUMENT_LIMIT,
+      offset: DOCUMENT_OFFSET
+    };
+
     this.startAllDocumentsFetch = this.startAllDocumentsFetch.bind(this);
   }
 
@@ -31,6 +36,26 @@ class ViewAllDocumentsPage extends Component {
     ) {
       this.startAllDocumentsFetch();
     }
+
+    $('#all-documents-page').on('scroll', () => {
+      if (
+        ($('#all-documents-page').scrollTop() + $('#all-documents-page').innerHeight()) >=
+        $('#all-documents-page')[0].scrollHeight
+      ) {
+        // TODO: Don't make any more API calls when
+        // pageCount * limit >= totalCount
+        this.props.dispatch(
+          fetchAllDocuments(
+            this.props.user.token,
+            this.state.limit,
+            this.state.offset + this.state.limit
+          )
+        );
+        this.setState({
+          offset: this.state.offset + this.state.limit
+        });
+      }
+    });
   }
 
   /**
@@ -41,8 +66,8 @@ class ViewAllDocumentsPage extends Component {
   startAllDocumentsFetch() {
     this.props.dispatch(fetchAllDocuments(
       this.props.user.token,
-      DOCUMENT_LIMIT,
-      DOCUMENT_OFFSET
+      this.state.limit,
+      this.state.offset
     ));
   }
 
@@ -64,20 +89,15 @@ class ViewAllDocumentsPage extends Component {
       this.props.documents.status === 'fetchAllDocumentsFailed';
 
     return (
-      <div className="scrollable-page all-documents-page">
+      <div
+        id="all-documents-page"
+        className="scrollable-page all-documents-page"
+      >
         <h4>All documents</h4>
         <div>
           <h5 className={showStatusMessage ? '' : 'hide'}>
             {this.props.documents.statusMessage}
           </h5>
-          <Row className={
-            this.props.documents.status === 'fetchingAllDocuments' ? '' : 'hide'
-            }
-          >
-            <Col s={4} offset="s4">
-              <Preloader size="big" flashing />
-            </Col>
-          </Row>
           <Button
             onClick={this.startAllDocumentsFetch}
             className={
@@ -99,6 +119,14 @@ class ViewAllDocumentsPage extends Component {
           </h5>
         </div>
         <div className="row">{documentComponents}</div>
+        <Row className={
+          this.props.documents.status === 'fetchingAllDocuments' ? '' : 'hide'
+          }
+        >
+          <Col s={12} className="center-align">
+            <Preloader size="big" flashing />
+          </Col>
+        </Row>
       </div>
     );
   }

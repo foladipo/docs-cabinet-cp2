@@ -131,8 +131,14 @@ export default class DocumentsController {
     const offset = limitAndOffset.offset;
     const id = req.decodedUserProfile.id;
 
+    /*
+    page: current page of the query result based on limit and offset
+    page_count: total number of pages
+    page_size: number of records per page (based on limit)
+    total_count: total number of records based on query
+    */
     Document
-      .findAll({
+      .findAndCountAll({
         include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'roleId'] }],
         where: {
           $or: [
@@ -151,10 +157,20 @@ export default class DocumentsController {
         limit,
         offset
       })
-      .then((foundDocuments) => {
+      .then((foundDocumentsMetadata) => {
+        const pageSize = limit;
+        const totalCount = foundDocumentsMetadata.count;
+        const pageCount = Math.ceil(totalCount / pageSize);
+        const page =
+          1 + Math.floor((((limit * pageCount) + offset) - totalCount) / limit);
+        const foundDocuments = foundDocumentsMetadata.rows;
         res.status(200)
           .json({
             message: 'Documents found.',
+            pageSize,
+            totalCount,
+            pageCount,
+            page,
             documents: foundDocuments
           });
       });
