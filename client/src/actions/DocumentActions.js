@@ -14,7 +14,10 @@ import {
   DELETE_DOCUMENT_FULFILLED,
   UPDATE_DOCUMENT_PENDING,
   UPDATE_DOCUMENT_REJECTED,
-  UPDATE_DOCUMENT_FULFILLED
+  UPDATE_DOCUMENT_FULFILLED,
+  GET_DOCUMENT_PENDING,
+  GET_DOCUMENT_REJECTED,
+  GET_DOCUMENT_FULFILLED
 } from '../constants';
 
 /**
@@ -223,6 +226,43 @@ export function updateDocument(token, targetDocumentId, updateInfo) {
 
         dispatch({
           type: UPDATE_DOCUMENT_FULFILLED,
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * getDocument - Retrieves a specific document.
+ * @param {String} token - A token for this document's author.
+ * @param {Number} targetDocumentId - The id of the document to retrieve.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the retrieval process (commencement, success
+ * or failure).
+ */
+export function getDocument(token, targetDocumentId) {
+  return (dispatch, getState, httpClient) => {
+    dispatch({
+      type: GET_DOCUMENT_PENDING
+    });
+
+    const request = httpClient || superagent;
+
+    request
+      .get(`/api/documents/${targetDocumentId}`)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: GET_DOCUMENT_REJECTED,
+            payload: err.response.body
+          });
+          return;
+        }
+
+        dispatch({
+          type: GET_DOCUMENT_FULFILLED,
           payload: res.body
         });
       });

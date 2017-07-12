@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input, ProgressBar } from 'react-materialize';
-import { updateDocument } from '../actions/DocumentActions';
+import _ from 'lodash';
+import { getDocument, updateDocument } from '../actions/DocumentActions';
 
 /**
- * UpdateDocument - Used to update a document.
+ * UpdateDocumentPage - Used to update a document.
  */
-class UpdateDocument extends Component {
+class UpdateDocumentPage extends Component {
   /**
-   * Creates and initializes an instance of UpdateDocument.
+   * Creates and initializes an instance of UpdateDocumentPage.
    * @param {Object} props - The data passed to this component from its parent.
    */
   constructor(props) {
@@ -46,6 +47,31 @@ class UpdateDocument extends Component {
   }
 
   /**
+   * Called immediately before rendering, when new props are or
+   * state is being received.
+   * @param {Object} nextProps - The new props this Component
+   * will receive when re-rendered.
+   * @return {null} - Returns nothing.
+   */
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.documents.status === 'gotDocument') {
+      const targetDocument = nextProps.documents.documentToUpdate;
+      if (!(_.isEqual({}, targetDocument))) {
+        this.setState({
+          hasFoundTargetDocument: true,
+          hasValidTargetDocumentId: true,
+          targetDocument,
+          title: targetDocument.title,
+          content: targetDocument.content,
+          access: targetDocument.access,
+          categories: targetDocument.categories,
+          tags: targetDocument.tags
+        });
+      }
+    }
+  }
+
+  /**
    * Determines the target document of this update.
    * @return {null} - Returns nothing.
    */
@@ -80,13 +106,12 @@ class UpdateDocument extends Component {
       return;
     }
 
-    // TODO: Try to fetch the target user instead.
-    this.state = {
-      hasValidTargetUserId: true,
-      hasFoundTargetUser: false
-    };
-
-    // TODO: Add a catch-all with target document not found or something.
+    this.props.dispatch(
+      getDocument(
+        this.props.user.token,
+        targetDocumentId
+      )
+    );
   }
 
   /**
@@ -295,7 +320,10 @@ class UpdateDocument extends Component {
 
     return (
       <div className="row">
-        <div className="red lighten-2">
+        <div className={this.props.documents.status === 'getDocumentFailed' ? 'red lighten-2' : 'hide'}>
+          <h5 className="white-text center">
+            {this.props.documents.statusMessage}
+          </h5>
           <h5 className="white-text center">
             {this.state.errorMessage}
           </h5>
@@ -329,7 +357,10 @@ class UpdateDocument extends Component {
               id="update-title"
               className="update-doc-text-input"
               type="text"
-              placeholder={this.state.targetDocument.title}
+              placeholder={
+                this.state.targetDocument ?
+                this.state.targetDocument.title : ''
+              }
               onChange={this.updateTitle}
             >
               <Icon>title</Icon>
@@ -342,7 +373,10 @@ class UpdateDocument extends Component {
               id="update-categories"
               className="update-doc-text-input"
               type="text"
-              placeholder={this.state.targetDocument.categories}
+              placeholder={
+                this.state.targetDocument ?
+                this.state.targetDocument.categories : ''
+              }
               onChange={this.updateCategories}
             >
               <Icon>bookmark_border</Icon>
@@ -355,7 +389,10 @@ class UpdateDocument extends Component {
               id="update-tags"
               className="update-doc-text-input"
               type="text"
-              placeholder={this.state.targetDocument.tags}
+              placeholder={
+                this.state.targetDocument ?
+                this.state.targetDocument.tags : ''
+              }
               onChange={this.updateTags}
             >
               <Icon>label_outline</Icon>
@@ -370,7 +407,10 @@ class UpdateDocument extends Component {
                 rows="10"
                 id="update-content"
                 className="materialize-textarea update-doc-text-input"
-                placeholder={this.state.targetDocument.content}
+                placeholder={
+                  this.state.targetDocument ?
+                  this.state.targetDocument.content : ''
+                }
                 onChange={this.updateContent}
               />
               <br />
@@ -402,11 +442,11 @@ class UpdateDocument extends Component {
   }
 }
 
-UpdateDocument.propTypes = {
+UpdateDocumentPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   documents: PropTypes.objectOf(PropTypes.any).isRequired,
   location: PropTypes.objectOf(PropTypes.any).isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default UpdateDocument;
+export default UpdateDocumentPage;

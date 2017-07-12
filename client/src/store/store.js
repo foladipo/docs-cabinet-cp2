@@ -36,7 +36,8 @@ const store = createStore(
       allDocuments: [],
       status: 'fetchingAllDocuments',
       statusMessage: 'Loading documents... Please wait...',
-      targetDocumentId: -1
+      targetDocumentId: -1,
+      documentToUpdate: {}
     },
     search: {
       users: {

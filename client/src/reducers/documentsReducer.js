@@ -14,6 +14,9 @@ import {
   UPDATE_DOCUMENT_PENDING,
   UPDATE_DOCUMENT_REJECTED,
   UPDATE_DOCUMENT_FULFILLED,
+  GET_DOCUMENT_PENDING,
+  GET_DOCUMENT_REJECTED,
+  GET_DOCUMENT_FULFILLED,
 
   LOGOUT_PENDING
 } from '../constants';
@@ -143,6 +146,25 @@ export default function documentsReducer(state, action) {
       });
       newState.userDocumentsCount = newState.userDocuments.length;
       newState.targetDocumentId = -1;
+      break;
+
+    case GET_DOCUMENT_PENDING:
+      newState.status = 'gettingDocument';
+      newState.statusMessage = 'Retrieving document... Please wait...';
+      newState.documentToUpdate = {};
+      break;
+
+    case GET_DOCUMENT_REJECTED:
+      newState.status = 'getDocumentFailed';
+      newState.statusMessage =
+        action.payload.message ||
+        'Failed to retrieve document. Please try again.';
+      break;
+
+    case GET_DOCUMENT_FULFILLED:
+      newState.status = 'gotDocument';
+      newState.statusMessage = 'Successfully retrieved document.';
+      newState.documentToUpdate = action.payload.documents[0];
       break;
 
     default:
