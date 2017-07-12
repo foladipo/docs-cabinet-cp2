@@ -3,17 +3,17 @@ import sinon from 'sinon';
 import * as ActionTypes from '../../../constants';
 import MockHttpClient from '../../MockHttpClient';
 import MockHttpErrorClient from '../../MockHttpErrorClient';
-import { updateDocument } from '../../../actions/DocumentActions';
+import { UpdateDocumentPage } from '../../../actions/DocumentActions';
 
 const expect = chai.expect;
 
-describe('updateDocument', () => {
+describe('UpdateDocumentPage', () => {
   it('should dispatch its success actions correctly', () => {
     const token = 'RANDOM_TOKEN';
     const targetDocumentId = 12;
     const updateInfo = { title: 'Ready... set... go!' };
     const updateDocumentActions =
-      updateDocument(token, targetDocumentId, updateInfo);
+      UpdateDocumentPage(token, targetDocumentId, updateInfo);
     const spy = sinon.spy();
     updateDocumentActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
@@ -36,7 +36,7 @@ describe('updateDocument', () => {
   it('should dispatch its failure actions correctly', () => {
     const token = 'RANDOM_TOKEN';
     const targetDocumentId = 12;
-    const updateDocumentActions = updateDocument(token, targetDocumentId);
+    const updateDocumentActions = UpdateDocumentPage(token, targetDocumentId);
     const spy = sinon.spy();
     updateDocumentActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
