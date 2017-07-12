@@ -1,3 +1,7 @@
+/**
+ * MockHttpClient - an object that mocks the methods of superagent. Used
+ * to simulate successful/error-free API calls.
+ */
 const MockHttpClient = {
   get() { return this; },
   post() { return this; },

@@ -16,7 +16,7 @@ describe('fetchUserDocuments', () => {
     const fetchUserDocumentsActions =
       fetchUserDocuments(token, targetUserId, limit, offset);
     const spy = sinon.spy();
-    fetchUserDocumentsActions(spy, MockHttpClient);
+    fetchUserDocumentsActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -36,7 +36,7 @@ describe('fetchUserDocuments', () => {
   it('should dispatch its failure actions correctly', () => {
     const fetchUserDocumentsActions = fetchUserDocuments();
     const spy = sinon.spy();
-    fetchUserDocumentsActions(spy, MockHttpErrorClient);
+    fetchUserDocumentsActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

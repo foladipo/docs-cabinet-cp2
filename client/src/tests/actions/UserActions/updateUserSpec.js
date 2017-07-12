@@ -14,7 +14,7 @@ describe('updateUser', () => {
     const updateInfo = { firstName: 'Crawford' };
     const updateUserActions = updateUser(token, targetUserId, updateInfo);
     const spy = sinon.spy();
-    updateUserActions(spy, MockHttpClient);
+    updateUserActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -34,7 +34,7 @@ describe('updateUser', () => {
   it('should dispatch its failure actions correctly', () => {
     const updateUserActions = updateUser();
     const spy = sinon.spy();
-    updateUserActions(spy, MockHttpErrorClient);
+    updateUserActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

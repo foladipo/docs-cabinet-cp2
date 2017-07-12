@@ -31,7 +31,7 @@ import {
  */
 export function createDocument(token, title, content, access, categories,
   tags) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: CREATE_DOCUMENT_PENDING });
     const newDocument = {
       title,
@@ -76,7 +76,7 @@ export function createDocument(token, title, content, access, categories,
  * or failure).
  */
 export function fetchAllDocuments(token, limit, offset) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: FETCH_ALL_DOCUMENTS_PENDING });
 
     const request = httpClient || superagent;
@@ -115,7 +115,7 @@ export function fetchAllDocuments(token, limit, offset) {
  * or failure).
  */
 export function fetchUserDocuments(token, targetUserId, limit, offset) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: FETCH_USER_DOCUMENTS_PENDING });
 
     const request = httpClient || superagent;
@@ -149,7 +149,7 @@ export function fetchUserDocuments(token, targetUserId, limit, offset) {
  * on the state of the deletion process (commencement, success or failure).
  */
 export function deleteDocument(token, targetDocumentId) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({
       type: DELETE_DOCUMENT_PENDING,
       payload: {
@@ -194,7 +194,7 @@ export function deleteDocument(token, targetDocumentId) {
  * or failure).
  */
 export function updateDocument(token, targetDocumentId, updateInfo) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({
       type: UPDATE_DOCUMENT_PENDING,
       payload: {

@@ -13,7 +13,7 @@ describe('deleteUser', () => {
     const targetUserId = 12;
     const deleteUserActions = deleteUser(token, targetUserId);
     const spy = sinon.spy();
-    deleteUserActions(spy, MockHttpClient);
+    deleteUserActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -33,7 +33,7 @@ describe('deleteUser', () => {
   it('should dispatch its failure actions correctly', () => {
     const deleteUserActions = deleteUser();
     const spy = sinon.spy();
-    deleteUserActions(spy, MockHttpErrorClient);
+    deleteUserActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

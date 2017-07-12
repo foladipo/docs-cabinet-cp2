@@ -27,7 +27,7 @@ import {
  * on the state of the login process (commencement, success or failure).
  */
 export function login(username, password) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: LOGIN_PENDING });
 
     const request = httpClient || superagent;
@@ -83,7 +83,7 @@ export function logout() {
  * on the state of the sign up process (commencement, success or failure).
  */
 export function signUp(firstName, lastName, username, password) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: SIGN_UP_PENDING });
 
     const request = httpClient || superagent;
@@ -118,7 +118,7 @@ export function signUp(firstName, lastName, username, password) {
  * on the state of the fetching process (commencement, success or failure).
  */
 export function fetchAllUsers(token, limit, offset) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({
       type: FETCH_ALL_USERS_PENDING
     });
@@ -154,7 +154,7 @@ export function fetchAllUsers(token, limit, offset) {
  * on the state of the update process (commencement, success or failure).
  */
 export function updateUser(token, targetUserId, updateInfo) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: UPDATE_USER_PENDING });
 
     const request = httpClient || superagent;
@@ -188,7 +188,7 @@ export function updateUser(token, targetUserId, updateInfo) {
  * on the state of the deletion process (commencement, success or failure).
  */
 export function deleteUser(token, targetUserId) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: DELETE_USER_PENDING });
 
     const request = httpClient || superagent;

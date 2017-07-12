@@ -1,3 +1,7 @@
+/**
+ * MockHttpErrorClient - an object that mocks the methods of superagent. Used
+ * to simulate failed/erroneous API calls.
+ */
 const MockHttpErrorClient = {
   get() { return this; },
   post() { return this; },

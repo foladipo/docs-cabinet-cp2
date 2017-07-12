@@ -17,7 +17,7 @@ import {
  * on the state of the search process (commencement, success or failure).
  */
 export function searchUsers(token, query) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: SEARCH_USERS_PENDING });
 
     const request = httpClient || superagent;
@@ -53,7 +53,7 @@ export function searchUsers(token, query) {
  * on the state of the search process (commencement, success or failure).
  */
 export function searchDocuments(token, query) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: SEARCH_DOCUMENTS_PENDING });
 
     const request = httpClient || superagent;

@@ -13,7 +13,7 @@ describe('login', () => {
     const password = '12ab!@AB';
     const loginActions = login(email, password);
     const spy = sinon.spy();
-    loginActions(spy, MockHttpClient);
+    loginActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -33,7 +33,7 @@ describe('login', () => {
   it('should dispatch all its failure actions correctly', () => {
     const loginActions = login();
     const spy = sinon.spy();
-    loginActions(spy, MockHttpErrorClient);
+    loginActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

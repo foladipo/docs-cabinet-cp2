@@ -14,7 +14,7 @@ describe('searchUsers', () => {
     const searchUsersActions =
       searchUsers(token, query);
     const spy = sinon.spy();
-    searchUsersActions(spy, MockHttpClient);
+    searchUsersActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -35,7 +35,7 @@ describe('searchUsers', () => {
   it('should dispatch its failure actions correctly', () => {
     const searchUsersActions = searchUsers();
     const spy = sinon.spy();
-    searchUsersActions(spy, MockHttpErrorClient);
+    searchUsersActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
