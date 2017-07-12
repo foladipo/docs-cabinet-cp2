@@ -2,7 +2,7 @@ import express from 'express';
 
 import UsersController from '../controllers/UsersController';
 import adminsOnly from '../middleware/adminsOnly';
-import ownerOrAdminsOnly from '../middleware/ownerOrAdminsOnly';
+import accountOwnerOrAdminsOnly from '../middleware/accountOwnerOrAdminsOnly';
 import validateToken from '../middleware/validateToken';
 
 const usersRouter = express.Router();
@@ -170,7 +170,7 @@ usersRouter.route('/:id')
    *           items:
    *             $ref: '#/definitions/NewUser'
    */
-  .get(validateToken, ownerOrAdminsOnly, UsersController.getUser)
+  .get(validateToken, accountOwnerOrAdminsOnly, UsersController.getUser)
   /**
    * @swagger
    * /api/users/<id>:
@@ -197,7 +197,11 @@ usersRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .put(validateToken, ownerOrAdminsOnly, UsersController.updateUserProfile)
+  .put(
+    validateToken,
+    accountOwnerOrAdminsOnly,
+    UsersController.updateUserProfile
+  )
   /**
    * @swagger
    * /api/users/<id>:
@@ -224,7 +228,7 @@ usersRouter.route('/:id')
    *         schema:
    *           type: string
    */
-  .delete(validateToken, ownerOrAdminsOnly, UsersController.deleteUser);
+  .delete(validateToken, accountOwnerOrAdminsOnly, UsersController.deleteUser);
 
 usersRouter.route('/:id/documents')
   /**
@@ -255,7 +259,11 @@ usersRouter.route('/:id/documents')
    *           items:
    *             $ref: '#/definitions/NewDocument'
    */
-  .get(validateToken, ownerOrAdminsOnly, UsersController.getUserDocuments);
+  .get(
+    validateToken,
+    accountOwnerOrAdminsOnly,
+    UsersController.getUserDocuments
+  );
 
 usersRouter.route('/login')
   /**
