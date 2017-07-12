@@ -640,7 +640,7 @@ export default class UsersController {
    * HTTP request, you can specify a limit (number of users returned for each
    * request) and an offset (e.g if there are 50 users and an offset of 5 is
    * given, then the list of returned users will start from the 6th user in
-   * the database). The default limit is 30 and the default offset is 0. These
+   * the database). The default limit is 10 and the default offset is 0. These
    * defaults can be customized by specifying DEFAULT_LIMIT_OF_RESULTS and
    * DEFAULT_OFFSET_OF_RESULTS in your `.env` file.
    * @param {Request} req - An express Request object with data about the

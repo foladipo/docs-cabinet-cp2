@@ -18,7 +18,7 @@ class UsersPage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { limit: 30, offset: 0 };
+    this.state = { limit: 10, offset: 0 };
   }
 
   /**
@@ -42,7 +42,9 @@ class UsersPage extends Component {
   render() {
     let users;
     if (this.props.user.allUsers) {
-      users = this.props.user.allUsers.map(user => <User key={uuid.v4()} {...user} />);
+      users = this.props.user.allUsers.map(user =>
+        <User key={uuid.v4()} {...user} />)
+      ;
     }
 
     return (
