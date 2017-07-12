@@ -164,7 +164,7 @@ export default function documentsReducer(state, action) {
     case GET_DOCUMENT_FULFILLED:
       newState.status = 'gotDocument';
       newState.statusMessage = 'Successfully retrieved document.';
-      newState.documentToUpdate = action.payload.documents[0];
+      newState.userToUpdate = action.payload.users[0];
       break;
 
     default:

@@ -46,7 +46,8 @@ export default class UsersController {
           }).then((user) => {
             if (user) {
               const storedPasswordHash = user.password;
-              const isCorrectPassword = bcryptjs.compareSync(password, storedPasswordHash);
+              const isCorrectPassword =
+                bcryptjs.compareSync(password, storedPasswordHash);
               if (isCorrectPassword) {
                 const userDetails = {
                   id: user.id,
@@ -130,13 +131,14 @@ export default class UsersController {
    * username hasn't been used to register before etc. If all these checks are
    * passed, this function creates a new user in this app's database and returns
    * a JWT token for the user to interact with other parts/endpoints of the app,
-   * along with some info about the user's profile. Otherwise, it returns a response
-   * with a descriptive errror message e.g InvalidPasswordError, InvalidUsernameError
-   * etc.
+   * along with some info about the user's profile. Otherwise, it returns a
+   * response with a descriptive errror message e.g InvalidPasswordError,
+   * InvalidUsernameError etc.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint.
    * @param {Response} res - An express Response object that will contain
-   * the info this app will send back to the user e.g error messages, JWT tokens,
+   * the info this app will send back to the user e.g error messages,
+   * JWT tokens,
    * HTTP status codes etc.
    * @return {void}
    */
@@ -254,7 +256,8 @@ export default class UsersController {
             error: 'UserExistsError'
           });
         } else {
-          const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
+          const saltLength =
+            Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
           const hashedPassword = bcryptjs.hashSync(password, saltLength);
           const trimmedFirstname = firstName.trim().replace(/(\s{2,})/, ' ');
           const trimmedLastname = lastName.trim().replace(/(\s{2,})/, ' ');
@@ -587,11 +590,12 @@ export default class UsersController {
   }
 
   /**
-   * Returns the profile of the user with a particular id. Other details about this
-   * function's behaviour are:
+   * Returns the profile of the user with a particular id. Other details
+   * about this function's behaviour are:
    * - if the id is not a valid integer, it returns an InvalidUserIdError
    * response.
-   * - if the id belongs to a non-existing user, it returns a TargetUserNotFoundError.
+   * - if the id belongs to a non-existing user, it returns a
+   * TargetUserNotFoundError.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint e.g query parameters, headers etc.
    * @param {Response} res - An express Response object with the info this app
@@ -604,14 +608,6 @@ export default class UsersController {
     const idString = pathInfo[1];
 
     const id = Number.parseInt(idString, 10);
-    if (Number.isNaN(id)) {
-      res.status(400)
-        .json({
-          message: 'The user id you supplied is not a number.',
-          error: 'InvalidUserIdError'
-        });
-      return;
-    }
 
     User
       .findOne({ where: { id } })

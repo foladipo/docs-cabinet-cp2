@@ -15,7 +15,10 @@ import {
   UPDATE_USER_FULFILLED,
   DELETE_USER_PENDING,
   DELETE_USER_REJECTED,
-  DELETE_USER_FULFILLED
+  DELETE_USER_FULFILLED,
+  GET_USER_PENDING,
+  GET_USER_REJECTED,
+  GET_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -173,6 +176,23 @@ export default function userReducer(state, action) {
         newState.user = null;
         window.localStorage.clear();
       }
+      break;
+
+    case GET_USER_PENDING:
+      newState.status = 'gettingUser';
+      newState.statusMessage = 'Retrieving user profile... Please wait...';
+      newState.userToUpdate = {};
+      break;
+
+    case GET_USER_REJECTED:
+      newState.status = 'getUserFailed';
+      newState.statusMessage = action.payload.message || 'Failed to retrieve user profile. Please try again.';
+      break;
+
+    case GET_USER_FULFILLED:
+      newState.status = 'gotUser';
+      newState.statusMessage = 'Successfully retrieved user profile.';
+      newState.userToUpdate = action.payload.users[0];
       break;
 
     default:

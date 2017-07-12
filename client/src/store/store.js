@@ -27,7 +27,8 @@ const store = createStore(
       allUsers: [],
       status: '',
       statusMessage: '',
-      deletedUserId: -1
+      deletedUserId: -1,
+      userToUpdate: {}
     },
     documents: {
       userDocumentsCount: 0,
