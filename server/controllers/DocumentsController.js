@@ -83,8 +83,7 @@ export default class DocumentsController {
       return;
     }
 
-    const id = req.decodedUserProfile.id;
-    const roleId = req.decodedUserProfile.roleId;
+    const requesterId = req.decodedUserProfile.id;
 
     Document
       .findOne({
@@ -95,63 +94,24 @@ export default class DocumentsController {
       })
       .then((foundDocument) => {
         if (foundDocument) {
-          if (foundDocument.access === 'public') {
+          if (foundDocument.authorId === requesterId) {
             res.status(200)
               .json({
                 message: 'Document found.',
                 documents: [foundDocument]
               });
-            return;
-          }
-
-          if (foundDocument.access === 'private') {
-            if (id === foundDocument.authorId || roleId > 0) {
-              res.status(200)
-                .json({
-                  message: 'Document found.',
-                  documents: [foundDocument]
-                });
-            } else {
-              res.status(403)
-                .json({
-                  message: 'You cannot access this document.',
-                  error: 'ForbiddenOperationError'
-                });
-            }
-            return;
-          }
-
-          if (foundDocument.access === 'role') {
-            User
-              .findOne({
-                where: {
-                  id: foundDocument.authorId
-                },
-                attributes: ['id', 'roleId']
-              })
-              .then((foundAuthor) => {
-                if (foundAuthor) {
-                  if (foundAuthor.roleId === roleId) {
-                    res.status(200)
-                      .json({
-                        message: 'Document found.',
-                        documents: [foundDocument]
-                      });
-                  } else {
-                    res.status(403)
-                      .json({
-                        message: 'You cannot access this document.',
-                        error: 'ForbiddenOperationError'
-                      });
-                  }
-                }
+          } else {
+            res.status(403)
+              .json({
+                message: 'Nope. You\'re not permitted to access this document.',
+                error: 'ForbiddenOperationError'
               });
           }
         } else {
           res.status(404)
             .json({
               message: 'The document you requested for doesn\'t exist.',
-              error: 'NoDocumentsFoundError'
+              error: 'NoDocumentFoundError'
             });
         }
       });
@@ -201,10 +161,11 @@ export default class DocumentsController {
   }
 
   /**
-   * Updates a document's title, content, access type, categories or tags. Before
-   * performing the update, this function checks that:
-   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
-   * response. A document id is invalid if it is not an integer.
+   * Updates a document's title, content, access type, categories or tags.
+   * Before performing the update, this function checks that:
+   * - the included document id is valid, else it sends an
+   * InvalidTargetDocumentIdError response. A document id is invalid if it
+   * is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
    * - the person performing this request is the one who initially created the
@@ -308,12 +269,14 @@ export default class DocumentsController {
   /**
    * Delete a document. Before performing the update, this function checks
    * that:
-   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
-   * response. A document id is invalid if it is not an integer.
+   * - the included document id is valid, else it sends an
+   * InvalidTargetDocumentIdError response. A document id is invalid if it
+   * is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
-   * - the person performing this request is either the one who initially created the
-   * document or an admin. Else, it sends a ForbiddenOperationError response.
+   * - the person performing this request is either the one who initially
+   * created the document or an admin. Else, it sends a
+   * ForbiddenOperationError response.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint.
    * @param {Response} res - An express Response object that will contain
