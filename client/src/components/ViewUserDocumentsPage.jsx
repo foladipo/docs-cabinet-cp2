@@ -4,7 +4,7 @@ import { Button, Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import Document from './Document';
 import { fetchUserDocuments } from '../actions/DocumentActions';
-import { DOCUMENT_LIMIT, DOCUMENT_OFFSET } from '../constants/';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants/';
 
 /**
  * ViewUserDocumentsPage - Shows a user a list of his/her own documents.
@@ -17,7 +17,9 @@ class ViewUserDocumentsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.startDocumentsFetch = this.startDocumentsFetch.bind(this);
+    this.state = { hasFetchedAllUserDocuments: false };
+
+    this.loadUsersDocuments = this.loadUsersDocuments.bind(this);
   }
 
   /**
@@ -26,23 +28,55 @@ class ViewUserDocumentsPage extends Component {
    */
   componentDidMount() {
     if (
-      this.props.documents.userDocuments === undefined ||
-      this.props.documents.userDocuments.length < 1
+      this.props.documents.userDocuments.documents === undefined ||
+      this.props.documents.userDocuments.documents.length < 1
     ) {
-      this.startDocumentsFetch();
+      this.loadUsersDocuments(
+        this.props.user.user.id, DEFAULT_LIMIT, DEFAULT_OFFSET
+      );
     }
+
+    const userDocsPageElement = $('#user-documents-page');
+    userDocsPageElement.on('scroll', () => {
+      if (
+        (userDocsPageElement.scrollTop() + userDocsPageElement.innerHeight()) >=
+        userDocsPageElement[0].scrollHeight
+      ) {
+        if (this.props.documents.status !== 'fetchingUserDocuments') {
+          if (
+            this.props.documents.userDocuments.page ===
+            this.props.documents.userDocuments.pageCount
+          ) {
+            this.setState({
+              hasFetchedAllUserDocuments: true
+            });
+            return;
+          }
+
+          const limit = DEFAULT_LIMIT;
+          const offset =
+            this.props.documents.userDocuments.page * DEFAULT_LIMIT;
+          this.loadUsersDocuments(this.props.user.user.id, limit, offset);
+        }
+      }
+    });
   }
 
   /**
    * Attempts to fetch a user's documents.
+   * @param {String} targetUserId - Id of the user whose documents are to
+   * be fetched.
+   * @param {String} limit - Number of documents to return.
+   * @param {String} offset - Number of documents to skip before
+   * beginning the fetch.
    * @return {null} - Returns nothing.
    */
-  startDocumentsFetch() {
+  loadUsersDocuments(targetUserId, limit, offset) {
     this.props.dispatch(fetchUserDocuments(
       this.props.user.token,
-      this.props.user.user.id,
-      DOCUMENT_LIMIT,
-      DOCUMENT_OFFSET
+      targetUserId,
+      limit,
+      offset
     ));
   }
 
@@ -51,40 +85,25 @@ class ViewUserDocumentsPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const showStatusMessage =
-      this.props.documents.status === 'fetchingUserDocuments' ||
-      this.props.documents.status === 'fetchUserDocumentsFailed';
-
-    const documentComponents = this.props.documents.userDocuments.map(doc => (
-      <Document
-        key={uuid.v4()}
-        dispatch={this.props.dispatch}
-        token={this.props.user.token}
-        documentsStatus={this.props.documents.status}
-        targetDocumentId={this.props.documents.targetDocumentId}
-        documentsStatusMessage={this.props.documents.statusMessage}
-        {...doc}
-      />
+    const documentComponents =
+      this.props.documents.userDocuments.documents.map(doc => (
+        <Document
+          key={uuid.v4()}
+          dispatch={this.props.dispatch}
+          token={this.props.user.token}
+          documentsStatus={this.props.documents.status}
+          targetDocumentId={this.props.documents.targetDocumentId}
+          documentsStatusMessage={this.props.documents.statusMessage}
+          {...doc}
+        />
     ));
 
+    // TODO: Maybe add a 'retry' button for when a documents fetch fails?
     return (
-      <div className="scrollable-page user-documents-page">
-        <div>
-          <h5 className={showStatusMessage ? '' : 'hide'}>
-            {this.props.documents.statusMessage}
-          </h5>
-          <Row className={this.props.documents.status === 'fetchingUserDocuments' ? '' : 'hide'}>
-            <Col s={4} offset="s4">
-              <Preloader size="big" flashing />
-            </Col>
-          </Row>
-          <Button
-            onClick={this.startDocumentsFetch}
-            className={this.props.documents.status === 'fetchUserDocumentsFailed' ? '' : 'hide'}
-          >
-            {this.props.documents.statusMessage}
-          </Button>
-        </div>
+      <div
+        id="user-documents-page"
+        className="scrollable-page user-documents-page"
+      >
         <div
           className={
             this.props.documents.userDocuments.length < 1 &&
@@ -96,6 +115,36 @@ class ViewUserDocumentsPage extends Component {
           </h5>
         </div>
         <div className="user-documents row">{documentComponents}</div>
+        <div>
+          <h5
+            className={
+              this.props.documents.status === 'fetchUserDocumentsFailed' ?
+              '' : 'hide'
+            }
+          >
+            {this.props.documents.statusMessage}
+          </h5>
+        </div>
+        <Row className={
+          this.props.documents.status === 'fetchingUserDocuments' ? '' : 'hide'
+          }
+        >
+          <Col s={12} className="center-align">
+            <Preloader size="big" flashing />
+          </Col>
+          <Col s={12} className="center-align">
+            <h5>{this.props.documents.statusMessage.replace('Loading', 'Loading more')}</h5>
+          </Col>
+        </Row>
+        <Row
+          className={
+            this.state.hasFetchedAllUserDocuments ? 'thats-all' : 'hide'
+          }
+        >
+          <Col s={12} className="blue white-text center-align">
+            <h5>That&rsquo;s all! There are no documents left.</h5>
+          </Col>
+        </Row>
       </div>
     );
   }

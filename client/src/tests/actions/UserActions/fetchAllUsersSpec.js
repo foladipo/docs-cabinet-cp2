@@ -14,7 +14,7 @@ describe('fetchAllUsers', () => {
     const offset = 0;
     const fetchAllUsersActions = fetchAllUsers(token, limit, offset);
     const spy = sinon.spy();
-    fetchAllUsersActions(spy, MockHttpClient);
+    fetchAllUsersActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -34,7 +34,7 @@ describe('fetchAllUsers', () => {
   it('should dispatch its failure actions correctly', () => {
     const fetchAllUsersActions = fetchAllUsers();
     const spy = sinon.spy();
-    fetchAllUsersActions(spy, MockHttpErrorClient);
+    fetchAllUsersActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

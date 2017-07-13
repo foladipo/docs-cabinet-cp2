@@ -83,8 +83,7 @@ export default class DocumentsController {
       return;
     }
 
-    const id = req.decodedUserProfile.id;
-    const roleId = req.decodedUserProfile.roleId;
+    const requesterId = req.decodedUserProfile.id;
 
     Document
       .findOne({
@@ -95,63 +94,24 @@ export default class DocumentsController {
       })
       .then((foundDocument) => {
         if (foundDocument) {
-          if (foundDocument.access === 'public') {
+          if (foundDocument.authorId === requesterId) {
             res.status(200)
               .json({
                 message: 'Document found.',
                 documents: [foundDocument]
               });
-            return;
-          }
-
-          if (foundDocument.access === 'private') {
-            if (id === foundDocument.authorId || roleId > 0) {
-              res.status(200)
-                .json({
-                  message: 'Document found.',
-                  documents: [foundDocument]
-                });
-            } else {
-              res.status(403)
-                .json({
-                  message: 'You cannot access this document.',
-                  error: 'ForbiddenOperationError'
-                });
-            }
-            return;
-          }
-
-          if (foundDocument.access === 'role') {
-            User
-              .findOne({
-                where: {
-                  id: foundDocument.authorId
-                },
-                attributes: ['id', 'roleId']
-              })
-              .then((foundAuthor) => {
-                if (foundAuthor) {
-                  if (foundAuthor.roleId === roleId) {
-                    res.status(200)
-                      .json({
-                        message: 'Document found.',
-                        documents: [foundDocument]
-                      });
-                  } else {
-                    res.status(403)
-                      .json({
-                        message: 'You cannot access this document.',
-                        error: 'ForbiddenOperationError'
-                      });
-                  }
-                }
+          } else {
+            res.status(403)
+              .json({
+                message: 'Nope. You\'re not permitted to access this document.',
+                error: 'ForbiddenOperationError'
               });
           }
         } else {
           res.status(404)
             .json({
               message: 'The document you requested for doesn\'t exist.',
-              error: 'NoDocumentsFoundError'
+              error: 'NoDocumentFoundError'
             });
         }
       });
@@ -171,8 +131,14 @@ export default class DocumentsController {
     const offset = limitAndOffset.offset;
     const id = req.decodedUserProfile.id;
 
+    /*
+    page: current page of the query result based on limit and offset
+    page_count: total number of pages
+    page_size: number of records per page (based on limit)
+    total_count: total number of records based on query
+    */
     Document
-      .findAll({
+      .findAndCountAll({
         include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'roleId'] }],
         where: {
           $or: [
@@ -191,20 +157,31 @@ export default class DocumentsController {
         limit,
         offset
       })
-      .then((foundDocuments) => {
+      .then((foundDocumentsMetadata) => {
+        const pageSize = limit;
+        const totalCount = foundDocumentsMetadata.count;
+        const pageCount = Math.ceil(totalCount / pageSize);
+        const page =
+          1 + Math.floor((((limit * pageCount) + offset) - totalCount) / limit);
+        const foundDocuments = foundDocumentsMetadata.rows;
         res.status(200)
           .json({
             message: 'Documents found.',
+            pageSize,
+            totalCount,
+            pageCount,
+            page,
             documents: foundDocuments
           });
       });
   }
 
   /**
-   * Updates a document's title, content, access type, categories or tags. Before
-   * performing the update, this function checks that:
-   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
-   * response. A document id is invalid if it is not an integer.
+   * Updates a document's title, content, access type, categories or tags.
+   * Before performing the update, this function checks that:
+   * - the included document id is valid, else it sends an
+   * InvalidTargetDocumentIdError response. A document id is invalid if it
+   * is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
    * - the person performing this request is the one who initially created the
@@ -308,12 +285,14 @@ export default class DocumentsController {
   /**
    * Delete a document. Before performing the update, this function checks
    * that:
-   * - the included document id is valid, else it sends an InvalidTargetDocumentIdError
-   * response. A document id is invalid if it is not an integer.
+   * - the included document id is valid, else it sends an
+   * InvalidTargetDocumentIdError response. A document id is invalid if it
+   * is not an integer.
    * - the included document id belongs to an existing document in this app,
    * else it sends a TargetDocumentNotFoundError response.
-   * - the person performing this request is either the one who initially created the
-   * document or an admin. Else, it sends a ForbiddenOperationError response.
+   * - the person performing this request is either the one who initially
+   * created the document or an admin. Else, it sends a
+   * ForbiddenOperationError response.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint.
    * @param {Response} res - An express Response object that will contain
@@ -350,7 +329,8 @@ export default class DocumentsController {
               .then(() => {
                 res.status(200)
                   .json({
-                    message: 'Document deleted.'
+                    message: 'Document deleted.',
+                    documents: [foundDocument]
                   });
               });
           } else {

@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import chai from 'chai';
 import JWT from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import uuid from 'uuid';
@@ -7,6 +8,7 @@ import { Document } from '../../models/';
 import app from '../../app';
 
 dotenv.config();
+const expect = chai.expect;
 
 const request = supertest(app);
 const deleteDocumentEndpoint = '/api/documents';
@@ -87,8 +89,15 @@ describe('When it gets a DELETE request, the /api/documents endpoint', () => {
       .set('x-docs-cabinet-authentication', validToken)
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect({
-        message: 'Document deleted.'
-      }, done);
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body.message).to.equal('Document deleted.');
+        expect(Array.isArray(res.body.documents)).to.equal(true);
+        expect(res.body.documents.length).to.equal(1);
+        expect(res.body.documents[0].id).to.equal(id);
+        expect(res.body.documents[0].title).to.equal(completeNewDocument.title);
+        done();
+      });
   });
 });

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Preloader, Row } from 'react-materialize';
+import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import { fetchAllDocuments } from '../actions/DocumentActions';
-import { DOCUMENT_LIMIT, DOCUMENT_OFFSET } from '../constants';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
 import PlainDocument from './PlainDocument';
 
 /**
@@ -17,7 +17,11 @@ class ViewAllDocumentsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.startAllDocumentsFetch = this.startAllDocumentsFetch.bind(this);
+    this.state = {
+      hasFetchedAllDocuments: false
+    };
+
+    this.fetchDocuments = this.fetchDocuments.bind(this);
   }
 
   /**
@@ -26,23 +30,51 @@ class ViewAllDocumentsPage extends Component {
    */
   componentDidMount() {
     if (
-      this.props.documents.allDocuments === undefined ||
-      this.props.documents.allDocuments.length < 1
+      this.props.documents.allDocuments.documents === undefined ||
+      this.props.documents.allDocuments.documents.length < 1
     ) {
-      this.startAllDocumentsFetch();
+      this.fetchDocuments(DEFAULT_LIMIT, DEFAULT_OFFSET);
     }
+
+    const allDocsPageElement = $('#all-documents-page');
+    allDocsPageElement.on('scroll', () => {
+      if (
+        (allDocsPageElement.scrollTop() + allDocsPageElement.innerHeight()) >=
+        allDocsPageElement[0].scrollHeight
+      ) {
+        if (this.props.documents.status !== 'fetchingAllDocuments') {
+          if (
+            this.props.documents.allDocuments.page ===
+            this.props.documents.allDocuments.pageCount
+          ) {
+            this.setState({
+              hasFetchedAllDocuments: true
+            });
+            return;
+          }
+
+          const limit = DEFAULT_LIMIT;
+          const offset =
+            this.props.documents.allDocuments.page * DEFAULT_LIMIT;
+          this.fetchDocuments(limit, offset);
+        }
+      }
+    });
   }
 
   /**
    * Attempts to fetch all the documents in this app that this user is
    * permitted to see.
+   * @param {String} limit - Number of documents to return.
+   * @param {String} offset - Number of documents to skip before
+   * beginning the fetch.
    * @return {null} - Returns nothing.
    */
-  startAllDocumentsFetch() {
+  fetchDocuments(limit, offset) {
     this.props.dispatch(fetchAllDocuments(
       this.props.user.token,
-      DOCUMENT_LIMIT,
-      DOCUMENT_OFFSET
+      limit,
+      offset
     ));
   }
 
@@ -51,45 +83,34 @@ class ViewAllDocumentsPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const documentComponents = this.props.documents.allDocuments.map(doc => (
-      <PlainDocument
-        key={uuid.v4()}
-        currentUserId={this.props.user.user.id}
-        {...doc}
-      />
+    const documentComponents =
+      this.props.documents.allDocuments.documents.map(doc => (
+        <PlainDocument
+          key={uuid.v4()}
+          currentUserId={this.props.user.user.id}
+          {...doc}
+        />
     ));
 
     const showStatusMessage =
       this.props.documents.status === 'fetchingAllDocuments' ||
       this.props.documents.status === 'fetchAllDocumentsFailed';
 
+    // TODO: Maybe add a 'retry' button for when a documents fetch fails?
     return (
-      <div className="scrollable-page all-documents-page">
+      <div
+        id="all-documents-page"
+        className="scrollable-page all-documents-page"
+      >
         <h4>All documents</h4>
         <div>
           <h5 className={showStatusMessage ? '' : 'hide'}>
             {this.props.documents.statusMessage}
           </h5>
-          <Row className={
-            this.props.documents.status === 'fetchingAllDocuments' ? '' : 'hide'
-            }
-          >
-            <Col s={4} offset="s4">
-              <Preloader size="big" flashing />
-            </Col>
-          </Row>
-          <Button
-            onClick={this.startAllDocumentsFetch}
-            className={
-              this.props.documents.status === 'fetchAllDocumentsFailed' ? '' : 'hide'
-            }
-          >
-            {this.props.documents.statusMessage}
-          </Button>
         </div>
         <div
           className={
-            this.props.documents.allDocuments.length < 1 &&
+            this.props.documents.allDocuments.documents.length < 1 &&
             this.props.documents.status !== 'fetchingAllDocuments' ? '' : 'hide'
           }
         >
@@ -99,6 +120,26 @@ class ViewAllDocumentsPage extends Component {
           </h5>
         </div>
         <div className="row">{documentComponents}</div>
+        <Row className={
+          this.props.documents.status === 'fetchingAllDocuments' ? '' : 'hide'
+          }
+        >
+          <Col s={12} className="center-align">
+            <Preloader size="big" flashing />
+          </Col>
+          <Col s={12} className="center-align">
+            <h5>{this.props.documents.statusMessage.replace('Loading', 'Loading more')}</h5>
+          </Col>
+        </Row>
+        <Row
+          className={
+            this.state.hasFetchedAllDocuments ? 'thats-all' : 'hide'
+          }
+        >
+          <Col s={12} className="blue white-text center-align">
+            <h5>That&rsquo;s all! There are no documents left.</h5>
+          </Col>
+        </Row>
       </div>
     );
   }

@@ -14,7 +14,10 @@ import {
   DELETE_DOCUMENT_FULFILLED,
   UPDATE_DOCUMENT_PENDING,
   UPDATE_DOCUMENT_REJECTED,
-  UPDATE_DOCUMENT_FULFILLED
+  UPDATE_DOCUMENT_FULFILLED,
+  GET_DOCUMENT_PENDING,
+  GET_DOCUMENT_REJECTED,
+  GET_DOCUMENT_FULFILLED
 } from '../constants';
 
 /**
@@ -31,7 +34,7 @@ import {
  */
 export function createDocument(token, title, content, access, categories,
   tags) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: CREATE_DOCUMENT_PENDING });
     const newDocument = {
       title,
@@ -76,7 +79,7 @@ export function createDocument(token, title, content, access, categories,
  * or failure).
  */
 export function fetchAllDocuments(token, limit, offset) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: FETCH_ALL_DOCUMENTS_PENDING });
 
     const request = httpClient || superagent;
@@ -115,7 +118,7 @@ export function fetchAllDocuments(token, limit, offset) {
  * or failure).
  */
 export function fetchUserDocuments(token, targetUserId, limit, offset) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: FETCH_USER_DOCUMENTS_PENDING });
 
     const request = httpClient || superagent;
@@ -149,7 +152,7 @@ export function fetchUserDocuments(token, targetUserId, limit, offset) {
  * on the state of the deletion process (commencement, success or failure).
  */
 export function deleteDocument(token, targetDocumentId) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({
       type: DELETE_DOCUMENT_PENDING,
       payload: {
@@ -194,7 +197,7 @@ export function deleteDocument(token, targetDocumentId) {
  * or failure).
  */
 export function updateDocument(token, targetDocumentId, updateInfo) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({
       type: UPDATE_DOCUMENT_PENDING,
       payload: {
@@ -223,6 +226,43 @@ export function updateDocument(token, targetDocumentId, updateInfo) {
 
         dispatch({
           type: UPDATE_DOCUMENT_FULFILLED,
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * getDocument - Retrieves a specific document.
+ * @param {String} token - A token for this document's author.
+ * @param {Number} targetDocumentId - The id of the document to retrieve.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the retrieval process (commencement, success
+ * or failure).
+ */
+export function getDocument(token, targetDocumentId) {
+  return (dispatch, getState, httpClient) => {
+    dispatch({
+      type: GET_DOCUMENT_PENDING
+    });
+
+    const request = httpClient || superagent;
+
+    request
+      .get(`/api/documents/${targetDocumentId}`)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: GET_DOCUMENT_REJECTED,
+            payload: err.response.body
+          });
+          return;
+        }
+
+        dispatch({
+          type: GET_DOCUMENT_FULFILLED,
           payload: res.body
         });
       });

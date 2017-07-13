@@ -14,7 +14,7 @@ export default class SearchController {
    * the offset is the number of matching results to skip before collating
    * results (e.g if there are 50 users that match a query and an offset of 5
    * is given, then the list of returned users will start from the 6th user in
-   * the database). The default limit is 30 and the default offset is 0. Note
+   * the database). The default limit is 10 and the default offset is 0. Note
    * that the request must include a query string for the search. Else, this
    * function sends a UserQueryNotSuppliedError response.
    * @param {Request} req - An express Request object with data about the
@@ -66,7 +66,7 @@ export default class SearchController {
    * search and the offset is the number of matching results to skip before
    * collating results (e.g if there are 50 documents that match a query and
    * an offset of 5 is given, then the list of returned documents will start
-   * from the 6th document in the database). The default limit is 30 and the
+   * from the 6th document in the database). The default limit is 10 and the
    * default offset is 0. Note that the request must include a query string for
    * the search. Else, this function sends a DocumentQueryNotSuppliedError response.
    * @param {Request} req - An express Request object with data about the

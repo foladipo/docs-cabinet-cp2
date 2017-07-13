@@ -46,7 +46,8 @@ export default class UsersController {
           }).then((user) => {
             if (user) {
               const storedPasswordHash = user.password;
-              const isCorrectPassword = bcryptjs.compareSync(password, storedPasswordHash);
+              const isCorrectPassword =
+                bcryptjs.compareSync(password, storedPasswordHash);
               if (isCorrectPassword) {
                 const userDetails = {
                   id: user.id,
@@ -130,13 +131,14 @@ export default class UsersController {
    * username hasn't been used to register before etc. If all these checks are
    * passed, this function creates a new user in this app's database and returns
    * a JWT token for the user to interact with other parts/endpoints of the app,
-   * along with some info about the user's profile. Otherwise, it returns a response
-   * with a descriptive errror message e.g InvalidPasswordError, InvalidUsernameError
-   * etc.
+   * along with some info about the user's profile. Otherwise, it returns a
+   * response with a descriptive errror message e.g InvalidPasswordError,
+   * InvalidUsernameError etc.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint.
    * @param {Response} res - An express Response object that will contain
-   * the info this app will send back to the user e.g error messages, JWT tokens,
+   * the info this app will send back to the user e.g error messages,
+   * JWT tokens,
    * HTTP status codes etc.
    * @return {void}
    */
@@ -254,7 +256,8 @@ export default class UsersController {
             error: 'UserExistsError'
           });
         } else {
-          const saltLength = Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
+          const saltLength =
+            Number.parseInt(process.env.PASSWORD_SALT_LENGTH, 10);
           const hashedPassword = bcryptjs.hashSync(password, saltLength);
           const trimmedFirstname = firstName.trim().replace(/(\s{2,})/, ' ');
           const trimmedLastname = lastName.trim().replace(/(\s{2,})/, ' ');
@@ -542,6 +545,10 @@ export default class UsersController {
    * @return {void}
    */
   static getUserDocuments(req, res) {
+    const limitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
+    const limit = limitAndOffset.limit;
+    const offset = limitAndOffset.offset;
+
     const pathInfo = req.path.split('/');
     const idString = pathInfo[1];
 
@@ -560,19 +567,29 @@ export default class UsersController {
       .then((foundUser) => {
         if (foundUser) {
           Document
-            .findAll({
+            .findAndCountAll({
               where: {
                 authorId: id
               },
+              limit,
+              offset,
               attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
-              order: [['createdAt', 'DESC']],
-              returning: true
+              order: [['createdAt', 'DESC']]
             })
             .then((docsAndMetadata) => {
-              const docs = docsAndMetadata.map(doc => doc.dataValues);
+              const pageSize = limit;
+              const totalCount = docsAndMetadata.count;
+              const pageCount = Math.ceil(totalCount / pageSize);
+              const page =
+                1 + Math.floor((((limit * pageCount) + offset) - totalCount) / limit);
+              const docs = docsAndMetadata.rows;
               res.status(200)
                 .json({
                   message: 'Documents found.',
+                  pageSize,
+                  totalCount,
+                  pageCount,
+                  page,
                   documents: docs
                 });
             });
@@ -587,11 +604,12 @@ export default class UsersController {
   }
 
   /**
-   * Returns the profile of the user with a particular id. Other details about this
-   * function's behaviour are:
+   * Returns the profile of the user with a particular id. Other details
+   * about this function's behaviour are:
    * - if the id is not a valid integer, it returns an InvalidUserIdError
    * response.
-   * - if the id belongs to a non-existing user, it returns a TargetUserNotFoundError.
+   * - if the id belongs to a non-existing user, it returns a
+   * TargetUserNotFoundError.
    * @param {Request} req - An express Request object with data about the
    * original request sent to this endpoint e.g query parameters, headers etc.
    * @param {Response} res - An express Response object with the info this app
@@ -604,14 +622,6 @@ export default class UsersController {
     const idString = pathInfo[1];
 
     const id = Number.parseInt(idString, 10);
-    if (Number.isNaN(id)) {
-      res.status(400)
-        .json({
-          message: 'The user id you supplied is not a number.',
-          error: 'InvalidUserIdError'
-        });
-      return;
-    }
 
     User
       .findOne({ where: { id } })
@@ -644,7 +654,7 @@ export default class UsersController {
    * HTTP request, you can specify a limit (number of users returned for each
    * request) and an offset (e.g if there are 50 users and an offset of 5 is
    * given, then the list of returned users will start from the 6th user in
-   * the database). The default limit is 30 and the default offset is 0. These
+   * the database). The default limit is 10 and the default offset is 0. These
    * defaults can be customized by specifying DEFAULT_LIMIT_OF_RESULTS and
    * DEFAULT_OFFSET_OF_RESULTS in your `.env` file.
    * @param {Request} req - An express Request object with data about the
@@ -660,7 +670,7 @@ export default class UsersController {
 
     const currentUserId = req.decodedUserProfile.id;
     User
-      .findAll({
+      .findAndCountAll({
         where: {
           id: {
             ne: currentUserId
@@ -670,18 +680,21 @@ export default class UsersController {
         limit,
         offset
       })
-      .then((foundUsers) => {
-        const results = foundUsers.map(user => ({
-          id: user.id,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          roleId: user.roleId
-        }));
+      .then((foundUsersMetadata) => {
+        const pageSize = limit;
+        const totalCount = foundUsersMetadata.count;
+        const pageCount = Math.ceil(totalCount / pageSize);
+        const page =
+          1 + Math.floor((((limit * pageCount) + offset) - totalCount) / limit);
+        const foundUsers = foundUsersMetadata.rows;
         res.status(200)
           .json({
             message: 'Users found.',
-            users: results
+            pageSize,
+            totalCount,
+            pageCount,
+            page,
+            users: foundUsers
           });
       });
   }

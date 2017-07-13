@@ -15,7 +15,7 @@ describe('updateDocument', () => {
     const updateDocumentActions =
       updateDocument(token, targetDocumentId, updateInfo);
     const spy = sinon.spy();
-    updateDocumentActions(spy, MockHttpClient);
+    updateDocumentActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -38,7 +38,7 @@ describe('updateDocument', () => {
     const targetDocumentId = 12;
     const updateDocumentActions = updateDocument(token, targetDocumentId);
     const spy = sinon.spy();
-    updateDocumentActions(spy, MockHttpErrorClient);
+    updateDocumentActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

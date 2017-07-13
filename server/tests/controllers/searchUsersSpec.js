@@ -91,7 +91,7 @@ describe('When it receives a GET request, the /api/search/users endpoint', () =>
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         const resBody = res.body;
         expect(resBody.message).to.equal('Users found.');

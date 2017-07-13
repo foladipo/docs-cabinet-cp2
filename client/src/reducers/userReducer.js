@@ -15,7 +15,10 @@ import {
   UPDATE_USER_FULFILLED,
   DELETE_USER_PENDING,
   DELETE_USER_REJECTED,
-  DELETE_USER_FULFILLED
+  DELETE_USER_FULFILLED,
+  GET_USER_PENDING,
+  GET_USER_REJECTED,
+  GET_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -86,7 +89,14 @@ export default function userReducer(state, action) {
       newState.isLoggingOut = true;
       newState.isLoggedIn = false;
       newState.token = null;
-      newState.user = null;
+      newState.user = {};
+      newState.allUsers = {
+        users: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
       window.localStorage.clear();
       break;
 
@@ -98,26 +108,25 @@ export default function userReducer(state, action) {
 
     case FETCH_ALL_USERS_PENDING:
       newState.status = 'fetchingAllUsers';
-      newState.statusMessage = 'Fetching users... Please wait...';
+      newState.statusMessage = 'Loading users... Please wait...';
       break;
 
     case FETCH_ALL_USERS_REJECTED:
       newState.status = 'fetchAllUsersFailed';
-      newState.statusMessage = action.payload.message || 'Failed to fetch users. Please try again.';
+      newState.statusMessage = action.payload.message || 'Failed to load users. Please try again.';
       break;
 
     case FETCH_ALL_USERS_FULFILLED:
       newState.status = 'fetchedAllUsers';
-      if (action.payload.users.length > 0) {
-        newState.statusMessage = 'Successfully fetched users.';
-      } else {
-        if (state.allUsers.length > 0) {
-          newState.statusMessage = 'Oops! There are no users left.';
-        } else {
-          newState.statusMessage = 'There are no users yet.';
-        }
-      }
-      newState.allUsers = state.allUsers.concat(action.payload.users);
+      newState.statusMessage = action.payload.message;
+      newState.allUsersCount =
+        state.allUsersCount + action.payload.users.length;
+      newState.allUsers.page = action.payload.page;
+      newState.allUsers.pageSize = action.payload.pageSize;
+      newState.allUsers.pageCount = action.payload.pageCount;
+      newState.allUsers.totalCount = action.payload.totalCount;
+      newState.allUsers.users =
+        state.allUsers.users.concat(action.payload.users);
       break;
 
     case UPDATE_USER_PENDING:
@@ -135,7 +144,7 @@ export default function userReducer(state, action) {
     case UPDATE_USER_FULFILLED:
       newState.status = 'updatedUser';
       newState.statusMessage = action.payload.message;
-      newState.allUsers = state.allUsers.map((user) => {
+      newState.allUsers.users = state.allUsers.users.map((user) => {
         const updatedUser = action.payload.users[0];
         if (user.id === updatedUser.id) {
           return updatedUser;
@@ -161,7 +170,7 @@ export default function userReducer(state, action) {
     case DELETE_USER_FULFILLED:
       newState.status = 'deletedUser';
       newState.statusMessage = action.payload.message;
-      newState.allUsers = state.allUsers.filter(user =>
+      newState.allUsers.users = state.allUsers.users.filter(user =>
         user.username !== action.payload.users[0].username
       );
       newState.deletedUserId = action.payload.users[0].id;
@@ -173,6 +182,23 @@ export default function userReducer(state, action) {
         newState.user = null;
         window.localStorage.clear();
       }
+      break;
+
+    case GET_USER_PENDING:
+      newState.status = 'gettingUser';
+      newState.statusMessage = 'Retrieving user profile... Please wait...';
+      newState.userToUpdate = {};
+      break;
+
+    case GET_USER_REJECTED:
+      newState.status = 'getUserFailed';
+      newState.statusMessage = action.payload.message || 'Failed to retrieve user profile. Please try again.';
+      break;
+
+    case GET_USER_FULFILLED:
+      newState.status = 'gotUser';
+      newState.statusMessage = 'Successfully retrieved user profile.';
+      newState.userToUpdate = action.payload.users[0];
       break;
 
     default:
@@ -194,7 +220,13 @@ export default function userReducer(state, action) {
       newState.isLoggingOut = false;
       newState.token = null;
       newState.user = {};
-      newState.allUsers = [];
+      newState.allUsers = {
+        users: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
     }
   }
 

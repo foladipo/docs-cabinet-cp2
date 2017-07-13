@@ -13,7 +13,7 @@ describe('deleteDocument', () => {
     const targetDocumentId = 12;
     const deleteDocumentActions = deleteDocument(token, targetDocumentId);
     const spy = sinon.spy();
-    deleteDocumentActions(spy, MockHttpClient);
+    deleteDocumentActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -36,7 +36,7 @@ describe('deleteDocument', () => {
     const targetDocumentId = 12;
     const deleteDocumentActions = deleteDocument(token, targetDocumentId);
     const spy = sinon.spy();
-    deleteDocumentActions(spy, MockHttpErrorClient);
+    deleteDocumentActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

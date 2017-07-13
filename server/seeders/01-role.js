@@ -18,10 +18,6 @@ module.exports = {
     ]);
   },
   down: queryInterface =>
-    // queryInterface.dropTable('User')
-    //   .then(() => queryInterface.bulkDelete('Role', {
-    //     id: [0, 1]
-    //   }))
     queryInterface.bulkDelete('Role', {
       id: [0, 1]
     })

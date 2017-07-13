@@ -24,19 +24,40 @@ const store = createStore(
       isLoggingOut,
       token,
       user,
-      allUsers: [],
+      allUsersCount: 0,
+      allUsers: {
+        users: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       status: '',
       statusMessage: '',
-      deletedUserId: -1
+      deletedUserId: -1,
+      userToUpdate: {}
     },
     documents: {
       userDocumentsCount: 0,
-      userDocuments: [],
+      userDocuments: {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       allDocumentsCount: 0,
-      allDocuments: [],
+      allDocuments: {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       status: 'fetchingAllDocuments',
       statusMessage: 'Loading documents... Please wait...',
-      targetDocumentId: -1
+      targetDocumentId: -1,
+      documentToUpdate: {}
     },
     search: {
       users: {

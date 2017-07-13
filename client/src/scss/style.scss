@@ -63,11 +63,11 @@ body {
 
 .user-documents-page,
 .all-documents-page {
-  padding-bottom: 4em;
+  padding-bottom: 10em;
 }
 
 .users-page {
-  padding: 0.5em 2em 4em;
+  padding: 0.5em 2em 10em;
   margin-bottom: 2em;
 }
 
@@ -127,4 +127,9 @@ body {
 
 .card.card-content {
   overflow-y: scroll;
+}
+
+.thats-all {
+  margin-top: 1em;
+  margin-bottom: 1em;
 }

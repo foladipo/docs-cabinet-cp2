@@ -7,9 +7,21 @@ const expect = chai.expect;
 describe('documentsReducer', () => {
   const getDefaultState = () => ({
     userDocumentsCount: 0,
-    userDocuments: [],
+    userDocuments: {
+      documents: [],
+      page: 0,
+      pageSize: 0,
+      pageCount: 0,
+      totalCount: 0
+    },
     allDocumentsCount: 0,
-    allDocuments: [],
+    allDocuments: {
+      documents: [],
+      page: 0,
+      pageSize: 0,
+      pageCount: 0,
+      totalCount: 0
+    },
     status: 'fetchingAllDocuments',
     statusMessage: 'Loading documents... Please wait...',
     targetDocumentId: -1
@@ -52,8 +64,8 @@ describe('documentsReducer', () => {
     const newState = documentsReducer(state, action);
     expect(newState.status).to.equal('userDocumentsFetched');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.userDocuments)).to.equal(true);
-    expect(newState.userDocuments.length === 1).to.equal(true);
+    expect(Array.isArray(newState.userDocuments.documents)).to.equal(true);
+    expect(newState.userDocuments.documents.length === 1).to.equal(true);
   });
 
   it('should update the store when a retrieval of all documents is started', () => {
@@ -89,8 +101,8 @@ describe('documentsReducer', () => {
     const newState = documentsReducer(state, action);
     expect(newState.status).to.equal('allDocumentsFetched');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.allDocuments)).to.equal(true);
-    expect(newState.allDocuments.length === 1).to.equal(true);
+    expect(Array.isArray(newState.allDocuments.documents)).to.equal(true);
+    expect(newState.allDocuments.documents.length === 1).to.equal(true);
   });
 
   it('should update the store when document creation starts', () => {
@@ -128,8 +140,8 @@ describe('documentsReducer', () => {
     const newState = documentsReducer(state, action);
     expect(newState.status).to.equal('documentCreated');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.userDocuments)).to.equal(true);
-    expect(newState.userDocuments.length === 1).to.equal(true);
+    expect(Array.isArray(newState.userDocuments.documents)).to.equal(true);
+    expect(newState.userDocuments.documents.length === 1).to.equal(true);
   });
 
   it('should update the store when document deletion starts', () => {
@@ -169,8 +181,8 @@ describe('documentsReducer', () => {
     const newState = documentsReducer(state, action);
     expect(newState.status).to.equal('documentDeleted');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.userDocuments)).to.equal(true);
-    expect(newState.userDocuments.length === 0).to.equal(true);
+    expect(Array.isArray(newState.userDocuments.documents)).to.equal(true);
+    expect(newState.userDocuments.documents.length === 0).to.equal(true);
   });
 
   it('should update the store when a document update starts', () => {
@@ -207,18 +219,24 @@ describe('documentsReducer', () => {
         targetDocumentId: 1
       }
     };
-    state.userDocuments[0] = action.payload.documents[0];
+    state.userDocuments.documents[0] = action.payload.documents[0];
     const newState = documentsReducer(state, action);
     expect(newState.status).to.equal('documentUpdated');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.userDocuments)).to.equal(true);
-    expect(newState.userDocuments.length === 1).to.equal(true);
+    expect(Array.isArray(newState.userDocuments.documents)).to.equal(true);
+    expect(newState.userDocuments.documents.length === 1).to.equal(true);
   });
 
   it('should reset the store for an InvalidTokenError', () => {
     const state = {
       userDocumentsCount: 1,
-      userDocuments: [{ id: 1, title: 'Foobar' }],
+      userDocuments: {
+        documents: [{ id: 1, title: 'Foobar' }],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       allDocumentsCount: 1,
       allDocuments: [{ id: 2, title: 'Quux' }, { id: 1, title: 'Foobar' }],
       status: 'userDocumentsFetched',
@@ -233,8 +251,8 @@ describe('documentsReducer', () => {
     };
     const newState = documentsReducer(state, action);
     expect(newState.userDocumentsCount).to.equal(0);
-    expect(newState.userDocuments.length).to.equal(0);
+    expect(newState.userDocuments.documents.length).to.equal(0);
     expect(newState.allDocumentsCount).to.equal(0);
-    expect(newState.allDocuments.length).to.equal(0);
+    expect(newState.allDocuments.documents.length).to.equal(0);
   });
 });

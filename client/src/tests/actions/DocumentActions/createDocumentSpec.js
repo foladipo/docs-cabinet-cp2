@@ -18,7 +18,7 @@ describe('createDocument', () => {
     const createDocumentActions =
       createDocument(token, title, content, access, categories, tags);
     const spy = sinon.spy();
-    createDocumentActions(spy, MockHttpClient);
+    createDocumentActions(spy, undefined, MockHttpClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {
@@ -38,7 +38,7 @@ describe('createDocument', () => {
   it('should dispatch its failure actions correctly', () => {
     const createDocumentActions = createDocument();
     const spy = sinon.spy();
-    createDocumentActions(spy, MockHttpErrorClient);
+    createDocumentActions(spy, undefined, MockHttpErrorClient);
     expect(spy.calledTwice).to.equal(true);
     expect(spy.calledWith(
       {

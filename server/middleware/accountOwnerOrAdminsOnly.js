@@ -8,11 +8,11 @@
  * this request etc.
  * @param {Response} res - An express Response object with the info this app
  * will send back to the user e.g error messages like ForbiddenOperationError.
- * @param {Function} next - The next function or middleware in the callback stack
- * of express.
+ * @param {Function} next - The next function or middleware in the callback
+ * stack of express.
  * @return {void}
  */
-export default function adminsOnly(req, res, next) {
+export default function accountOwnerOrAdminsOnly(req, res, next) {
   const path = req.path;
   const targetUserId = Number.parseInt(path.split('/')[1], 10);
   if (Number.isNaN(targetUserId)) {

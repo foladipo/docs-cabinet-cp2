@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
 import { Redirect } from 'react-router-dom';
+import _ from 'lodash';
 import DeleteUserPage from './DeleteUserPage';
 import isValidName from '../../../server/util/isValidName';
 import isValidEmail from '../../../server/util/isValidEmail';
 import isValidPassword from '../../../server/util/isValidPassword';
-import { updateUser } from '../actions/UserActions';
+import { getUser, updateUser } from '../actions/UserActions';
 
 /**
  * UpdateUserPage - Renders a form for updating a user's profile.
@@ -53,6 +54,32 @@ class UpdateUserPage extends Component {
   }
 
   /**
+   * Called immediately before rendering, when new props are or
+   * state is being received.
+   * @param {Object} nextProps - The new props this Component
+   * will receive when re-rendered.
+   * @return {null} - Returns nothing.
+   */
+  componentWillReceiveProps(nextProps) {
+    const oldTargetUserId = Number.parseInt(this.props.location.pathname.split('/')[3], 10);
+    const newTargetUserId = Number.parseInt(nextProps.location.pathname.split('/')[3], 10);
+    if (oldTargetUserId !== newTargetUserId) {
+      this.determineTargetUser();
+      return;
+    }
+
+    if (nextProps.user.status === 'gotUser') {
+      const targetUser = nextProps.user.userToUpdate;
+      if (!(_.isEqual({}, targetUser))) {
+        this.setState({
+          targetUser
+        });
+      }
+      this.forceUpdate();
+    }
+  }
+
+  /**
    * Determines the target user of this update.
    * @return {null} - Returns nothing.
    */
@@ -75,7 +102,9 @@ class UpdateUserPage extends Component {
       return;
     }
 
-    const possibleTargets = this.props.user.allUsers.filter(user => user.id === targetUserId);
+    const possibleTargets = this.props.user.allUsers.users.filter(user =>
+      user.id === targetUserId
+    );
     const targetUser = possibleTargets[0];
     if (targetUser) {
       this.setState({
@@ -85,11 +114,9 @@ class UpdateUserPage extends Component {
       return;
     }
 
-    // TODO: Try to fetch the target user instead.
-    this.state = {
-      hasValidTargetUserId: true,
-      hasFoundTargetUser: false
-    };
+    this.props.dispatch(
+      getUser(this.props.user.token, targetUserId)
+    );
   }
 
   /**
@@ -99,7 +126,10 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   showRoleUpdate() {
-    if (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id) {
+    if (
+      this.props.user.user.roleId > 0 &&
+      this.state.targetUser.id !== this.props.user.user.id
+    ) {
       return (
         <Input
           s={12}
@@ -128,8 +158,10 @@ class UpdateUserPage extends Component {
   }
 
   /**
-   * Determines whether or not the roleId stored in this Component's state IS an update.
-   * @return {Boolean} - Returns true if the roleId stored in this Component's state,
+   * Determines whether or not the roleId stored in this Component's
+   * state IS an update.
+   * @return {Boolean} - Returns true if the roleId stored in this
+   * Component's state,
    * IS an update, and false if otherwise.
    */
   hasNewRoleId() {
@@ -154,8 +186,10 @@ class UpdateUserPage extends Component {
   }
 
   /**
-   * Determines whether or not the firstName stored in this Component's state IS an update.
-   * @return {Boolean} - Returns true if the firstName stored in this Component's state,
+   * Determines whether or not the firstName stored in this Component's state
+   * IS an update.
+   * @return {Boolean} - Returns true if the firstName stored in this
+   * Component's state,
    * IS an update, and false if otherwise.
    */
   hasNewFirstName() {
@@ -179,8 +213,10 @@ class UpdateUserPage extends Component {
   }
 
   /**
-   * Determines whether or not the lastName stored in this Component's state IS an update.
-   * @return {Boolean} - Returns true if the lastName stored in this Component's state,
+   * Determines whether or not the lastName stored in this Component's
+   * state IS an update.
+   * @return {Boolean} - Returns true if the lastName stored in this
+   * Component's state,
    * IS an update, and false if otherwise.
    */
   hasNewLastName() {
@@ -204,8 +240,10 @@ class UpdateUserPage extends Component {
   }
 
   /**
-   * Determines whether or not the username stored in this Component's state IS an update.
-   * @return {Boolean} - Returns true if the username stored in this Component's state,
+   * Determines whether or not the username stored in this Component's
+   * state IS an update.
+   * @return {Boolean} - Returns true if the username stored in this
+   * Component's state,
    * IS an update, and false if otherwise.
    */
   hasNewUsername() {
@@ -229,8 +267,10 @@ class UpdateUserPage extends Component {
   }
 
   /**
-   * Determines whether or not the password stored in this Component's state IS an update.
-   * @return {Boolean} - Returns true if the password stored in this Component's state,
+   * Determines whether or not the password stored in this Component's
+   * state IS an update.
+   * @return {Boolean} - Returns true if the password stored in this
+   * Component's state,
    * IS an update, and false if otherwise.
    */
   hasNewPassword() {
@@ -271,7 +311,10 @@ class UpdateUserPage extends Component {
     if (this.state.targetUser) {
       if (
         (this.props.user.user.roleId < 1) ||
-        (this.props.user.user.roleId > 0 && this.state.targetUser.id !== this.props.user.user.id)
+        (
+          this.props.user.user.roleId > 0 &&
+          this.state.targetUser.id !== this.props.user.user.id
+        )
       ) {
         return (
           <div>
@@ -295,7 +338,10 @@ class UpdateUserPage extends Component {
                   </Button>
                 }
               >
-                <DeleteUserPage targetUser={this.state.targetUser} {...this.props} />
+                <DeleteUserPage
+                  targetUser={this.state.targetUser}
+                  {...this.props}
+                />
               </Modal>
             </div>
           </div>
@@ -321,20 +367,47 @@ class UpdateUserPage extends Component {
   }
 
   /**
-   * Called to show the profile update form if the target user has been determined.
+   * Called to show the profile update form if the target user has been
+   * determined.
    * @return {Component|null} - Returns the React Component to be rendered or
    * null if nothing is to be rendered.
    */
   showUpdateForm() {
-    // TODO: Try and reset the update form when an update is successfully performed.
+    // TODO: Try and re-disable the 'submit' update button when an
+    // update is successfully performed.
     if (this.state.targetUser) {
       return (
         <div className="container">
           <div className="center-align white-text">
-            <h5 className={this.props.user.status === 'updatingUser' ? 'orange' : 'hide'}>{this.props.user.statusMessage}</h5>
-            <h5 className={this.props.user.status === 'updateUserFailed' ? 'red lighten-2' : 'hide'}>{this.props.user.statusMessage}</h5>
-            <h5 className={this.state.hasValidTargetUserId ? 'hide' : 'red lighten-2 white-text'}>{this.state.message}</h5>
-            <h5 className={this.props.user.status === 'updatedUser' ? 'teal lighten-3' : 'hide'}>{this.props.user.statusMessage}</h5>
+            <h5
+              className={
+                this.props.user.status === 'updatingUser' ? 'orange' : 'hide'
+              }
+            >
+              {this.props.user.statusMessage}
+            </h5>
+            <h5
+              className={
+                this.props.user.status === 'updateUserFailed' ?
+                  'red lighten-2' : 'hide'
+              }
+            >
+              {this.props.user.statusMessage}
+            </h5>
+            <h5
+              className={
+                this.state.hasValidTargetUserId ?
+                  'hide' : 'red lighten-2 white-text'
+              }
+            >{this.state.message}</h5>
+            <h5
+              className={
+                this.props.user.status === 'updatedUser' ?
+                  'teal lighten-3' : 'hide'
+              }
+            >
+              {this.props.user.statusMessage}
+            </h5>
           </div>
           <div>
             <h3>Update profile</h3>
@@ -342,37 +415,55 @@ class UpdateUserPage extends Component {
             <form>
               {this.showRoleUpdate()}
               <Row>
-                <Input
-                  s={6}
-                  label="First Name"
-                  defaultValue={this.state.targetUser.firstName}
-                  onChange={this.updateFirstName}
-                >
-                  <Icon>face</Icon>
-                </Input>
-                <Input
-                  s={6}
-                  label="Last Name"
-                  defaultValue={this.state.targetUser.lastName}
-                  onChange={this.updateLastName}
-                >
-                  <Icon>face</Icon>
-                </Input>
-                <Input
-                  type="email"
-                  label="Email"
-                  s={12}
-                  defaultValue={this.state.targetUser.username}
-                  onChange={this.updateUsername}
-                >
-                  <Icon>account_circle</Icon>
-                </Input>
-                {/* TODO: Add a tooltip with info about acceptable passwords. */}
-                <Input type="password" label="Password" s={12} onChange={this.updatePassword}>
-                  <Icon>lock</Icon>
-                </Input>
+                <div>
+                  First name
+                  <Input
+                    s={12}
+                    placeholder={this.state.targetUser.firstName}
+                    onChange={this.updateFirstName}
+                  >
+                    <Icon>face</Icon>
+                  </Input>
+                </div>
+                <div>
+                  Last Name
+                  <Input
+                    s={12}
+                    placeholder={this.state.targetUser.lastName}
+                    onChange={this.updateLastName}
+                  >
+                    <Icon>face</Icon>
+                  </Input>
+                </div>
+                <div>
+                  Email
+                  <Input
+                    type="email"
+                    s={12}
+                    placeholder={this.state.targetUser.username}
+                    onChange={this.updateUsername}
+                  >
+                    <Icon>account_circle</Icon>
+                  </Input>
+                </div>
+                {/*
+                  TODO: Add a tooltip with info about acceptable passwords.
+                */}
+                <div>
+                  Password
+                  <Input
+                    s={12}
+                    type="password"
+                    onChange={this.updatePassword}
+                  >
+                    <Icon>lock</Icon>
+                  </Input>
+                </div>
                 <Button
-                  className={this.isUpdate() && this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'}
+                  className={
+                    this.isUpdate() &&
+                    this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'
+                  }
                   waves="light"
                   onClick={this.attemptProfileUpdate}
                 >
@@ -381,7 +472,9 @@ class UpdateUserPage extends Component {
                 </Button>
               </Row>
             </form>
-            <ProgressBar className={this.props.user.status === 'updatingUser' ? '' : 'hide'} />
+            <ProgressBar
+              className={this.props.user.status === 'updatingUser' ? '' : 'hide'}
+            />
           </div>
           <div className="divider" />
           {this.showDeleteAccountSection()}

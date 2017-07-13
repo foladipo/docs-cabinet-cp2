@@ -16,7 +16,10 @@ import {
   UPDATE_USER_FULFILLED,
   DELETE_USER_PENDING,
   DELETE_USER_REJECTED,
-  DELETE_USER_FULFILLED
+  DELETE_USER_FULFILLED,
+  GET_USER_PENDING,
+  GET_USER_REJECTED,
+  GET_USER_FULFILLED
 } from '../constants';
 
 /**
@@ -27,7 +30,7 @@ import {
  * on the state of the login process (commencement, success or failure).
  */
 export function login(username, password) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: LOGIN_PENDING });
 
     const request = httpClient || superagent;
@@ -83,7 +86,7 @@ export function logout() {
  * on the state of the sign up process (commencement, success or failure).
  */
 export function signUp(firstName, lastName, username, password) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: SIGN_UP_PENDING });
 
     const request = httpClient || superagent;
@@ -118,7 +121,7 @@ export function signUp(firstName, lastName, username, password) {
  * on the state of the fetching process (commencement, success or failure).
  */
 export function fetchAllUsers(token, limit, offset) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({
       type: FETCH_ALL_USERS_PENDING
     });
@@ -154,7 +157,7 @@ export function fetchAllUsers(token, limit, offset) {
  * on the state of the update process (commencement, success or failure).
  */
 export function updateUser(token, targetUserId, updateInfo) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: UPDATE_USER_PENDING });
 
     const request = httpClient || superagent;
@@ -188,7 +191,7 @@ export function updateUser(token, targetUserId, updateInfo) {
  * on the state of the deletion process (commencement, success or failure).
  */
 export function deleteUser(token, targetUserId) {
-  return (dispatch, httpClient) => {
+  return (dispatch, getState, httpClient) => {
     dispatch({ type: DELETE_USER_PENDING });
 
     const request = httpClient || superagent;
@@ -207,6 +210,39 @@ export function deleteUser(token, targetUserId) {
 
         dispatch({
           type: DELETE_USER_FULFILLED,
+          payload: res.body
+        });
+      });
+  };
+}
+
+/**
+ * getUser - Retrieves a user's profile.
+ * @param {String} token - A token for the user making the request.
+ * @param {Number} targetUserId - Id of the user profile to retrieve.
+ * @return {Function} - Returns a function that dispatches actions based
+ * on the state of the retrieval process (commencement, success or failure).
+ */
+export function getUser(token, targetUserId) {
+  return (dispatch, getState, httpClient) => {
+    dispatch({ type: GET_USER_PENDING });
+
+    const request = httpClient || superagent;
+
+    request.get(`/api/users/${targetUserId}`)
+      .set('Accept', 'application/json')
+      .set('x-docs-cabinet-authentication', token)
+      .end((err, res) => {
+        if (err) {
+          dispatch({
+            type: GET_USER_REJECTED,
+            payload: err.response.body
+          });
+          return;
+        }
+
+        dispatch({
+          type: GET_USER_FULFILLED,
           payload: res.body
         });
       });
