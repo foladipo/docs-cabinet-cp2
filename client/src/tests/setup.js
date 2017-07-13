@@ -1,6 +1,6 @@
 import JSDom from 'jsdom';
-const jsdom = JSDom.jsdom;
 
+const jsdom = JSDom.jsdom;
 const exposedProperties = ['document', 'window', 'navigator'];
 
 global.document = jsdom('');
