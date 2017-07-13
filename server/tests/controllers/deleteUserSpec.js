@@ -121,7 +121,7 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         expect(res.body.message).to.equal('We hate to see you go! But your account was successfully deleted.');
         expect(Array.isArray(res.body.users)).to.equal(true);

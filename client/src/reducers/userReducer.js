@@ -144,7 +144,7 @@ export default function userReducer(state, action) {
     case UPDATE_USER_FULFILLED:
       newState.status = 'updatedUser';
       newState.statusMessage = action.payload.message;
-      newState.allUsers = state.allUsers.map((user) => {
+      newState.allUsers.users = state.allUsers.users.map((user) => {
         const updatedUser = action.payload.users[0];
         if (user.id === updatedUser.id) {
           return updatedUser;
@@ -170,7 +170,7 @@ export default function userReducer(state, action) {
     case DELETE_USER_FULFILLED:
       newState.status = 'deletedUser';
       newState.statusMessage = action.payload.message;
-      newState.allUsers = state.allUsers.filter(user =>
+      newState.allUsers.users = state.allUsers.users.filter(user =>
         user.username !== action.payload.users[0].username
       );
       newState.deletedUserId = action.payload.users[0].id;

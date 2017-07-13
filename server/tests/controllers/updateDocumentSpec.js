@@ -94,7 +94,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         const resBody = res.body;
         expect(resBody.message).to.equal('Document updated.');
@@ -113,7 +113,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         const resBody = res.body;
         expect(resBody.message).to.equal('Document updated.');
@@ -132,7 +132,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         const resBody = res.body;
         expect(resBody.message).to.equal('Document updated.');
@@ -151,7 +151,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         const resBody = res.body;
         expect(resBody.message).to.equal('Document updated.');
@@ -170,7 +170,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         const resBody = res.body;
         expect(resBody.message).to.equal('Document updated.');

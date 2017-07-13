@@ -111,12 +111,12 @@ export default function documentsReducer(state, action) {
       break;
 
     case CREATE_DOCUMENT_FULFILLED:
-      newState.userDocumentsCount =
-        state.userDocumentsCount + action.payload.documents.length;
-      newState.userDocuments =
-        action.payload.documents.concat(state.userDocuments);
       newState.status = 'documentCreated';
       newState.statusMessage = action.payload.message;
+      newState.userDocumentsCount =
+        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments.documents =
+        action.payload.documents.concat(state.userDocuments.documents);
       break;
 
     case DELETE_DOCUMENT_PENDING:
@@ -135,10 +135,11 @@ export default function documentsReducer(state, action) {
     case DELETE_DOCUMENT_FULFILLED:
       newState.status = 'documentDeleted';
       newState.statusMessage = action.payload.message;
-      newState.userDocuments = state.userDocuments.filter(doc =>
-        doc.id !== action.payload.documents[0].id
-      );
-      newState.userDocumentsCount = newState.userDocuments.length;
+      newState.userDocuments.documents =
+        state.userDocuments.documents.filter(doc =>
+          doc.id !== action.payload.documents[0].id
+        );
+      newState.userDocumentsCount = newState.userDocuments.documents.length;
       newState.targetDocumentId = -1;
       break;
 
@@ -158,13 +159,14 @@ export default function documentsReducer(state, action) {
     case UPDATE_DOCUMENT_FULFILLED:
       newState.status = 'documentUpdated';
       newState.statusMessage = action.payload.message;
-      newState.userDocuments = state.userDocuments.map((doc) => {
-        if (doc.id === action.payload.documents[0].id) {
-          return action.payload.documents[0];
-        }
-        return doc;
-      });
-      newState.userDocumentsCount = newState.userDocuments.length;
+      newState.userDocuments.documents =
+        state.userDocuments.documents.map((doc) => {
+          if (doc.id === action.payload.documents[0].id) {
+            return action.payload.documents[0];
+          }
+          return doc;
+        });
+      newState.userDocumentsCount = newState.userDocuments.documents.length;
       newState.targetDocumentId = -1;
       break;
 

@@ -1,4 +1,5 @@
 import chai from 'chai';
+import _ from 'lodash';
 import * as ActionTypes from '../../constants';
 import userReducer from '../../reducers/userReducer';
 
@@ -11,7 +12,13 @@ describe('userReducer', () => {
     isLoggingOut: false,
     token: 'foobar',
     user: {},
-    allUsers: [],
+    allUsers: {
+      users: [],
+      page: 0,
+      pageSize: 0,
+      pageCount: 0,
+      totalCount: 0
+    },
     status: '',
     statusMessage: '',
     deletedUserId: -1
@@ -125,7 +132,7 @@ describe('userReducer', () => {
     expect(newState.isLoggingOut).to.equal(true);
     expect(newState.isLoggedIn).to.equal(false);
     expect(newState.token).to.equal(null);
-    expect(newState.user).to.equal(null);
+    expect(_.isEqual({}, newState.user)).to.equal(true);
   });
 
   it('should update the store when the logout process succeeds', () => {
@@ -150,7 +157,7 @@ describe('userReducer', () => {
     const newState = userReducer(state, action);
     expect(newState.status).to.equal('fetchingAllUsers');
     expect(newState.statusMessage)
-      .to.equal('Fetching users... Please wait...');
+      .to.equal('Loading users... Please wait...');
   });
 
   it('should update the store when fetching all users fails', () => {
@@ -162,12 +169,12 @@ describe('userReducer', () => {
     const newState = userReducer(state, action);
     expect(newState.status).to.equal('fetchAllUsersFailed');
     expect(newState.statusMessage)
-      .to.equal('Failed to fetch users. Please try again.');
+      .to.equal('Failed to load users. Please try again.');
   });
 
   it('should update the store when fetching all users succeeds', () => {
     const state = getDefaultState();
-    state.allUsers[0] = { firstName: 'Jane Doe' };
+    state.allUsers.users[0] = { firstName: 'Jane Doe' };
     const action = {
       type: ActionTypes.FETCH_ALL_USERS_FULFILLED,
       payload: {
@@ -178,8 +185,8 @@ describe('userReducer', () => {
     const newState = userReducer(state, action);
     expect(newState.status).to.equal('fetchedAllUsers');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.allUsers)).to.equal(true);
-    expect(newState.allUsers.length === 2).to.equal(true);
+    expect(Array.isArray(newState.allUsers.users)).to.equal(true);
+    expect(newState.allUsers.users.length === 2).to.equal(true);
   });
 
   it('should update the store when a user\'s profile update starts', () => {
@@ -207,7 +214,7 @@ describe('userReducer', () => {
 
   it('should update the store when a user\'s profile update succeeds', () => {
     const state = getDefaultState();
-    state.allUsers[0] = { firstName: 'Jane Doe' };
+    state.allUsers.users[0] = { firstName: 'Jane Doe' };
     const action = {
       type: ActionTypes.UPDATE_USER_FULFILLED,
       payload: {
@@ -218,8 +225,8 @@ describe('userReducer', () => {
     const newState = userReducer(state, action);
     expect(newState.status).to.equal('updatedUser');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.allUsers)).to.equal(true);
-    expect(newState.allUsers.length === 1).to.equal(true);
+    expect(Array.isArray(newState.allUsers.users)).to.equal(true);
+    expect(newState.allUsers.users.length === 1).to.equal(true);
   });
 
   it('should update the store when a user deletion starts', () => {
@@ -247,7 +254,7 @@ describe('userReducer', () => {
 
   it('should update the store when a user deletion succeeds', () => {
     const state = getDefaultState();
-    state.allUsers[0] = { id: 1, firstName: 'Donaldson Quixote' };
+    state.allUsers.users[0] = { id: 1, firstName: 'Donaldson Quixote' };
     const action = {
       type: ActionTypes.DELETE_USER_FULFILLED,
       payload: {
@@ -258,8 +265,8 @@ describe('userReducer', () => {
     const newState = userReducer(state, action);
     expect(newState.status).to.equal('deletedUser');
     expect(newState.statusMessage).to.equal(action.payload.message);
-    expect(Array.isArray(newState.allUsers)).to.equal(true);
-    expect(newState.allUsers.length === 0).to.equal(true);
+    expect(Array.isArray(newState.allUsers.users)).to.equal(true);
+    expect(newState.allUsers.users.length === 0).to.equal(true);
   });
 
   it('should delete a user\'s own account and log him/her account out', () => {
@@ -289,7 +296,13 @@ describe('userReducer', () => {
       isLoggingOut: false,
       token: 'foobar',
       user: { id: 1, firstName: 'Don Quixote' },
-      allUsers: [{ id: 2, firstName: 'Madam Quixote' }],
+      allUsers: {
+        users: [{ id: 2, firstName: 'Madam Quixote' }],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       status: 'loggedIn',
       statusMessage: 'Logged in successfully.',
       deletedUserId: -1
@@ -306,6 +319,6 @@ describe('userReducer', () => {
     expect(newState.isLoggingIn).to.equal(false);
     expect(newState.isLoggingOut).to.equal(false);
     expect(newState.token).to.equal(null);
-    expect(newState.allUsers[0]).to.equal(undefined);
+    expect(newState.allUsers.users[0]).to.equal(undefined);
   });
 });
