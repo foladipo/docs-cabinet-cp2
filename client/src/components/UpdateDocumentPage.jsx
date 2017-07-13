@@ -88,7 +88,7 @@ class UpdateDocumentPage extends Component {
     }
 
     const targetDocumentInArray =
-      this.props.documents.userDocuments.filter(
+      this.props.documents.userDocuments.documents.filter(
         doc => doc.id === targetDocumentId
       );
     if (targetDocumentInArray.length === 1) {

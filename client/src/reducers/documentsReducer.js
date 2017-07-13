@@ -34,7 +34,13 @@ export default function documentsReducer(state, action) {
   switch (action.type) {
     case LOGOUT_PENDING:
       newState.userDocumentsCount = 0;
-      newState.userDocuments = [];
+      newState.userDocuments = {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
       newState.allDocumentsCount = 0;
       newState.allDocuments = {
         documents: [],
@@ -81,12 +87,16 @@ export default function documentsReducer(state, action) {
       break;
 
     case FETCH_USER_DOCUMENTS_FULFILLED:
-      newState.userDocumentsCount =
-        state.userDocumentsCount + action.payload.documents.length;
-      newState.userDocuments =
-        state.userDocuments.concat(action.payload.documents);
       newState.status = 'userDocumentsFetched';
       newState.statusMessage = action.payload.message;
+      newState.userDocumentsCount =
+        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocuments.page = action.payload.page;
+      newState.userDocuments.pageSize = action.payload.pageSize;
+      newState.userDocuments.pageCount = action.payload.pageCount;
+      newState.userDocuments.totalCount = action.payload.totalCount;
+      newState.userDocuments.documents =
+        state.userDocuments.documents.concat(action.payload.documents);
       break;
 
     case CREATE_DOCUMENT_PENDING:
@@ -186,8 +196,13 @@ export default function documentsReducer(state, action) {
       action.payload.error === 'ExpiredTokenError' ||
       action.payload.error === 'InvalidTokenError'
     ) {
-      window.localStorage.clear();
-      newState.userDocuments = [];
+      newState.userDocuments = {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
       newState.userDocumentsCount = 0;
       newState.allDocumentsCount = 0;
       newState.allDocuments = {

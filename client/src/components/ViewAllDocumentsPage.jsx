@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Preloader, Row } from 'react-materialize';
+import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import { fetchAllDocuments } from '../actions/DocumentActions';
 import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
@@ -96,6 +96,7 @@ class ViewAllDocumentsPage extends Component {
       this.props.documents.status === 'fetchingAllDocuments' ||
       this.props.documents.status === 'fetchAllDocumentsFailed';
 
+    // TODO: Maybe add a 'retry' button for when a documents fetch fails?
     return (
       <div
         id="all-documents-page"
@@ -106,14 +107,6 @@ class ViewAllDocumentsPage extends Component {
           <h5 className={showStatusMessage ? '' : 'hide'}>
             {this.props.documents.statusMessage}
           </h5>
-          <Button
-            onClick={this.startAllDocumentsFetch}
-            className={
-              this.props.documents.status === 'fetchAllDocumentsFailed' ? '' : 'hide'
-            }
-          >
-            {this.props.documents.statusMessage}
-          </Button>
         </div>
         <div
           className={

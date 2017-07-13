@@ -39,7 +39,13 @@ const store = createStore(
     },
     documents: {
       userDocumentsCount: 0,
-      userDocuments: [],
+      userDocuments: {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       allDocumentsCount: 0,
       allDocuments: {
         documents: [],

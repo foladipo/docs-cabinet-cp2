@@ -84,6 +84,7 @@ class ViewAllUsersPage extends Component {
       ;
     }
 
+    // TODO: Maybe add a 'retry' button for when a documents fetch fails?
     return (
       <div id="users-page" className="scrollable-page users-page">
         <h3

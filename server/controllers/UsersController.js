@@ -545,6 +545,10 @@ export default class UsersController {
    * @return {void}
    */
   static getUserDocuments(req, res) {
+    const limitAndOffset = getLimitAndOffset(req.query.limit, req.query.offset);
+    const limit = limitAndOffset.limit;
+    const offset = limitAndOffset.offset;
+
     const pathInfo = req.path.split('/');
     const idString = pathInfo[1];
 
@@ -563,19 +567,29 @@ export default class UsersController {
       .then((foundUser) => {
         if (foundUser) {
           Document
-            .findAll({
+            .findAndCountAll({
               where: {
                 authorId: id
               },
+              limit,
+              offset,
               attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
-              order: [['createdAt', 'DESC']],
-              returning: true
+              order: [['createdAt', 'DESC']]
             })
             .then((docsAndMetadata) => {
-              const docs = docsAndMetadata.map(doc => doc.dataValues);
+              const pageSize = limit;
+              const totalCount = docsAndMetadata.count;
+              const pageCount = Math.ceil(totalCount / pageSize);
+              const page =
+                1 + Math.floor((((limit * pageCount) + offset) - totalCount) / limit);
+              const docs = docsAndMetadata.rows;
               res.status(200)
                 .json({
                   message: 'Documents found.',
+                  pageSize,
+                  totalCount,
+                  pageCount,
+                  page,
                   documents: docs
                 });
             });
