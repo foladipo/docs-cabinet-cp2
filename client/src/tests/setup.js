@@ -23,5 +23,7 @@ global.window.localStorage = {
 };
 
 global.$ = () => ({
-  modal: () => {}
+  material_select: () => {},
+  modal: () => {},
+  on: () => {}
 });

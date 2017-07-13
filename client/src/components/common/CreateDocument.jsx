@@ -52,8 +52,8 @@ class CreateDocument extends Component {
         categories: this.props.categories,
         tags: this.props.tags
       });
-      $('#createDocumentForm .create-doc-text-input').val('');
-      $('#createDocumentForm .create-doc-select-access').val('public');
+      $('#create-document-form .create-doc-text-input').val('');
+      $('#create-document-form .create-doc-select-access').val('public');
     }
   }
 
@@ -208,7 +208,7 @@ class CreateDocument extends Component {
 
     return (
       <div className="row">
-        <form id="createDocumentForm">
+        <form id="create-document-form">
           <h6 className="red-text text-lighten-2">
             **All fields are required.
           </h6>
@@ -276,7 +276,11 @@ class CreateDocument extends Component {
           <Button
             onClick={this.attemptDocumentCreation}
             modal="confirm"
-            className={isValidDocument ? 'quarter-vertical-margin' : 'quarter-vertical-margin disabled'}
+            className={
+              isValidDocument ?
+              'create-document-btn quarter-vertical-margin' :
+              'create-document-btn quarter-vertical-margin disabled'
+            }
           >
             {this.props.modeMessage}
             <Icon left>note_add</Icon>
