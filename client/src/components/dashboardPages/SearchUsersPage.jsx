@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
 import uuid from 'uuid';
-import { searchUsers } from '../actions/SearchActions';
-import PlainUser from './PlainUser';
+import { searchUsers } from '../../actions/SearchActions';
+import PlainUser from '../common/PlainUser';
 
 /**
  * SearchUsersPage - Renders a page for searching for users.

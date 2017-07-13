@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input, ProgressBar } from 'react-materialize';
-import { deleteUser } from '../actions/UserActions';
+import { deleteUser } from '../../actions/UserActions';
 
 /**
  * DeleteUserPage - Renders a form for deleting a user's account.

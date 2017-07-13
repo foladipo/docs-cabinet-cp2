@@ -4,10 +4,10 @@ import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize'
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
 import DeleteUserPage from './DeleteUserPage';
-import isValidName from '../../../server/util/isValidName';
-import isValidEmail from '../../../server/util/isValidEmail';
-import isValidPassword from '../../../server/util/isValidPassword';
-import { getUser, updateUser } from '../actions/UserActions';
+import isValidName from '../../../../server/util/isValidName';
+import isValidEmail from '../../../../server/util/isValidEmail';
+import isValidPassword from '../../../../server/util/isValidPassword';
+import { getUser, updateUser } from '../../actions/UserActions';
 
 /**
  * UpdateUserPage - Renders a form for updating a user's profile.

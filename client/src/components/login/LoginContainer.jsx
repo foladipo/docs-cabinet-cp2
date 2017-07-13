@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Input, Button, Icon, Col, ProgressBar } from 'react-materialize';
-import * as UserActions from '../actions/UserActions';
+import * as UserActions from '../../actions/UserActions';
 
 /**
  * LoginContainer - Renders the login form.

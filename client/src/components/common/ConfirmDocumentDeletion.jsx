@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, ProgressBar, Row } from 'react-materialize';
-import { deleteDocument } from '../actions/DocumentActions';
+import { deleteDocument } from '../../actions/DocumentActions';
 
 /**
  * ConfirmDocumentDeletion - Asks a user for confirmation before deleting

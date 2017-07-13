@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Input, Icon, Button, Col, ProgressBar } from 'react-materialize';
-import { signUp } from '../actions/UserActions';
+import { signUp } from '../../actions/UserActions';
 
 /**
  * SignUpContainer - Renders the sign up form.

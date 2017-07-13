@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Preloader, Row } from 'react-materialize';
+import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
-import Document from './Document';
-import { fetchUserDocuments } from '../actions/DocumentActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants/';
+import Document from '../common/Document';
+import { fetchUserDocuments } from '../../actions/DocumentActions';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/';
 
 /**
  * ViewUserDocumentsPage - Shows a user a list of his/her own documents.

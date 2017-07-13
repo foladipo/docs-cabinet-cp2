@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input, ProgressBar } from 'react-materialize';
 import _ from 'lodash';
-import { getDocument, updateDocument } from '../actions/DocumentActions';
+import { getDocument, updateDocument } from '../../actions/DocumentActions';
 
 /**
  * UpdateDocumentPage - Used to update a document.

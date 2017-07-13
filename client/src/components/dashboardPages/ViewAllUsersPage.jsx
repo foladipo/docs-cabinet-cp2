@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import { Col, Preloader, Row } from 'react-materialize';
-import { fetchAllUsers } from '../actions/UserActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
-import User from './User';
+import { fetchAllUsers } from '../../actions/UserActions';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants';
+import User from '../common/User';
 
 /**
  * ViewAllUsersPage - Renders a list of users.

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
-import { createDocument } from '../actions/DocumentActions';
+import { createDocument } from '../../actions/DocumentActions';
 
 /**
  * CreateDocument - Used to create a document.

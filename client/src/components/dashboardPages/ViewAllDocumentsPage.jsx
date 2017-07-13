@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
-import { fetchAllDocuments } from '../actions/DocumentActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
-import PlainDocument from './PlainDocument';
+import { fetchAllDocuments } from '../../actions/DocumentActions';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants';
+import PlainDocument from '../common/PlainDocument';
 
 /**
  * ViewAllDocumentsPage - Shows a list of public, personal or 'role' documents.

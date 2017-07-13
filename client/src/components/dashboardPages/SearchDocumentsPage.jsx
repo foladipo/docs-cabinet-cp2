@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input } from 'react-materialize';
 import uuid from 'uuid';
-import { searchDocuments } from '../actions/SearchActions';
-import PlainDocument from './PlainDocument';
+import { searchDocuments } from '../../actions/SearchActions';
+import PlainDocument from '../common/PlainDocument';
 
 /**
  * SearchDocumentsPage - Renders a page for searching for documents.
