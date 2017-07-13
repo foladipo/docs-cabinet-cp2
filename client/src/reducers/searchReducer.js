@@ -4,7 +4,9 @@ import {
   SEARCH_USERS_FULFILLED,
   SEARCH_DOCUMENTS_PENDING,
   SEARCH_DOCUMENTS_REJECTED,
-  SEARCH_DOCUMENTS_FULFILLED
+  SEARCH_DOCUMENTS_FULFILLED,
+
+  LOGOUT_PENDING
 } from '../constants/';
 
 /**
@@ -17,6 +19,19 @@ import {
 export default function searchReducer(state, action) {
   const newState = Object.assign({}, state);
   switch (action.type) {
+    case LOGOUT_PENDING:
+      newState.users = {
+        lastSearchQuery: '',
+        lastSearchResultsCount: 0,
+        lastSearchResults: []
+      };
+      newState.documents = {
+        lastSearchQuery: '',
+        lastSearchResultsCount: 0,
+        lastSearchResults: []
+      };
+      break;
+
     case SEARCH_USERS_PENDING:
       newState.status = 'searchingUsers';
       newState.statusMessage = 'Searching... Please wait...';
@@ -70,7 +85,6 @@ export default function searchReducer(state, action) {
       if (action.payload.error === 'InvalidTokenError') {
         newState.status = 'invalidToken';
       }
-      window.localStorage.clear();
       newState.users = {
         lastSearchQuery: '',
         lastSearchResultsCount: 0,
