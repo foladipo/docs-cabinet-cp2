@@ -21,3 +21,7 @@ global.window.localStorage = {
   getItem: () => {},
   setItem: () => {}
 };
+
+global.$ = () => ({
+  modal: () => {}
+});

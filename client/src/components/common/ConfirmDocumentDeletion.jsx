@@ -27,7 +27,7 @@ function ConfirmDocumentDeletion(props) {
   }
 
   return (
-    <div className="container">
+    <div id="confirm-document-deletion" className="container">
       <h3 className="center-align red-text text-lighten-2">Are you sure?</h3>
       <Row>
         <Col s={6}>
@@ -39,7 +39,9 @@ function ConfirmDocumentDeletion(props) {
           </Button>
         </Col>
         <Col s={6}>
-          <Button onClick={closeMe}>No. Leave it alone.</Button>
+          <Button className="teal lighten-1" onClick={closeMe}>
+            No. Leave it alone.
+          </Button>
         </Col>
       </Row>
       <div
