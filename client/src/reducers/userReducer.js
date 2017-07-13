@@ -108,12 +108,12 @@ export default function userReducer(state, action) {
 
     case FETCH_ALL_USERS_PENDING:
       newState.status = 'fetchingAllUsers';
-      newState.statusMessage = 'Fetching users... Please wait...';
+      newState.statusMessage = 'Loading users... Please wait...';
       break;
 
     case FETCH_ALL_USERS_REJECTED:
       newState.status = 'fetchAllUsersFailed';
-      newState.statusMessage = action.payload.message || 'Failed to fetch users. Please try again.';
+      newState.statusMessage = action.payload.message || 'Failed to load users. Please try again.';
       break;
 
     case FETCH_ALL_USERS_FULFILLED:

@@ -7,11 +7,11 @@ import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
 import User from './User';
 
 /**
- * UsersPage - Renders a list of users.
+ * ViewAllUsersPage - Renders a list of users.
  */
-class UsersPage extends Component {
+class ViewAllUsersPage extends Component {
   /**
-   * Creates and initializes an instance of UsersPage.
+   * Creates and initializes an instance of ViewAllUsersPage.
    * @param {Object} props - The data passed to this Component from its parent.
    */
   constructor(props) {
@@ -132,9 +132,9 @@ class UsersPage extends Component {
   }
 }
 
-UsersPage.propTypes = {
+ViewAllUsersPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default UsersPage;
+export default ViewAllUsersPage;

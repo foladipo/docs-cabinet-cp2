@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import { logout } from '../actions/UserActions';
 import ViewUserDocumentsPage from './ViewUserDocumentsPage';
 import UpdateUserPage from './UpdateUserPage';
-import UsersPage from './UsersPage';
+import ViewAllUsersPage from './ViewAllUsersPage';
 import CreateDocument from './CreateDocument';
 import UpdateDocumentPage from './UpdateDocumentPage';
 import ViewAllDocumentsPage from './ViewAllDocumentsPage';
@@ -190,7 +190,7 @@ class MainContainer extends React.Component {
           />
           <Route
             path="/dashboard/users"
-            render={() => <UsersPage {...this.props} />}
+            render={() => <ViewAllUsersPage {...this.props} />}
           />
           <Route
             path="/dashboard/updateUser"
