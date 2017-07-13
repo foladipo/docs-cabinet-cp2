@@ -18,11 +18,10 @@ class ViewAllDocumentsPage extends Component {
     super(props);
 
     this.state = {
-      limit: DOCUMENT_LIMIT,
-      offset: DOCUMENT_OFFSET
+      hasFetchedAllDocuments: false
     };
 
-    this.startAllDocumentsFetch = this.startAllDocumentsFetch.bind(this);
+    this.fetchDocuments = this.fetchDocuments.bind(this);
   }
 
   /**
@@ -31,29 +30,34 @@ class ViewAllDocumentsPage extends Component {
    */
   componentDidMount() {
     if (
-      this.props.documents.allDocuments === undefined ||
-      this.props.documents.allDocuments.length < 1
+      this.props.documents.allDocuments.documents === undefined ||
+      this.props.documents.allDocuments.documents.length < 1
     ) {
-      this.startAllDocumentsFetch();
+      this.fetchDocuments(DOCUMENT_LIMIT, DOCUMENT_OFFSET);
     }
 
-    $('#all-documents-page').on('scroll', () => {
+    const allDocsPageElement = $('#all-documents-page');
+    allDocsPageElement.on('scroll', () => {
       if (
-        ($('#all-documents-page').scrollTop() + $('#all-documents-page').innerHeight()) >=
-        $('#all-documents-page')[0].scrollHeight
+        (allDocsPageElement.scrollTop() + allDocsPageElement.innerHeight()) >=
+        allDocsPageElement[0].scrollHeight
       ) {
-        // TODO: Don't make any more API calls when
-        // pageCount * limit >= totalCount
-        this.props.dispatch(
-          fetchAllDocuments(
-            this.props.user.token,
-            this.state.limit,
-            this.state.offset + this.state.limit
-          )
-        );
-        this.setState({
-          offset: this.state.offset + this.state.limit
-        });
+        if (this.props.documents.status !== 'fetchingAllDocuments') {
+          if (
+            this.props.documents.allDocuments.page ===
+            this.props.documents.allDocuments.pageCount
+          ) {
+            this.setState({
+              hasFetchedAllDocuments: true
+            });
+            return;
+          }
+
+          const limit = DOCUMENT_LIMIT;
+          const offset =
+            this.props.documents.allDocuments.page * DOCUMENT_LIMIT;
+          this.fetchDocuments(limit, offset);
+        }
       }
     });
   }
@@ -61,13 +65,16 @@ class ViewAllDocumentsPage extends Component {
   /**
    * Attempts to fetch all the documents in this app that this user is
    * permitted to see.
+   * @param {String} limit - Number of documents to return.
+   * @param {String} offset - Number of documents to skip before
+   * beginning the fetch.
    * @return {null} - Returns nothing.
    */
-  startAllDocumentsFetch() {
+  fetchDocuments(limit, offset) {
     this.props.dispatch(fetchAllDocuments(
       this.props.user.token,
-      this.state.limit,
-      this.state.offset
+      limit,
+      offset
     ));
   }
 
@@ -76,12 +83,13 @@ class ViewAllDocumentsPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    const documentComponents = this.props.documents.allDocuments.map(doc => (
-      <PlainDocument
-        key={uuid.v4()}
-        currentUserId={this.props.user.user.id}
-        {...doc}
-      />
+    const documentComponents =
+      this.props.documents.allDocuments.documents.map(doc => (
+        <PlainDocument
+          key={uuid.v4()}
+          currentUserId={this.props.user.user.id}
+          {...doc}
+        />
     ));
 
     const showStatusMessage =
@@ -109,7 +117,7 @@ class ViewAllDocumentsPage extends Component {
         </div>
         <div
           className={
-            this.props.documents.allDocuments.length < 1 &&
+            this.props.documents.allDocuments.documents.length < 1 &&
             this.props.documents.status !== 'fetchingAllDocuments' ? '' : 'hide'
           }
         >
@@ -125,6 +133,18 @@ class ViewAllDocumentsPage extends Component {
         >
           <Col s={12} className="center-align">
             <Preloader size="big" flashing />
+          </Col>
+          <Col s={12} className="center-align">
+            <h5>{this.props.documents.statusMessage.replace('Loading', 'Loading more')}</h5>
+          </Col>
+        </Row>
+        <Row
+          className={
+            this.state.hasFetchedAllDocuments ? '' : 'hide'
+          }
+        >
+          <Col s={12} className="blue white-text center-align">
+            <h5>That&rsquo;s all! There are no documents left.</h5>
           </Col>
         </Row>
       </div>

@@ -34,7 +34,13 @@ const store = createStore(
       userDocumentsCount: 0,
       userDocuments: [],
       allDocumentsCount: 0,
-      allDocuments: [],
+      allDocuments: {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       status: 'fetchingAllDocuments',
       statusMessage: 'Loading documents... Please wait...',
       targetDocumentId: -1,

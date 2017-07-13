@@ -36,7 +36,13 @@ export default function documentsReducer(state, action) {
       newState.userDocumentsCount = 0;
       newState.userDocuments = [];
       newState.allDocumentsCount = 0;
-      newState.allDocuments = [];
+      newState.allDocuments = {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
       break;
 
     case FETCH_ALL_DOCUMENTS_PENDING:
@@ -51,12 +57,16 @@ export default function documentsReducer(state, action) {
       break;
 
     case FETCH_ALL_DOCUMENTS_FULFILLED:
-      newState.allDocumentsCount =
-        state.allDocumentsCount + action.payload.documents.length;
-      newState.allDocuments =
-        state.allDocuments.concat(action.payload.documents);
       newState.status = 'allDocumentsFetched';
       newState.statusMessage = action.payload.message;
+      newState.allDocumentsCount =
+        state.allDocumentsCount + action.payload.documents.length;
+      newState.allDocuments.page = action.payload.page;
+      newState.allDocuments.pageSize = action.payload.pageSize;
+      newState.allDocuments.pageCount = action.payload.pageCount;
+      newState.allDocuments.totalCount = action.payload.totalCount;
+      newState.allDocuments.documents =
+        state.allDocuments.documents.concat(action.payload.documents);
       break;
 
     case FETCH_USER_DOCUMENTS_PENDING:
@@ -116,7 +126,7 @@ export default function documentsReducer(state, action) {
       newState.status = 'documentDeleted';
       newState.statusMessage = action.payload.message;
       newState.userDocuments = state.userDocuments.filter(doc =>
-        doc.id !== action.payload.targetDocumentId
+        doc.id !== action.payload.documents[0].id
       );
       newState.userDocumentsCount = newState.userDocuments.length;
       newState.targetDocumentId = -1;
@@ -180,7 +190,13 @@ export default function documentsReducer(state, action) {
       newState.userDocuments = [];
       newState.userDocumentsCount = 0;
       newState.allDocumentsCount = 0;
-      newState.allDocuments = [];
+      newState.allDocuments = {
+        documents: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
       return newState;
     }
   }

@@ -329,7 +329,8 @@ export default class DocumentsController {
               .then(() => {
                 res.status(200)
                   .json({
-                    message: 'Document deleted.'
+                    message: 'Document deleted.',
+                    documents: [foundDocument]
                   });
               });
           } else {
