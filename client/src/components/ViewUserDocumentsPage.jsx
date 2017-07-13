@@ -4,7 +4,7 @@ import { Button, Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import Document from './Document';
 import { fetchUserDocuments } from '../actions/DocumentActions';
-import { DOCUMENT_LIMIT, DOCUMENT_OFFSET } from '../constants/';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants/';
 
 /**
  * ViewUserDocumentsPage - Shows a user a list of his/her own documents.
@@ -41,8 +41,8 @@ class ViewUserDocumentsPage extends Component {
     this.props.dispatch(fetchUserDocuments(
       this.props.user.token,
       this.props.user.user.id,
-      DOCUMENT_LIMIT,
-      DOCUMENT_OFFSET
+      DEFAULT_LIMIT,
+      DEFAULT_OFFSET
     ));
   }
 

@@ -24,7 +24,14 @@ const store = createStore(
       isLoggingOut,
       token,
       user,
-      allUsers: [],
+      allUsersCount: 0,
+      allUsers: {
+        users: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      },
       status: '',
       statusMessage: '',
       deletedUserId: -1,

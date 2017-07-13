@@ -89,7 +89,14 @@ export default function userReducer(state, action) {
       newState.isLoggingOut = true;
       newState.isLoggedIn = false;
       newState.token = null;
-      newState.user = null;
+      newState.user = {};
+      newState.allUsers = {
+        users: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
       window.localStorage.clear();
       break;
 
@@ -111,16 +118,15 @@ export default function userReducer(state, action) {
 
     case FETCH_ALL_USERS_FULFILLED:
       newState.status = 'fetchedAllUsers';
-      if (action.payload.users.length > 0) {
-        newState.statusMessage = 'Successfully fetched users.';
-      } else {
-        if (state.allUsers.length > 0) {
-          newState.statusMessage = 'Oops! There are no users left.';
-        } else {
-          newState.statusMessage = 'There are no users yet.';
-        }
-      }
-      newState.allUsers = state.allUsers.concat(action.payload.users);
+      newState.statusMessage = action.payload.message;
+      newState.allUsersCount =
+        state.allUsersCount + action.payload.users.length;
+      newState.allUsers.page = action.payload.page;
+      newState.allUsers.pageSize = action.payload.pageSize;
+      newState.allUsers.pageCount = action.payload.pageCount;
+      newState.allUsers.totalCount = action.payload.totalCount;
+      newState.allUsers.users =
+        state.allUsers.users.concat(action.payload.users);
       break;
 
     case UPDATE_USER_PENDING:
@@ -214,7 +220,13 @@ export default function userReducer(state, action) {
       newState.isLoggingOut = false;
       newState.token = null;
       newState.user = {};
-      newState.allUsers = [];
+      newState.allUsers = {
+        users: [],
+        page: 0,
+        pageSize: 0,
+        pageCount: 0,
+        totalCount: 0
+      };
     }
   }
 

@@ -102,7 +102,7 @@ class UpdateUserPage extends Component {
       return;
     }
 
-    const possibleTargets = this.props.user.allUsers.filter(user =>
+    const possibleTargets = this.props.user.allUsers.users.filter(user =>
       user.id === targetUserId
     );
     const targetUser = possibleTargets[0];

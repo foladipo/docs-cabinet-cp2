@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
-import { Preloader } from 'react-materialize';
+import { Col, Preloader, Row } from 'react-materialize';
 import { fetchAllUsers } from '../actions/UserActions';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
 import User from './User';
-
-// TODO: Add infinite scrolling.
 
 /**
  * UsersPage - Renders a list of users.
@@ -18,7 +17,9 @@ class UsersPage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { limit: 10, offset: 0 };
+    this.state = { hasFetchedAllUsers: false };
+
+    this.fetchUsers = this.fetchUsers.bind(this);
   }
 
   /**
@@ -26,13 +27,49 @@ class UsersPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
-    if (this.props.user.allUsers.length < 1) {
-      this.props.dispatch(fetchAllUsers(
-        this.props.user.token,
-        this.state.limit,
-        this.state.offset
-      ));
+    if (this.props.user.allUsers.users.length < 1) {
+      this.fetchUsers(DEFAULT_LIMIT, DEFAULT_OFFSET);
     }
+
+    const userPageElement = $('#users-page');
+    userPageElement.on('scroll', () => {
+      if (
+        (userPageElement.scrollTop() + userPageElement.innerHeight()) >=
+        userPageElement[0].scrollHeight
+      ) {
+        if (this.props.user.status !== 'fetchingAllUsers') {
+          if (
+            this.props.user.allUsers.page ===
+            this.props.user.allUsers.pageCount
+          ) {
+            this.setState({
+              hasFetchedAllUsers: true
+            });
+            return;
+          }
+
+          const limit = DEFAULT_LIMIT;
+          const offset =
+            this.props.user.allUsers.page * DEFAULT_LIMIT;
+          this.fetchUsers(limit, offset);
+        }
+      }
+    });
+  }
+
+  /**
+   * Attempts to fetch all the users in this app.
+   * @param {String} limit - Number of users to return.
+   * @param {String} offset - Number of users to skip before
+   * beginning the fetch.
+   * @return {null} - Returns nothing.
+   */
+  fetchUsers(limit, offset) {
+    this.props.dispatch(fetchAllUsers(
+      this.props.user.token,
+      limit,
+      offset
+    ));
   }
 
   /**
@@ -41,33 +78,55 @@ class UsersPage extends Component {
    */
   render() {
     let users;
-    if (this.props.user.allUsers) {
-      users = this.props.user.allUsers.map(user =>
+    if (this.props.user.allUsers.users) {
+      users = this.props.user.allUsers.users.map(user =>
         <User key={uuid.v4()} {...user} />)
       ;
     }
 
     return (
-      <div className="scrollable-page users-page">
+      <div id="users-page" className="scrollable-page users-page">
         <h3
-          className={this.props.user.status === 'fetchedAllUsers' && this.props.user.allUsers.length < 1 ? '' : 'hide'}
+          className={
+            this.props.user.status === 'fetchedAllUsers' &&
+            this.props.user.allUsers.users.length < 1 ? '' : 'hide'
+          }
         >
           {this.props.user.statusMessage}
         </h3>
-        <div className="users-page-users-container row">
+        <div className="row">
           {users}
         </div>
-        <div
-          className={
-            this.props.user.status === 'fetchingAllUsers' ||
-            this.props.user.status === 'fetchAllUsersFailed' ? '' : 'hide'
+        <Row className={
+          this.props.user.status === 'fetchingAllUsers' ? '' : 'hide'
           }
         >
-          <h3>{this.props.user.statusMessage}</h3>
-          <div className={this.props.user.status === 'fetchingAllUsers' ? '' : 'hide'}>
-            <Preloader flashing className="center-align" />
-          </div>
-        </div>
+          <Col s={12} className="center-align">
+            <Preloader size="big" flashing />
+          </Col>
+          <Col s={12} className="center-align">
+            <h5>
+              {this.props.user.statusMessage.replace('Loading', 'Loading more')}
+            </h5>
+          </Col>
+        </Row>
+        <Row className={
+          this.props.user.status === 'fetchAllUsersFailed' ? '' : 'hide'
+          }
+        >
+          <Col s={12} className="red lighten-2 white-text center-align">
+            <h5>{this.props.user.statusMessage}</h5>
+          </Col>
+        </Row>
+        <Row
+          className={
+            this.state.hasFetchedAllUsers ? 'thats-all' : 'hide'
+          }
+        >
+          <Col s={12} className="blue white-text center-align">
+            <h5>That&rsquo;s all! There are no users left.</h5>
+          </Col>
+        </Row>
       </div>
     );
   }

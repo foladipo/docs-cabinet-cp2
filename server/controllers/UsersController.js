@@ -656,7 +656,7 @@ export default class UsersController {
 
     const currentUserId = req.decodedUserProfile.id;
     User
-      .findAll({
+      .findAndCountAll({
         where: {
           id: {
             ne: currentUserId
@@ -666,18 +666,21 @@ export default class UsersController {
         limit,
         offset
       })
-      .then((foundUsers) => {
-        const results = foundUsers.map(user => ({
-          id: user.id,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          roleId: user.roleId
-        }));
+      .then((foundUsersMetadata) => {
+        const pageSize = limit;
+        const totalCount = foundUsersMetadata.count;
+        const pageCount = Math.ceil(totalCount / pageSize);
+        const page =
+          1 + Math.floor((((limit * pageCount) + offset) - totalCount) / limit);
+        const foundUsers = foundUsersMetadata.rows;
         res.status(200)
           .json({
             message: 'Users found.',
-            users: results
+            pageSize,
+            totalCount,
+            pageCount,
+            page,
+            users: foundUsers
           });
       });
   }

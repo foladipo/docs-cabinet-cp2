@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import { fetchAllDocuments } from '../actions/DocumentActions';
-import { DOCUMENT_LIMIT, DOCUMENT_OFFSET } from '../constants';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../constants';
 import PlainDocument from './PlainDocument';
 
 /**
@@ -33,7 +33,7 @@ class ViewAllDocumentsPage extends Component {
       this.props.documents.allDocuments.documents === undefined ||
       this.props.documents.allDocuments.documents.length < 1
     ) {
-      this.fetchDocuments(DOCUMENT_LIMIT, DOCUMENT_OFFSET);
+      this.fetchDocuments(DEFAULT_LIMIT, DEFAULT_OFFSET);
     }
 
     const allDocsPageElement = $('#all-documents-page');
@@ -53,9 +53,9 @@ class ViewAllDocumentsPage extends Component {
             return;
           }
 
-          const limit = DOCUMENT_LIMIT;
+          const limit = DEFAULT_LIMIT;
           const offset =
-            this.props.documents.allDocuments.page * DOCUMENT_LIMIT;
+            this.props.documents.allDocuments.page * DEFAULT_LIMIT;
           this.fetchDocuments(limit, offset);
         }
       }
@@ -140,7 +140,7 @@ class ViewAllDocumentsPage extends Component {
         </Row>
         <Row
           className={
-            this.state.hasFetchedAllDocuments ? '' : 'hide'
+            this.state.hasFetchedAllDocuments ? 'thats-all' : 'hide'
           }
         >
           <Col s={12} className="blue white-text center-align">
