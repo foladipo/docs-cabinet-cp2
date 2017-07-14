@@ -17,7 +17,7 @@ function PlainUser(props) {
   };
 
   return (
-    <div>
+    <div className="plain-user">
       <div className="col s12 m6 l4 hoverable">
         <div
           className={
@@ -28,7 +28,7 @@ function PlainUser(props) {
         >
           <div className="card-stacked">
             <div className="card-content">
-              <h5 className="teal-text text-lighten-2">
+              <h5 className="user-full-name teal-text text-lighten-2">
                 {`${props.firstName} ${props.lastName}`}
               </h5>
               <div className="divider" />
