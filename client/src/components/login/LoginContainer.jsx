@@ -75,13 +75,14 @@ class LoginContainer extends React.Component {
         <h6 className="red-text text-lighten-2">**All fields are required.</h6>
         <form>
           <div className="red lighten-2">
-            <p className="white-text center">
+            <p className="error-msg white-text center">
               {this.props.user.statusMessage}
             </p>
           </div>
           <Row>
             <Row>
               <Input
+                name="email"
                 s={12}
                 type="email"
                 label="Email"
@@ -92,6 +93,7 @@ class LoginContainer extends React.Component {
                 <Icon>account_circle</Icon>
               </Input>
               <Input
+                name="password"
                 s={12}
                 type="password"
                 label="Password"
@@ -101,7 +103,7 @@ class LoginContainer extends React.Component {
                 <Icon>lock</Icon>
               </Input>
               <Button
-                className={this.props.user.isLoggingIn ? 'disabled' : ''}
+                className={this.props.user.isLoggingIn ? 'disabled' : 'login-btn'}
                 waves="light"
                 onClick={this.login}
               >

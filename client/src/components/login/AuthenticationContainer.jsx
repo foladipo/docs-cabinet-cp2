@@ -46,6 +46,7 @@ function AuthenticationContainer(props) {
                 header="Login"
                 trigger={
                   <Button
+                    id="login-btn"
                     waves="light"
                     className="quarter-side-margin teal lighten-5 black-text"
                   >Login

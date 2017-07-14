@@ -10,3 +10,5 @@ coverage
 client/dist/scripts
 client/dist/stylesheets
 todo.txt
+selenium-debug.log
+reports
