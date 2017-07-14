@@ -80,7 +80,7 @@ class SearchUsersPage extends Component {
     );
 
     return (
-      <div>
+      <div className="search-users-page">
         <h4>Search users</h4>
         <div className="row">
           <div className="search-form-container col s12 m3">
@@ -98,9 +98,10 @@ class SearchUsersPage extends Component {
               Search for any user using part or all of his/her first name,&nbsp;
               last name or email.
             </p>
-            <form>
+            <form className="search-form">
               <div className="row">
                 <Input
+                  className="search-input"
                   s={12}
                   label="Search"
                   onChange={this.updateSearchQuery}
@@ -108,8 +109,8 @@ class SearchUsersPage extends Component {
                 <Button
                   className={
                     this.hasSearchQuery() ?
-                    'col s10 center-align' :
-                    'col s10 center-align disabled'
+                    'search-btn col s10 center-align' :
+                    'search-btn col s10 center-align disabled'
                   }
                   onClick={this.attemptUsersSearch}
                 >
