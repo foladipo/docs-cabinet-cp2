@@ -19,7 +19,7 @@ function User(props) {
   };
 
   return (
-    <div>
+    <div className="single-user">
       <div className="col s12 m6 l4 hoverable">
         <div className={props.roleId > 0 ? 'card medium horizontal admin-user-profile' : 'card medium horizontal'}>
           <div className="card-image">
@@ -30,7 +30,7 @@ function User(props) {
           </div>
           <div className="card-stacked">
             <div className="card-content">
-              <h5 className="teal-text text-lighten-2">{`${props.firstName} ${props.lastName}`}</h5>
+              <h5 className="user-full-name teal-text text-lighten-2">{`${props.firstName} ${props.lastName}`}</h5>
               <div className="divider" />
               <h6>Email: <br />
                 <div className="chip">{props.username}</div>

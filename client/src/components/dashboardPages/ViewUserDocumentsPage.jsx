@@ -94,6 +94,8 @@ class ViewUserDocumentsPage extends Component {
           documentsStatus={this.props.documents.status}
           targetDocumentId={this.props.documents.targetDocumentId}
           documentsStatusMessage={this.props.documents.statusMessage}
+          User={this.props.user.user}
+          currentUserId={this.props.user.user.id}
           {...doc}
         />
     ));

@@ -37,7 +37,7 @@ describe('ConfirmDocumentDeletion', () => {
     expect(wrapper.find('button.btn.teal.lighten-1')).to.have.length(1);
   });
 
-  it('should delete a document', () => {
+  it('should be able to delete a document', () => {
     const confirmBtn = wrapper.find('button.btn.red.right');
     confirmBtn.simulate('click');
     expect(spy.calledOnce).to.equal(true);
