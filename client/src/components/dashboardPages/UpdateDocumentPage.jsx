@@ -35,7 +35,7 @@ class UpdateDocumentPage extends Component {
     this.updateCategories = this.updateCategories.bind(this);
     this.updateTags = this.updateTags.bind(this);
 
-    this.submitUpdate = this.submitUpdate.bind(this);
+    this.attemptDocumentUpdate = this.attemptDocumentUpdate.bind(this);
   }
 
   /**
@@ -245,7 +245,7 @@ class UpdateDocumentPage extends Component {
    * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  submitUpdate(event) {
+  attemptDocumentUpdate(event) {
     event.preventDefault();
 
     // Needed because a form might be submitted without using the submit button.
@@ -424,7 +424,8 @@ class UpdateDocumentPage extends Component {
           </div>
           <div className="quarter-vertical-margin" />
           <Button
-            onClick={this.submitUpdate}
+            id="update-document-button"
+            onClick={this.attemptDocumentUpdate}
             modal="confirm"
             className={
               this.isValidDocument() && this.isUpdate() ?
