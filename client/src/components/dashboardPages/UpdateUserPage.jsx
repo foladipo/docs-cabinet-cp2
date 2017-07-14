@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
-import DeleteUserPage from './DeleteUserPage';
+import DeleteUserPage from '../common/DeleteUser';
 import isValidName from '../../../../server/util/isValidName';
 import isValidEmail from '../../../../server/util/isValidEmail';
 import isValidPassword from '../../../../server/util/isValidPassword';

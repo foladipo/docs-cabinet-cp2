@@ -4,11 +4,11 @@ import { Button, Icon, Input, ProgressBar } from 'react-materialize';
 import { deleteUser } from '../../actions/UserActions';
 
 /**
- * DeleteUserPage - Renders a form for deleting a user's account.
+ * DeleteUser - Renders a form for deleting a user's account.
  */
-class DeleteUserPage extends Component {
+class DeleteUser extends Component {
   /**
-   * Creates and initializes an instance of DeleteUserPage.
+   * Creates and initializes an instance of DeleteUser.
    * @param {Object} props - The data passed to this Component from its parent.
    */
   constructor(props) {
@@ -74,7 +74,7 @@ class DeleteUserPage extends Component {
    */
   render() {
     return (
-      <div>
+      <div className="delete-user-page">
         <h5
           className={this.props.user.status === 'userDeletionFailed' ? 'red lighten-2 white-text center-align' : 'hide'}
         >
@@ -116,10 +116,10 @@ class DeleteUserPage extends Component {
   }
 }
 
-DeleteUserPage.propTypes = {
+DeleteUser.propTypes = {
   dispatch: PropTypes.func.isRequired,
   targetUser: PropTypes.objectOf(PropTypes.any).isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default DeleteUserPage;
+export default DeleteUser;
