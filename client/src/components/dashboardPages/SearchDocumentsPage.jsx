@@ -123,7 +123,7 @@ class SearchDocumentsPage extends Component {
       );
 
     return (
-      <div>
+      <div className="search-documents-page">
         <h4>Search documents</h4>
         <div className="row">
           <div className="search-form-container col s12 m3">
@@ -140,9 +140,10 @@ class SearchDocumentsPage extends Component {
             <p>
               Search for any document using part or all of its title.
             </p>
-            <form>
+            <form className="search-form">
               <div className="row">
                 <Input
+                  className="search-input"
                   s={12}
                   label="Search"
                   onChange={this.updateSearchQuery}
@@ -150,8 +151,8 @@ class SearchDocumentsPage extends Component {
                 <Button
                   className={
                     this.hasSearchQuery() ?
-                    'col s10' :
-                    'col s10 disabled'
+                    'search-btn col s10' :
+                    'search-btn col s10 disabled'
                   }
                   onClick={this.attemptDocumentsSearch}
                 >
@@ -163,11 +164,13 @@ class SearchDocumentsPage extends Component {
             <h6 className="teal-text text-lighten-2">Filters</h6>
             <div className="row">
               <Input
+                className="search-filter-categories"
                 s={12}
                 label="Filter by categories"
                 onChange={this.updateCategoriesFilter}
               />
               <Input
+                className="search-filter-tags"
                 s={12}
                 label="Filter by tags"
                 onChange={this.updateTagsFilter}
