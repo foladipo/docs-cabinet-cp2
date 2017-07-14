@@ -45,8 +45,7 @@ describe('SearchDocumentsPage', () => {
     wrapper.update();
     const searchQueryInput = wrapper.find('.search-input');
     const mockEvent = {
-      preventDefault: () => {
-      },
+      preventDefault: () => {},
       target: { value: 'books' }
     };
     searchQueryInput.simulate('change', mockEvent);
@@ -72,8 +71,7 @@ describe('SearchDocumentsPage', () => {
     wrapper.update();
     const filterInput = wrapper.find('.search-filter-categories');
     const mockEvent = {
-      preventDefault: () => {
-      },
+      preventDefault: () => {},
       target: { value: 'novels' }
     };
     filterInput.simulate('change', mockEvent);
@@ -85,8 +83,7 @@ describe('SearchDocumentsPage', () => {
     wrapper.update();
     const filterInput = wrapper.find('.search-filter-tags');
     const mockEvent = {
-      preventDefault: () => {
-      },
+      preventDefault: () => {},
       target: { value: 'comics' }
     };
     filterInput.simulate('change', mockEvent);

@@ -46,8 +46,7 @@ describe('SearchUsersPage', () => {
     wrapper.update();
     const searchQueryInput = wrapper.find('.search-input');
     const mockEvent = {
-      preventDefault: () => {
-      },
+      preventDefault: () => {},
       target: { value: 'books' }
     };
     searchQueryInput.simulate('change', mockEvent);

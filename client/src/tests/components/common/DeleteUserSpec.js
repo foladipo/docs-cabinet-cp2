@@ -56,8 +56,7 @@ describe('DeleteUser', () => {
     wrapper.update();
     const confirmUserEmail = wrapper.find('.confirm-deletion-input');
     const mockEvent = {
-      preventDefault: () => {
-      },
+      preventDefault: () => {},
       target: { value: 'doomedUser@example.com' }
     };
     confirmUserEmail.simulate('change', mockEvent);

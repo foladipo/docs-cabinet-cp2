@@ -319,8 +319,14 @@ class UpdateDocumentPage extends Component {
     }
 
     return (
-      <div className="row">
-        <div className={this.props.documents.status === 'getDocumentFailed' ? 'red lighten-2' : 'hide'}>
+      <div className="update-document-page row">
+        <div
+          className={
+            this.props.documents.status === 'getDocumentFailed' ?
+            'msg-container red lighten-2' :
+            'msg-container hide'
+          }
+        >
           <h5 className="white-text center">
             {this.props.documents.statusMessage}
           </h5>
@@ -328,7 +334,7 @@ class UpdateDocumentPage extends Component {
             {this.state.errorMessage}
           </h5>
         </div>
-        <form id="updateDocumentForm" className={this.state.hasValidTargetDocumentId ? '' : 'hide'}>
+        <form id="update-document-form" className={this.state.hasValidTargetDocumentId ? '' : 'hide'}>
           <h6 className="red-text text-lighten-2">
             **All fields are required.
           </h6>
