@@ -17,6 +17,11 @@ const props = {
   id: 3,
   targetDocumentId: 8,
   token: 'RANDOM_TOKEN',
+  title: 'Test',
+  content: 'This is a test.',
+  access: 'public',
+  categories: 'novel',
+  tags: 'book',
   User: {
     id: 7,
     firstName: 'Gbenga',
