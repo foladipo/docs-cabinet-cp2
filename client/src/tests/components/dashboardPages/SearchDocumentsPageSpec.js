@@ -8,7 +8,6 @@ import SearchDocumentsPage from '../../../components/dashboardPages/SearchDocume
 chai.use(chaiEnzyme());
 const expect = chai.expect;
 
-const spy = sinon.spy();
 const props = {
   dispatch: () => {},
   user: {
@@ -16,11 +15,6 @@ const props = {
     user: {
       id: 4
     }
-  },
-  User: {
-    id: 7,
-    firstName: 'Gbenga',
-    lastName: 'Adeyemi'
   },
   search: {
     documents: {
@@ -43,7 +37,7 @@ describe('SearchDocumentsPage', () => {
   });
 
   it('should have a search button that\'s disabled by default', () => {
-    expect(wrapper.find('button.col.s10.disabled')).to.have.length(1);
+    expect(wrapper.find('.search-btn.disabled')).to.have.length(1);
   });
 
   it('should be able to receive search queries from users', () => {
@@ -60,7 +54,7 @@ describe('SearchDocumentsPage', () => {
   });
 
   it('should have an enabled search button when a query has been entered', () => {
-    expect(wrapper.find('button.col.s10.disabled')).to.have.length(0);
+    expect(wrapper.find('.search-btn.disabled')).to.have.length(0);
   });
 
   it('should be able to perform searches', () => {
