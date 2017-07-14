@@ -80,12 +80,12 @@ class DeleteUser extends Component {
         >
           {this.props.user.statusMessage}
         </h5>
-        <p>
+        <p className="delete-user-warning">
           Are you sure? This action is <b className="red-text">NOT</b>
           &nbsp;reversible. All the data about and documents owned by this
           account will be lost forever.
         </p>
-        <p>
+        <p className="confirm-deletion-msg">
           Type&nbsp;
           <b className="white red-text">
             {this.props.targetUser.username}
@@ -96,6 +96,7 @@ class DeleteUser extends Component {
         <div>
           <form>
             <Input
+              className="confirm-deletion-input"
               type="text"
               label="Username"
               onChange={this.updateTargetUsername}
@@ -103,7 +104,7 @@ class DeleteUser extends Component {
               <Icon>delete</Icon>
             </Input>
             <Button
-              className={this.hasConfirmedDeletion() ? 'red white-text' : 'disabled'}
+              className={this.hasConfirmedDeletion() ? 'delete-user-btn red white-text' : 'delete-user-btn disabled'}
               onClick={this.attemptToDeleteUser}
             >
               Delete
