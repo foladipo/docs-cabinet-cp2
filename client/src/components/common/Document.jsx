@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Modal } from 'react-materialize';
+import { Button, Col, Icon, Modal, Row } from 'react-materialize';
 import { Link } from 'react-router-dom';
 import ConfirmDocumentDeletion from './ConfirmDocumentDeletion';
 
@@ -38,17 +38,63 @@ function Document(props) {
   };
 
   return (
-    <div className={isDeletingMe() ? 'disabled' : ''}>
+    <div className={isDeletingMe() ? 'single-document disabled' : 'single-document'}>
       <div className="col s12 m6 l4 hoverable">
         <div className="card small">
-          <div className="card-image">
-            <img
-              className="materialboxed responsive-img"
-              src={getDocImage()}
-              alt={props.title}
-            />
-            <span className="card-title black-text">{props.title}</span>
-          </div>
+          <Modal
+            fixedFooter
+            trigger={
+              <div className="card-image">
+                <img
+                  className="materialboxed responsive-img"
+                  src={getDocImage()}
+                  alt={props.title}
+                />
+                <span className="card-title black-text">{props.title}</span>
+              </div>
+            }
+          >
+            <div>
+              <h3 className="teal-text text-lighten-2">{props.title}</h3>
+              <div className="divider" />
+              <Row>
+                <Col s={12}>
+                  <Icon>label</Icon>
+                  <span>
+                    <span className="teal-text text-lighten-2">
+                      Categories:
+                    </span>
+                    &nbsp;
+                    {props.categories}
+                  </span>
+                </Col>
+                <Col s={12}>
+                  <Icon>bookmark</Icon>
+                  <span>
+                    <span className="teal-text text-lighten-2">
+                      Tags:
+                    </span>
+                    &nbsp;
+                    {props.tags}
+                  </span>
+                </Col>
+                <Col s={12}>
+                  <Icon>person_outline</Icon>
+                  <span>
+                    <span className="teal-text text-lighten-2">
+                      Author:
+                    </span>
+                    &nbsp;
+                    {
+                      props.User.id === props.currentUserId ? 'Me' :
+                      `${props.User.firstName} ${props.User.lastName}`
+                    }
+                  </span>
+                </Col>
+              </Row>
+              <p className="flow-text">{props.content}</p>
+            </div>
+          </Modal>
           <div className="card-content">
             <p>{props.content}</p>
           </div>
@@ -95,13 +141,17 @@ function Document(props) {
 }
 
 Document.propTypes = {
+  categories: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
+  currentUserId: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
+  tags: PropTypes.string.isRequired,
   targetDocumentId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  token: PropTypes.string.isRequired
+  token: PropTypes.string.isRequired,
+  User: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
 export default Document;
