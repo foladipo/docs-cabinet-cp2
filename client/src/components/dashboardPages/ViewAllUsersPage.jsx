@@ -31,7 +31,7 @@ class ViewAllUsersPage extends Component {
       this.fetchUsers(DEFAULT_LIMIT, DEFAULT_OFFSET);
     }
 
-    const userPageElement = $('#users-page');
+    const userPageElement = $('#all-users-page');
     userPageElement.on('scroll', () => {
       if (
         (userPageElement.scrollTop() + userPageElement.innerHeight()) >=
@@ -86,7 +86,7 @@ class ViewAllUsersPage extends Component {
 
     // TODO: Maybe add a 'retry' button for when a documents fetch fails?
     return (
-      <div id="users-page" className="scrollable-page users-page">
+      <div id="all-users-page" className="scrollable-page all-users-page">
         <h3
           className={
             this.props.user.status === 'fetchedAllUsers' &&
@@ -107,7 +107,11 @@ class ViewAllUsersPage extends Component {
           </Col>
           <Col s={12} className="center-align">
             <h5>
-              {this.props.user.statusMessage.replace('Loading', 'Loading more')}
+              {
+                this.props.user.statusMessage ?
+                this.props.user.statusMessage.replace('Loading', 'Loading more') :
+                'Loading...'
+              }
             </h5>
           </Col>
         </Row>
