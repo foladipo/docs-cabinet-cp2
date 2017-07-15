@@ -17,7 +17,7 @@ import SearchDocumentsPage from './SearchDocumentsPage';
 /**
  * MainContainer - Renders all the Components of the dashboard.
  */
-class MainContainer extends React.Component {
+export class MainContainer extends React.Component {
   /**
    * Creates and initializes an instance of MainContainer.
    * @param {Object} props - The data passed to this Component from its parent.
@@ -70,7 +70,7 @@ class MainContainer extends React.Component {
       window.localStorage.clear();
       $('#deleteAccountModal').modal('close');
       Materialize.toast(this.props.user.statusMessage, 5000);
-      return <Redirect to="/dashboard" />;
+      return <Redirect to="/" />;
     }
 
     if (!this.props.user.isLoggedIn) {
@@ -82,13 +82,13 @@ class MainContainer extends React.Component {
       $('#createDocumentModal').modal('close');
     }
 
-    const trigger = (<Button className="dashboard-menu-btn">
+    const trigger = (<Button id="dashboard-menu-btn">
       Menu
       <Icon left>menu</Icon>
     </Button>);
 
     return (
-      <div className="authenticated-user-area grey lighten-3">
+      <div id="#authenticated-user-area" className="grey lighten-3">
         <SideNav
           trigger={trigger}
           options={{
@@ -178,7 +178,12 @@ class MainContainer extends React.Component {
           </li>
           <SideNavItem divider />
           {this.getAdminSection()}
-          <SideNavItem waves onClick={this.logout} icon="input">
+          <SideNavItem
+            id="logout-btn"
+            waves
+            onClick={this.logout}
+            icon="directions_run"
+          >
             Logout
           </SideNavItem>
         </SideNav>

@@ -25,7 +25,8 @@ global.window.localStorage = {
 global.$ = () => ({
   material_select: () => {},
   modal: () => {},
-  on: () => {}
+  on: () => {},
+  sideNav: () => {}
 });
 
 global.Materialize = {
