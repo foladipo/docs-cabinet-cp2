@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-materialize';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import LoginContainer from './LoginContainer';
-import SignUpContainer from './SignUpContainer';
+import LoginForm from './LoginForm';
+import SignUpForm from './SignUpForm';
 
 /**
  * AuthenticationContainer - Renders an authentication page for a user
@@ -41,7 +41,7 @@ function AuthenticationContainer(props) {
                   </Button>
                 }
               >
-                <SignUpContainer {...props} />
+                <SignUpForm {...props} />
               </Modal>
               <Modal
                 id="loginModal"
@@ -55,7 +55,7 @@ function AuthenticationContainer(props) {
                   </Button>
                 }
               >
-                <LoginContainer {...props} />
+                <LoginForm {...props} />
               </Modal>
             </div>
           </div>

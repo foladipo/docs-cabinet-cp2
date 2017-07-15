@@ -4,11 +4,11 @@ import { Row, Input, Icon, Button, Col, ProgressBar } from 'react-materialize';
 import { signUp } from '../../actions/UserActions';
 
 /**
- * SignUpContainer - Renders the sign up form.
+ * SignUpForm - Renders the sign up form.
  */
-class SignUpContainer extends React.Component {
+class SignUpForm extends React.Component {
   /**
-   * Creates and initializes an instance of SignUpContainer.
+   * Creates and initializes an instance of SignUpForm.
    * @param {Object} props - The data passed to this component from its parent.
    */
   constructor(props) {
@@ -159,9 +159,9 @@ class SignUpContainer extends React.Component {
   }
 }
 
-SignUpContainer.propTypes = {
+SignUpForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default SignUpContainer;
+export default SignUpForm;

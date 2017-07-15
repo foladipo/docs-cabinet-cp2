@@ -4,11 +4,11 @@ import { Row, Input, Button, Icon, Col, ProgressBar } from 'react-materialize';
 import * as UserActions from '../../actions/UserActions';
 
 /**
- * LoginContainer - Renders the login form.
+ * LoginForm - Renders the login form.
  */
-class LoginContainer extends React.Component {
+class LoginForm extends React.Component {
   /**
-   * Creates and initializes an instance of LoginContainer.
+   * Creates and initializes an instance of LoginForm.
    * @param {Object} props - The data passed to this component from its parent.
    */
   constructor(props) {
@@ -120,9 +120,9 @@ class LoginContainer extends React.Component {
   }
 }
 
-LoginContainer.propTypes = {
+LoginForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
   user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-export default LoginContainer;
+export default LoginForm;
