@@ -106,4 +106,16 @@ describe('SignUpForm', () => {
     );
     expect(wrapper.find('.msg-container.hide')).to.have.length(0);
   });
+
+  it('should disable the sign up button and show a progress bar while signing up', () => {
+    wrapper.setProps(
+      {
+        user: {
+          isLoggingIn: true
+        }
+      }
+    );
+    expect(wrapper.find('#sign-up-btn')).to.have.className('disabled');
+    expect(wrapper.find('.progress-bar-container')).to.not.have.className('hide');
+  });
 });
