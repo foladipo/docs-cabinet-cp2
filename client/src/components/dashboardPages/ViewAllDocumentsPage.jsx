@@ -128,7 +128,12 @@ class ViewAllDocumentsPage extends Component {
             <Preloader size="big" flashing />
           </Col>
           <Col s={12} className="center-align">
-            <h5>{this.props.documents.statusMessage.replace('Loading', 'Loading more')}</h5>
+            <h5>
+              {
+                this.props.documents.statusMessage ?
+                this.props.documents.statusMessage.replace('Loading', 'Loading more') : ''
+              }
+            </h5>
           </Col>
         </Row>
         <Row

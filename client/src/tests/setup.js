@@ -27,3 +27,7 @@ global.$ = () => ({
   modal: () => {},
   on: () => {}
 });
+
+global.Materialize = {
+  toast: () => {}
+};
