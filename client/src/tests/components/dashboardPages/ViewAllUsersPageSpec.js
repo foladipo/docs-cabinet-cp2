@@ -42,7 +42,7 @@ describe('ViewAllUsersPage', () => {
     expect(wrapper.find('.all-users-page')).to.have.length(1);
   });
 
-  it('should auto-fetch a list of users when it is displayed', () => {
+  it('should auto-fetch a list of users', () => {
     expect(dispatchSpy.calledOnce).to.equal(true);
   });
 

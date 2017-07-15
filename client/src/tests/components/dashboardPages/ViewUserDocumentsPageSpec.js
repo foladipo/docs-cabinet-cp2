@@ -46,7 +46,7 @@ describe('ViewUserDocumentsPage', () => {
     expect(wrapper).to.have.id('user-documents-page');
   });
 
-  it('should auto-fetch a list of users when it is displayed', () => {
+  it('should auto-fetch a list of a user\'s documents', () => {
     expect(dispatchSpy.calledOnce).to.equal(true);
   });
 
