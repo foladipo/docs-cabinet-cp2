@@ -132,6 +132,7 @@ class UpdateUserPage extends Component {
     ) {
       return (
         <Input
+          id="update-role-id"
           s={12}
           type="select"
           label="Account type"
@@ -378,7 +379,7 @@ class UpdateUserPage extends Component {
     if (this.state.targetUser) {
       return (
         <div className="container">
-          <div className="center-align white-text">
+          <div className="msg-container center-align white-text">
             <h5
               className={
                 this.props.user.status === 'updatingUser' ? 'orange' : 'hide'
@@ -412,12 +413,13 @@ class UpdateUserPage extends Component {
           <div>
             <h3>Update profile</h3>
             <div className="divider" />
-            <form>
+            <form id="update-user-form">
               {this.showRoleUpdate()}
               <Row>
                 <div>
                   First name
                   <Input
+                    id="update-first-name"
                     s={12}
                     placeholder={this.state.targetUser.firstName}
                     onChange={this.updateFirstName}
@@ -428,6 +430,7 @@ class UpdateUserPage extends Component {
                 <div>
                   Last Name
                   <Input
+                    id="update-last-name"
                     s={12}
                     placeholder={this.state.targetUser.lastName}
                     onChange={this.updateLastName}
@@ -438,6 +441,7 @@ class UpdateUserPage extends Component {
                 <div>
                   Email
                   <Input
+                    id="update-username"
                     type="email"
                     s={12}
                     placeholder={this.state.targetUser.username}
@@ -452,6 +456,7 @@ class UpdateUserPage extends Component {
                 <div>
                   Password
                   <Input
+                    id="update-password"
                     s={12}
                     type="password"
                     onChange={this.updatePassword}
@@ -460,6 +465,7 @@ class UpdateUserPage extends Component {
                   </Input>
                 </div>
                 <Button
+                  id="attempt-profile-update-btn"
                   className={
                     this.isUpdate() &&
                     this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'
@@ -502,7 +508,7 @@ class UpdateUserPage extends Component {
     }
 
     return (
-      <div className="scrollable-page update-user-page">
+      <div id="update-user-page" className="scrollable-page">
         {this.showUpdateForm()}
       </div>
     );
