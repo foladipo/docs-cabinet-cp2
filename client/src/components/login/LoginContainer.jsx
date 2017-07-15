@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Row, Input, Button, Icon, Col, ProgressBar } from 'react-materialize';
 import * as UserActions from '../../actions/UserActions';
 
@@ -121,17 +120,9 @@ class LoginContainer extends React.Component {
   }
 }
 
-const mapStateToProps = storeState => ({
-  user: storeState.user
-});
-
 LoginContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  user: PropTypes.objectOf(PropTypes.any)
+  user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-LoginContainer.defaultProps = {
-  user: {}
-};
-
-export default connect(mapStateToProps)(LoginContainer);
+export default LoginContainer;

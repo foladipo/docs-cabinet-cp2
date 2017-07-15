@@ -25,8 +25,10 @@ function AuthenticationContainer(props) {
       <div className="container">
         <div className="container section three-quarters-height">
           <div className="section z-depth-4 white">
-            <h3 className="center">Welcome to Docs Cabinet!</h3>
-            <div className="horizontally-centered quarter-side-margin wraps-content">
+            <h3 className="center-align">Welcome to Docs Cabinet!</h3>
+            <div
+              className="full-width center-align wraps-content"
+            >
               <Modal
                 id="signUpModal"
                 header="Sign up"
@@ -39,7 +41,7 @@ function AuthenticationContainer(props) {
                   </Button>
                 }
               >
-                <SignUpContainer />
+                <SignUpContainer {...props} />
               </Modal>
               <Modal
                 id="loginModal"
@@ -53,7 +55,7 @@ function AuthenticationContainer(props) {
                   </Button>
                 }
               >
-                <LoginContainer />
+                <LoginContainer {...props} />
               </Modal>
             </div>
           </div>

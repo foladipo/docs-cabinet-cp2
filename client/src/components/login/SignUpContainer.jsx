@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Row, Input, Icon, Button, Col, ProgressBar } from 'react-materialize';
 import { signUp } from '../../actions/UserActions';
 
@@ -134,7 +133,12 @@ class SignUpContainer extends React.Component {
                 and a symbol (e.g $, *, #, @ etc).
               </p>
             </div>
-            <Input s={12} label="Password" type="password" onChange={this.updatePassword}>
+            <Input
+              s={12}
+              label="Password"
+              type="password"
+              onChange={this.updatePassword}
+            >
               <Icon>lock</Icon>
             </Input>
             <Button
@@ -155,17 +159,9 @@ class SignUpContainer extends React.Component {
   }
 }
 
-const mapStateToProps = storeState => ({
-  user: storeState.user
-});
-
 SignUpContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  user: PropTypes.objectOf(PropTypes.any)
+  user: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
-SignUpContainer.defaultProps = {
-  user: {}
-};
-
-export default connect(mapStateToProps)(SignUpContainer);
+export default SignUpContainer;
