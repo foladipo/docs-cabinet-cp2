@@ -103,22 +103,39 @@ class SignUpForm extends React.Component {
    */
   render() {
     return (
-      <div>
+      <div id="sign-up-form">
         <h6 className="red-text text-lighten-2">**All fields are required.</h6>
         <form>
-          <div className="red lighten-2">
+          <div
+            className={
+              this.props.user.status === 'signUpFailed' ?
+              'msg-container red lighten-2' :
+              'hide msg-container red lighten-2'
+            }
+          >
             <p className="white-text center">
               {this.props.user.statusMessage}
             </p>
           </div>
           <Row>
-            <Input s={6} label="First Name" onChange={this.updateFirstName}>
-              <Icon>face</Icon>
-            </Input>
-            <Input s={6} label="Last Name" onChange={this.updateLastName}>
+            <Input
+              id="update-first-name"
+              s={6}
+              label="First name"
+              onChange={this.updateFirstName}
+            >
               <Icon>face</Icon>
             </Input>
             <Input
+              id="update-last-name"
+              s={6}
+              label="Last name"
+              onChange={this.updateLastName}
+            >
+              <Icon>face</Icon>
+            </Input>
+            <Input
+              id="update-username"
               s={12}
               label="Email"
               type="email"
@@ -134,6 +151,7 @@ class SignUpForm extends React.Component {
               </p>
             </div>
             <Input
+              id="update-password"
               s={12}
               label="Password"
               type="password"
@@ -142,6 +160,7 @@ class SignUpForm extends React.Component {
               <Icon>lock</Icon>
             </Input>
             <Button
+              id="sign-up-btn"
               className={this.props.user.isLoggingIn ? 'disabled' : ''}
               waves="light"
               onClick={this.attemptSignUp}
