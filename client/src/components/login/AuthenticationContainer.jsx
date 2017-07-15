@@ -13,7 +13,7 @@ import SignUpForm from './SignUpForm';
  * @return {Component|null} - Returns the React Component to be rendered or
  * null if nothing is to be rendered.
  */
-function AuthenticationContainer(props) {
+export function AuthenticationContainer(props) {
   if (props.user.isLoggedIn) {
     $('#loginModal').modal('close');
     $('#signUpModal').modal('close');
@@ -21,11 +21,14 @@ function AuthenticationContainer(props) {
   }
 
   return (
-    <div className="auth-page valign-wrapper full-height">
+    <div
+      id="authentication-container"
+      className="authentication-container valign-wrapper full-height"
+    >
       <div className="container">
         <div className="container section three-quarters-height">
           <div className="section z-depth-4 white">
-            <h3 className="center-align">Welcome to Docs Cabinet!</h3>
+            <h3 className="welcome-msg center-align">Welcome to Docs Cabinet!</h3>
             <div
               className="full-width center-align wraps-content"
             >
