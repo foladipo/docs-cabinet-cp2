@@ -145,7 +145,7 @@ module.exports = {
       .click('#dashboard-menu-btn')
       .waitForElementVisible('#dashboard-menu', 2000)
       .click('#update-profile-btn')
-      .waitForElementVisible('#update-user-page', 3000)
+      .waitForElementPresent('#update-user-page', 3000)
       .click('#delete-user-form-btn')
       .waitForElementVisible('#delete-user-form', 3000)
       .assert
