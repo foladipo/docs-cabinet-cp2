@@ -1,6 +1,6 @@
 import JSDom from 'jsdom';
-const jsdom = JSDom.jsdom;
 
+const jsdom = JSDom.jsdom;
 const exposedProperties = ['document', 'window', 'navigator'];
 
 global.document = jsdom('');
@@ -20,4 +20,15 @@ global.window.localStorage = {
   clear: () => {},
   getItem: () => {},
   setItem: () => {}
+};
+
+global.$ = () => ({
+  material_select: () => {},
+  modal: () => {},
+  on: () => {},
+  sideNav: () => {}
+});
+
+global.Materialize = {
+  toast: () => {}
 };

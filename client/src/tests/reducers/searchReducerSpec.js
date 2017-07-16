@@ -1,4 +1,5 @@
 import chai from 'chai';
+import _ from 'lodash';
 import searchReducer from '../../reducers/searchReducer';
 import * as ActionTypes from '../../constants';
 
@@ -80,6 +81,46 @@ describe('searchReducer', () => {
     const newState = searchReducer(state, action);
     expect(newState.status).to.equal('searchDocumentsFailed');
     expect(newState.statusMessage).to.equal('Search failed. Please try again.');
+  });
+
+  it('should NOT update the store for unknown action types', () => {
+    const state = getDefaultState();
+    const action = {
+      type: 'UNKNOWN_ACTION_TYPE'
+    };
+    const newState = searchReducer(state, action);
+    expect(_.isEqual(state, newState)).to.equal(true);
+  });
+
+  it('should reset its (part of the) store when a user logs out', () => {
+    const state = getDefaultState();
+    const action = {
+      type: ActionTypes.LOGOUT_PENDING
+    };
+    const newState = searchReducer(state, action);
+    expect(_.isEqual(newState.documents, state.documents)).to.equal(true);
+    expect(_.isEqual(newState.users, state.users)).to.equal(true);
+  });
+
+  it('should reset its store when an ExpiredTokenError occurs', () => {
+    const state = getDefaultState();
+    const action = {
+      type: ActionTypes.SEARCH_DOCUMENTS_REJECTED,
+      payload: { error: 'ExpiredTokenError' }
+    };
+    const newState = searchReducer(state, action);
+    expect(_.isEqual(newState.documents, state.documents)).to.equal(true);
+  });
+
+  it('should reset its store when an InvalidTokenError occurs', () => {
+    const state = getDefaultState();
+    const action = {
+      type: ActionTypes.SEARCH_DOCUMENTS_REJECTED,
+      payload: { error: 'InvalidTokenError' }
+    };
+    const newState = searchReducer(state, action);
+    expect(newState.status).to.equal('invalidToken');
+    expect(_.isEqual(newState.documents, state.documents)).to.equal(true);
   });
 
   it('should update the store when a search for documents succeeds', () => {

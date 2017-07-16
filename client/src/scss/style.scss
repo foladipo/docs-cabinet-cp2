@@ -5,7 +5,7 @@ body {
   overflow: hidden;
 }
 
-.auth-page {
+.authentication-container {
   background-image: url(/img/books-on-a-wooden-shelf-medium.png);
   background-position: top left;
   background-repeat: no-repeat;
@@ -34,6 +34,10 @@ body {
   height: 100%;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .three-quarters-height {
   height: 75%;
 }
@@ -42,7 +46,7 @@ body {
   cursor: not-allowed;
 }
 
-.authenticated-user-area {
+#authenticated-user-area {
   width: 100%;
   height: 110%;
   margin: -1% auto 0;
@@ -66,12 +70,12 @@ body {
   padding-bottom: 10em;
 }
 
-.users-page {
+.all-users-page {
   padding: 0.5em 2em 10em;
   margin-bottom: 2em;
 }
 
-.update-user-page {
+#update-user-page {
   padding-bottom: 8em;
 }
 
@@ -84,7 +88,7 @@ body {
   }
 }
 
-.dashboard-menu-btn {
+#dashboard-menu-btn {
   margin: 1em;
 }
 

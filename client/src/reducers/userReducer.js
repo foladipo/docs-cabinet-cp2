@@ -207,7 +207,8 @@ export default function userReducer(state, action) {
 
   if (action.payload !== undefined) {
     if (action.payload.error === 'ExpiredTokenError' ||
-      action.payload.error === 'InvalidTokenError') {
+      action.payload.error === 'InvalidTokenError' ||
+      action.payload.error === 'NonExistentUserError') {
       if (action.payload.error === 'ExpiredTokenError') {
         newState.status = 'expiredToken';
       }

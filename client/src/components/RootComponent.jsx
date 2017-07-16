@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AuthenticatedRoute from './AuthenticatedRoute';
-import MainContainer from './MainContainer';
-import AuthenticationContainer from './AuthenticationContainer';
+import MainContainer from './dashboardPages/MainContainer';
+import AuthenticationContainer from './login/AuthenticationContainer';
 import NotFound from './NotFound';
 
 /**
