@@ -16,14 +16,14 @@
     "deploy": "NODE_ENV=production npm run db:ops && npm run build && NODE_ENV=production SEQUELIZE_LOGGING=false npm start",
     "start": "SEQUELIZE_LOGGING=false ./node_modules/.bin/babel-node server.js",
     "start:watch": "./node_modules/.bin/nodemon server.js --exec babel-node --presets es2015,react,node6",
-    "test": "npm run test:server",
+    "test": "npm run test:server && npm run test:client",
     "test:client": "./node_modules/.bin/mocha --require babel-register ./client/src/tests/setup.js ./client/src/tests/**/*",
     "test:e2e": "./node_modules/.bin/nightwatch",
-    "test:nyc": "SEQUELIZE_LOGGING=false ./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --timeout 5000 --require babel-register ./server/tests/*/*[sS]pec.js ./client/src/tests/setup.js ./client/src/tests/*/*[sS]pec.js ./client/src/tests/*/*/*[sS]pec.js",
-    "test:nyc:client": "SEQUELIZE_LOGGING=false ./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --require babel-register ./client/src/tests/setup.js ./client/src/tests/**/*",
+    "test:nyc": "SEQUELIZE_LOGGING=false ./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --timeout 5000 --require babel-register ./server/tests/*/*[sS]pec.js ./client/src/tests/setup.js ./client/src/tests/**/*",
+    "test:nyc:client": "./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --require babel-register ./client/src/tests/setup.js ./client/src/tests/**/*",
     "test:nyc:server": "SEQUELIZE_LOGGING=false ./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --timeout 5000 --require babel-register ./server/tests/*/*[sS]pec.js",
     "test:server": "SEQUELIZE_LOGGING=false ./node_modules/.bin/mocha --timeout 5000 --require babel-register ./server/tests/*/*[sS]pec.js",
-    "test:travis": "NODE_ENV=test npm run test:server"
+    "test:travis": "NODE_ENV=test npm test"
   },
   "repository": {
     "type": "git",
