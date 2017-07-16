@@ -1,7 +1,3 @@
-/* eslint func-names: "off"*/
-/* eslint no-unused-vars: "off"*/
-// const config = require('../../../nightwatch.conf.js');
-
 const faker = require('faker');
 
 const user = {
@@ -34,7 +30,10 @@ module.exports = {
       .click('#sign-up-btn')
       .waitForElementVisible('#sign-up-form .error-msg', 1000)
       .assert
-        .containsText('#sign-up-form .error-msg', 'Please enter a first name with at least two non-whitespace characters.');
+        .containsText(
+          '#sign-up-form .error-msg',
+          'Please enter a first name with at least two non-whitespace characters.'
+        );
   },
   'Creating an account': (browser) => {
     browser
@@ -54,7 +53,9 @@ module.exports = {
       .url('http://localhost:5000/dashboard')
       .waitForElementPresent('#authenticated-user-area', 3000)
       .assert
-        .elementPresent('#authenticated-user-area');
+        .elementPresent('#authenticated-user-area')
+      .assert
+        .elementNotPresent('#view-all-users-btn');
   },
   'Logging out': (browser) => {
     browser
@@ -82,7 +83,10 @@ module.exports = {
       .click('#login-btn')
       .waitForElementVisible('#login-form .error-msg', 1000)
       .assert
-        .containsText('#login-form .error-msg', 'Please enter your email and password to login.');
+        .containsText(
+          '#login-form .error-msg',
+          'Please enter your email and password to login.'
+        );
   },
   'Logging in with non-existent account': (browser) => {
     browser
@@ -96,7 +100,10 @@ module.exports = {
       .click('#login-btn')
       .waitForElementVisible('#login-form .error-msg', 1000)
       .assert
-        .containsText('#login-form .error-msg', 'Yikes! You don\'t have an account yet. Please sign up, or check your login details.');
+        .containsText(
+          '#login-form .error-msg',
+          'Yikes! You don\'t have an account yet. Please sign up, or check your login details.'
+        );
   },
   'Logging in': (browser) => {
     browser
