@@ -168,7 +168,7 @@ class CreateDocument extends Component {
     }
     const content = this.state.content;
     if (!this.hasValidContent(content)) {
-      this.setState({ errorMessage: 'Supply a document content that has two or more characters that are not whitespace.' });
+      this.setState({ errorMessage: 'Supply document content that has two or more characters that are not whitespace.' });
       return;
     }
     const categories = this.state.categories;
@@ -220,6 +220,7 @@ class CreateDocument extends Component {
           <div className="row">
             <Icon s={1} left>visibility</Icon>
             <Input
+              id="update-access"
               s={12}
               m={6}
               type="select"
@@ -234,6 +235,7 @@ class CreateDocument extends Component {
             </Input>
           </div>
           <Input
+            id="update-title"
             s={12}
             className="create-doc-text-input"
             label="Title"
@@ -243,6 +245,7 @@ class CreateDocument extends Component {
             <Icon>title</Icon>
           </Input>
           <Input
+            id="update-categories"
             s={12}
             className="create-doc-text-input"
             label="Categories"
@@ -252,6 +255,7 @@ class CreateDocument extends Component {
             <Icon>bookmark_border</Icon>
           </Input>
           <Input
+            id="update-tags"
             s={12}
             className="create-doc-text-input"
             label="Tags"
@@ -266,6 +270,7 @@ class CreateDocument extends Component {
           <br />
           <div className="col s12">
             <textarea
+              id="update-content"
               rows="10"
               className="materialize-textarea create-doc-text-input"
               onChange={this.updateContent}
@@ -274,12 +279,13 @@ class CreateDocument extends Component {
           </div>
           <div className="quarter-vertical-margin" />
           <Button
+            id="create-document-btn"
             onClick={this.attemptDocumentCreation}
             modal="confirm"
             className={
               isValidDocument ?
-              'create-document-btn quarter-vertical-margin' :
-              'create-document-btn quarter-vertical-margin disabled'
+              'quarter-vertical-margin' :
+              'disabled quarter-vertical-margin'
             }
           >
             {this.props.modeMessage}
