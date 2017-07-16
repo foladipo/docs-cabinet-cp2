@@ -1,4 +1,5 @@
 import chai from 'chai';
+import lodash from 'lodash';
 import * as ActionTypes from '../../constants';
 import documentsReducer from '../../reducers/documentsReducer';
 
@@ -254,5 +255,52 @@ describe('documentsReducer', () => {
     expect(newState.userDocuments.documents.length).to.equal(0);
     expect(newState.allDocumentsCount).to.equal(0);
     expect(newState.allDocuments.documents.length).to.equal(0);
+  });
+
+  it('should NOT update the store for unknown action types', () => {
+    const state = getDefaultState();
+    const action = {
+      type: 'UNKNOWN_ACTION_TYPE'
+    };
+    const newState = documentsReducer(state, action);
+    expect(lodash.isEqual(state, newState)).to.equal(true);
+  });
+
+  it('should reset its (part of the) store when a user logs out', () => {
+    const state = getDefaultState();
+    const action = {
+      type: ActionTypes.LOGOUT_PENDING
+    };
+    const newState = documentsReducer(state, action);
+    expect(lodash.isEqual(newState.userDocuments, state.userDocuments))
+      .to.equal(true);
+    expect(lodash.isEqual(newState.allDocuments, state.allDocuments))
+      .to.equal(true);
+  });
+
+  it('should reset its store when an ExpiredTokenError occurs', () => {
+    const state = getDefaultState();
+    const action = {
+      type: ActionTypes.SEARCH_DOCUMENTS_REJECTED,
+      payload: { error: 'ExpiredTokenError' }
+    };
+    const newState = documentsReducer(state, action);
+    expect(lodash.isEqual(newState.userDocuments, state.userDocuments))
+      .to.equal(true);
+    expect(lodash.isEqual(newState.allDocuments, state.allDocuments))
+      .to.equal(true);
+  });
+
+  it('should reset its store when an InvalidTokenError occurs', () => {
+    const state = getDefaultState();
+    const action = {
+      type: ActionTypes.SEARCH_DOCUMENTS_REJECTED,
+      payload: { error: 'InvalidTokenError' }
+    };
+    const newState = documentsReducer(state, action);
+    expect(lodash.isEqual(newState.userDocuments, state.userDocuments))
+      .to.equal(true);
+    expect(lodash.isEqual(newState.allDocuments, state.allDocuments))
+      .to.equal(true);
   });
 });
