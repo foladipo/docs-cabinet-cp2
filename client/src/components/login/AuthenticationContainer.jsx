@@ -15,8 +15,8 @@ import SignUpForm from './SignUpForm';
  */
 export function AuthenticationContainer(props) {
   if (props.user.isLoggedIn) {
-    $('#loginModal').modal('close');
-    $('#signUpModal').modal('close');
+    $('#login-modal').modal('close');
+    $('#sign-up-modal').modal('close');
     return <Redirect to="/dashboard" />;
   }
 
@@ -28,15 +28,18 @@ export function AuthenticationContainer(props) {
       <div className="container">
         <div className="container section three-quarters-height">
           <div className="section z-depth-4 white">
-            <h3 className="welcome-msg center-align">Welcome to Docs Cabinet!</h3>
+            <h3 className="welcome-msg center-align">
+              Welcome to Docs Cabinet!
+            </h3>
             <div
               className="full-width center-align wraps-content"
             >
               <Modal
-                id="signUpModal"
+                id="sign-up-modal"
                 header="Sign up"
                 trigger={
                   <Button
+                    id="sign-up-form-btn"
                     waves="light"
                     className="quarter-side-margin teal lighten-1"
                   >
@@ -47,11 +50,11 @@ export function AuthenticationContainer(props) {
                 <SignUpForm {...props} />
               </Modal>
               <Modal
-                id="loginModal"
+                id="login-modal"
                 header="Login"
                 trigger={
                   <Button
-                    id="login-btn"
+                    id="login-form-btn"
                     waves="light"
                     className="quarter-side-margin teal lighten-5 black-text"
                   >Login

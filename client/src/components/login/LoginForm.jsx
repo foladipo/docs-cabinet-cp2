@@ -111,7 +111,7 @@ class LoginForm extends React.Component {
               </Input>
               <Button
                 id="login-btn"
-                className={this.props.user.isLoggingIn ? 'disabled' : 'login-btn'}
+                className={this.props.user.isLoggingIn ? 'disabled' : ''}
                 waves="light"
                 onClick={this.attemptLogin}
               >

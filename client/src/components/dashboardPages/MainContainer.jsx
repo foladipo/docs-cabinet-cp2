@@ -65,12 +65,8 @@ export class MainContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (this.props.user.status === 'deletedUser'
-      && this.props.user.user.id === this.props.user.deletedUserId) {
-      window.localStorage.clear();
-      $('#deleteAccountModal').modal('close');
-      Materialize.toast(this.props.user.statusMessage, 5000);
-      return <Redirect to="/" />;
+    if (this.props.user.status === 'deletedUser') {
+      $('#delete-user-modal').modal('close');
     }
 
     if (!this.props.user.isLoggedIn) {
@@ -79,7 +75,7 @@ export class MainContainer extends React.Component {
     }
 
     if (this.props.documents.status === 'documentCreated') {
-      $('#createDocumentModal').modal('close');
+      $('#create-document-modal').modal('close');
     }
 
     const trigger = (<Button id="dashboard-menu-btn">
@@ -88,8 +84,9 @@ export class MainContainer extends React.Component {
     </Button>);
 
     return (
-      <div id="#authenticated-user-area" className="grey lighten-3">
+      <div id="authenticated-user-area" className="grey lighten-3">
         <SideNav
+          id="dashboard-menu"
           trigger={trigger}
           options={{
             menuWidth: 300,
@@ -99,6 +96,7 @@ export class MainContainer extends React.Component {
           }}
         >
           <SideNavItem
+            id="user-view"
             userView
             className="text-black"
             user={{
@@ -111,7 +109,7 @@ export class MainContainer extends React.Component {
           <SideNavItem className="row">
             <Modal
               header="Create Document"
-              id="createDocumentModal"
+              id="create-document-modal"
               trigger={
                 <Button className="col s12">Compose</Button>
               }
@@ -166,7 +164,7 @@ export class MainContainer extends React.Component {
               My documents
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li key={uuid.v4()} id="update-profile-btn">
             <NavLink
               exact
               to={`/dashboard/profile/${this.props.user.user.id}`}

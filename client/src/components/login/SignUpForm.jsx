@@ -113,7 +113,7 @@ class SignUpForm extends React.Component {
               'hide msg-container red lighten-2'
             }
           >
-            <p className="white-text center">
+            <p className="error-msg white-text center">
               {this.props.user.statusMessage}
             </p>
           </div>

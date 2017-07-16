@@ -324,7 +324,6 @@ class UpdateUserPage extends Component {
       ) {
         return (
           <div>
-            {/* TODO: Move this to a separate Component. */}
             <h3 className="red-text">Danger zone</h3>
             <div className="divider" />
             <div className="delete-user-section red-border all-corners-rounded">
@@ -335,10 +334,14 @@ class UpdateUserPage extends Component {
                 belong to it will be gone forever.
               </p>
               <Modal
-                id="delete-account-modal"
+                id="delete-user-modal"
                 header="Delete account"
                 trigger={
-                  <Button className="red white-text hoverable" waves="light">
+                  <Button
+                    id="delete-user-form-btn"
+                    className="red white-text hoverable"
+                    waves="light"
+                  >
                     Delete account
                     <Icon left>delete</Icon>
                   </Button>
@@ -395,7 +398,7 @@ class UpdateUserPage extends Component {
             <h5
               className={
                 this.props.user.status === 'updateUserFailed' ?
-                  'red lighten-2' : 'hide'
+                  'error-msg red lighten-2' : 'hide'
               }
             >
               {this.props.user.statusMessage}
@@ -409,7 +412,7 @@ class UpdateUserPage extends Component {
             <h5
               className={
                 this.props.user.status === 'updatedUser' ?
-                  'teal lighten-3' : 'hide'
+                  'success-msg teal lighten-2' : 'hide'
               }
             >
               {this.props.user.statusMessage}

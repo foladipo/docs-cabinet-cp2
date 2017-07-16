@@ -74,7 +74,7 @@ class DeleteUser extends Component {
    */
   render() {
     return (
-      <div className="delete-user-page">
+      <div id="delete-user-form">
         <h5
           className={this.props.user.status === 'userDeletionFailed' ? 'red lighten-2 white-text center-align' : 'hide'}
         >
@@ -96,7 +96,7 @@ class DeleteUser extends Component {
         <div>
           <form>
             <Input
-              className="confirm-deletion-input"
+              id="confirm-deletion-input"
               type="text"
               label="Username"
               onChange={this.updateTargetUsername}
@@ -104,7 +104,8 @@ class DeleteUser extends Component {
               <Icon>delete</Icon>
             </Input>
             <Button
-              className={this.hasConfirmedDeletion() ? 'delete-user-btn red white-text' : 'delete-user-btn disabled'}
+              id="delete-user-btn"
+              className={this.hasConfirmedDeletion() ? 'red white-text' : 'disabled'}
               onClick={this.attemptToDeleteUser}
             >
               Delete
