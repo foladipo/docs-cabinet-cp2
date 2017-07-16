@@ -323,7 +323,7 @@ class UpdateUserPage extends Component {
         )
       ) {
         return (
-          <div>
+          <div id="delete-account-section">
             <h3 className="red-text">Danger zone</h3>
             <div className="divider" />
             <div className="delete-user-section red-border all-corners-rounded">

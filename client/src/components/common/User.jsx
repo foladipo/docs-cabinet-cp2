@@ -45,7 +45,7 @@ function User(props) {
                   <Link to={`/dashboard/updateUser/${props.id}`}>
                     <Button
                       floating
-                      className="teal lighten-2 quarter-side-margin"
+                      className="edit-user-btn teal lighten-2 quarter-side-margin"
                       waves="light"
                       icon="mode_edit"
                     />

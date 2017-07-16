@@ -37,7 +37,7 @@ export class MainContainer extends React.Component {
   getAdminSection() {
     if (this.props.user.user.roleId > 0) {
       return [
-        (<li key={uuid.v4()}>
+        (<li id="view-all-users-btn" key={uuid.v4()}>
           <NavLink
             exact
             to="/dashboard/users"
