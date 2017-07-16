@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
-import DeleteUserPage from '../common/DeleteUser';
+import DeleteUser from '../common/DeleteUser';
 import isValidName from '../../../../server/util/isValidName';
 import isValidEmail from '../../../../server/util/isValidEmail';
 import isValidPassword from '../../../../server/util/isValidPassword';
@@ -64,6 +64,11 @@ class UpdateUserPage extends Component {
     const oldTargetUserId = Number.parseInt(this.props.location.pathname.split('/')[3], 10);
     const newTargetUserId = Number.parseInt(nextProps.location.pathname.split('/')[3], 10);
     if (oldTargetUserId !== newTargetUserId) {
+      this.determineTargetUser();
+      return;
+    }
+
+    if (nextProps.user.status === 'updatedUser') {
       this.determineTargetUser();
       return;
     }
@@ -330,7 +335,7 @@ class UpdateUserPage extends Component {
                 belong to it will be gone forever.
               </p>
               <Modal
-                id="deleteAccountModal"
+                id="delete-account-modal"
                 header="Delete account"
                 trigger={
                   <Button className="red white-text hoverable" waves="light">
@@ -339,7 +344,7 @@ class UpdateUserPage extends Component {
                   </Button>
                 }
               >
-                <DeleteUserPage
+                <DeleteUser
                   targetUser={this.state.targetUser}
                   {...this.props}
                 />
