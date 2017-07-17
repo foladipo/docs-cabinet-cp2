@@ -319,22 +319,41 @@ class UpdateDocumentPage extends Component {
     }
 
     return (
-      <div className="update-document-page row">
-        <div
-          className={
-            this.props.documents.status === 'getDocumentFailed' ?
-            'msg-container red lighten-2' :
-            'msg-container hide'
-          }
-        >
-          <h5 className="white-text center">
+      <div id="update-document-page" className="row scrollable-page">
+        <div className="msg-container">
+          <h5
+            className={
+              this.props.documents.status === 'documentUpdated' ?
+              'success-msg teal lighten-2 white-text center' :
+              'hide success-msg'
+            }
+          >
             {this.props.documents.statusMessage}
           </h5>
-          <h5 className="white-text center">
+          <h5
+            className={
+              this.props.documents.status === 'getDocumentFailed' ||
+              this.props.documents.status === 'updateDocumentFailed' ?
+              'error-msg red white-text center' :
+              'hide error-msg'
+            }
+          >
+            {this.props.documents.statusMessage}
+          </h5>
+          <h5
+            className={
+              !(this.isValidDocument() && this.isUpdate()) ?
+              'error-msg red white-text center' :
+              'hide error-msg'
+            }
+          >
             {this.state.errorMessage}
           </h5>
         </div>
-        <form id="update-document-form" className={this.state.hasValidTargetDocumentId ? '' : 'hide'}>
+        <form
+          id="update-document-form"
+          className={this.state.hasValidTargetDocumentId ? 'container' : 'hide'}
+        >
           <h6 className="red-text text-lighten-2">
             **All fields are required.
           </h6>
@@ -344,11 +363,10 @@ class UpdateDocumentPage extends Component {
             </label>
             <Icon s={1} left>visibility</Icon>
             <Input
+              id="update-access"
               s={12}
               m={6}
               type="select"
-              id="update-access"
-              className="update-doc-select-access"
               onChange={this.updateAccess}
             >
               <option value="public">Public</option>
@@ -359,9 +377,8 @@ class UpdateDocumentPage extends Component {
           <div>
             <label htmlFor="update-title">Title</label>
             <Input
-              s={12}
               id="update-title"
-              className="update-doc-text-input"
+              s={12}
               type="text"
               placeholder={
                 this.state.targetDocument ?
@@ -375,9 +392,8 @@ class UpdateDocumentPage extends Component {
           <div>
             <label htmlFor="update-categories">Categories</label>
             <Input
-              s={12}
               id="update-categories"
-              className="update-doc-text-input"
+              s={12}
               type="text"
               placeholder={
                 this.state.targetDocument ?
@@ -391,9 +407,8 @@ class UpdateDocumentPage extends Component {
           <div>
             <label htmlFor="update-tags">Tags</label>
             <Input
-              s={12}
               id="update-tags"
-              className="update-doc-text-input"
+              s={12}
               type="text"
               placeholder={
                 this.state.targetDocument ?
@@ -410,8 +425,8 @@ class UpdateDocumentPage extends Component {
             <Icon left>mode_edit</Icon>
             <div className="col s12">
               <textarea
-                rows="10"
                 id="update-content"
+                rows="10"
                 className="materialize-textarea update-doc-text-input"
                 placeholder={
                   this.state.targetDocument ?
@@ -424,13 +439,12 @@ class UpdateDocumentPage extends Component {
           </div>
           <div className="quarter-vertical-margin" />
           <Button
-            id="update-document-button"
+            id="update-document-btn"
             onClick={this.attemptDocumentUpdate}
-            modal="confirm"
             className={
               this.isValidDocument() && this.isUpdate() ?
               'quarter-vertical-margin' :
-              'quarter-vertical-margin disabled'
+              'disabled quarter-vertical-margin'
             }
           >
             Update

@@ -205,7 +205,7 @@ describe('documentsReducer', () => {
       payload: {}
     };
     const newState = documentsReducer(state, action);
-    expect(newState.status).to.equal('documentUpdateFailed');
+    expect(newState.status).to.equal('updateDocumentFailed');
     expect(newState.statusMessage)
       .to.equal('Failed to update document. Please try again.');
   });

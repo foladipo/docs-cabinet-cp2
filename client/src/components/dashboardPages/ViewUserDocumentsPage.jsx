@@ -100,19 +100,21 @@ class ViewUserDocumentsPage extends Component {
         />
     ));
 
-    // TODO: Maybe add a 'retry' button for when a documents fetch fails?
+    // TODO: Maybe add a 'retry' button for when fetching documents fails?
     return (
       <div
         id="user-documents-page"
-        className="scrollable-page user-documents-page"
+        className="scrollable-page"
       >
         <div
           className={
-            this.props.documents.userDocuments.length < 1 &&
-            this.props.documents.status !== 'fetchingUserDocuments' ? '' : 'hide'
+            this.props.documents.userDocuments.documents.length < 1 &&
+            this.props.documents.status !== 'fetchingUserDocuments' ?
+            'msg-container' :
+            'hide'
           }
         >
-          <h5 className="teal lighten-2 white-text center">
+          <h5 className="info-msg teal lighten-2 white-text center">
             You don&rsquo;t have any documents. Please create some.
           </h5>
         </div>

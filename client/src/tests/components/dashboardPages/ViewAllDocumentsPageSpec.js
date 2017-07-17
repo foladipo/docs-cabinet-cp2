@@ -45,8 +45,8 @@ const props = {
 const wrapper = mount(<ViewAllDocumentsPage {...props} />);
 
 describe('ViewAllDocumentsPage', () => {
-  it('should have an HTML class of all-documents-page', () => {
-    expect(wrapper).to.have.className('all-documents-page');
+  it('should have an HTML id of all-documents-page', () => {
+    expect(wrapper).to.have.id('all-documents-page');
   });
 
   it('should show a list of all documents', () => {

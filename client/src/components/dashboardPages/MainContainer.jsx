@@ -111,7 +111,9 @@ export class MainContainer extends React.Component {
               header="Create Document"
               id="create-document-modal"
               trigger={
-                <Button className="col s12">Compose</Button>
+                <Button id="compose-document-btn" className="col s12">
+                  Compose
+                </Button>
               }
             >
               <CreateDocument
@@ -154,7 +156,7 @@ export class MainContainer extends React.Component {
               Search for documents
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="my-documents-btn" key={uuid.v4()}>
             <NavLink
               exact
               to="/dashboard/myDocuments"
@@ -164,7 +166,7 @@ export class MainContainer extends React.Component {
               My documents
             </NavLink>
           </li>
-          <li key={uuid.v4()} id="update-profile-btn">
+          <li id="update-profile-btn" key={uuid.v4()}>
             <NavLink
               exact
               to={`/dashboard/profile/${this.props.user.user.id}`}

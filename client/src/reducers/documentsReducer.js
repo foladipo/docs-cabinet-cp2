@@ -150,7 +150,7 @@ export default function documentsReducer(state, action) {
       break;
 
     case UPDATE_DOCUMENT_REJECTED:
-      newState.status = 'documentUpdateFailed';
+      newState.status = 'updateDocumentFailed';
       newState.statusMessage = action.payload.message ||
         'Failed to update document. Please try again.';
       newState.targetDocumentId = -1;
@@ -185,8 +185,8 @@ export default function documentsReducer(state, action) {
 
     case GET_DOCUMENT_FULFILLED:
       newState.status = 'gotDocument';
-      newState.statusMessage = 'Successfully retrieved document.';
-      newState.userToUpdate = action.payload.users[0];
+      newState.statusMessage = action.payload.message;
+      newState.documentToUpdate = action.payload.documents[0];
       break;
 
     default:
