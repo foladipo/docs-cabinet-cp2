@@ -55,7 +55,7 @@ describe('ViewAllUsersPage', () => {
           firstName: 'Charlotte',
           lastName: 'Bassey',
           username: 'charlotte@example.com',
-          roleid: 0
+          roleId: 0
         }
       ],
       page: 1,
