@@ -152,8 +152,12 @@ export default function userReducer(state, action) {
 
         return user;
       });
-      if (action.payload.users[0] === state.user.id) {
+      if (action.payload.users[0].id === state.user.id) {
         newState.user = action.payload.users[0];
+        window.localStorage.setItem(
+          'user',
+          JSON.stringify(action.payload.users[0])
+        );
       }
       break;
 

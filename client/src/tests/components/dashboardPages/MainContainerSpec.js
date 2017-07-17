@@ -2,12 +2,11 @@ import React from 'react';
 import chai from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { mount } from 'enzyme';
-import { SideNav, SideNavItem } from 'react-materialize';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { SideNav } from 'react-materialize';
+import { Redirect } from 'react-router-dom';
 import MockRouter from 'react-mock-router';
 import sinon from 'sinon';
 import { MainContainer } from '../../../components/dashboardPages/MainContainer';
-import ViewAllDocumentsPage from '../../../components/dashboardPages/ViewAllDocumentsPage';
 
 chai.use(chaiEnzyme());
 const expect = chai.expect;
@@ -67,7 +66,7 @@ const wrapper = mount(
 
 describe('MainContainer', () => {
   it('should have an HTML id of authenticated-user-area', () => {
-    expect(wrapper).to.have.id('#authenticated-user-area');
+    expect(wrapper).to.have.id('authenticated-user-area');
   });
 
   it('should have a menu', () => {

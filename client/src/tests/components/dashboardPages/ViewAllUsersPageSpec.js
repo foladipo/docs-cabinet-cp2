@@ -38,8 +38,8 @@ const props = {
 const wrapper = mount(<MockRouter><ViewAllUsersPage {...props} /></MockRouter>);
 
 describe('ViewAllUsersPage', () => {
-  it('should have an HTML class of all-users-page', () => {
-    expect(wrapper.find('.all-users-page')).to.have.length(1);
+  it('should have an HTML id of all-users-page', () => {
+    expect(wrapper.find('#all-users-page')).to.have.length(1);
   });
 
   it('should auto-fetch a list of users', () => {
@@ -55,7 +55,7 @@ describe('ViewAllUsersPage', () => {
           firstName: 'Charlotte',
           lastName: 'Bassey',
           username: 'charlotte@example.com',
-          roleid: 0
+          roleId: 0
         }
       ],
       page: 1,

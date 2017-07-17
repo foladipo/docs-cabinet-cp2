@@ -45,12 +45,13 @@ const wrapper = mount(<UpdateDocumentPage {...props} />);
 wrapper.setState({ targetDocument: oldDocument });
 
 describe('UpdateDocumentPage', () => {
-  it('should have an HTML class of update-document-page', () => {
-    expect(wrapper).to.have.className('update-document-page');
+  it('should have an HTML id of update-document-page', () => {
+    expect(wrapper).to.have.id('update-document-page');
   });
 
   it('should show status/error messages to any user', () => {
-    expect(wrapper.find('.msg-container.hide')).to.have.length(1);
+    expect(wrapper.find('.msg-container .success-msg')).to.have.length(1);
+    expect(wrapper.find('.msg-container .error-msg')).to.have.length(2);
   });
 
   it('should have a form for updating a document', () => {
@@ -64,7 +65,7 @@ describe('UpdateDocumentPage', () => {
     const attemptDocumentUpdateSpy =
       sinon.spy(newWrapper.instance(), 'attemptDocumentUpdate');
     newWrapper.update();
-    const updateDocumentBtn = newWrapper.find('#update-document-button');
+    const updateDocumentBtn = newWrapper.find('#update-document-btn');
     updateDocumentBtn.simulate('click');
 
     expect(attemptDocumentUpdateSpy.calledOnce).to.equal(true);
@@ -156,7 +157,7 @@ describe('UpdateDocumentPage', () => {
     const attemptDocumentUpdateSpy =
       sinon.spy(wrapper.instance(), 'attemptDocumentUpdate');
     wrapper.update();
-    const updateDocumentBtn = wrapper.find('#update-document-button');
+    const updateDocumentBtn = wrapper.find('#update-document-btn');
     updateDocumentBtn.simulate('click');
 
     expect(attemptDocumentUpdateSpy.calledOnce).to.equal(true);

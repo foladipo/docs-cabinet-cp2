@@ -5,6 +5,6 @@
  * Otherwise, it returns false.
  */
 export default function isValidEmail(email) {
-  const emailFormat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$/;
+  const emailFormat = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$/;
   return emailFormat.test(email);
 }

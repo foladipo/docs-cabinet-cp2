@@ -32,14 +32,17 @@ function ConfirmDocumentDeletion(props) {
       <Row>
         <Col s={6}>
           <Button
-            className="red right"
+            className="confirm-deletion-btn red right"
             onClick={deleteMe}
           >
             Yes, delete it!
           </Button>
         </Col>
         <Col s={6}>
-          <Button className="teal lighten-1" onClick={closeMe}>
+          <Button
+            className="cancel-deletion-btn teal lighten-1"
+            onClick={closeMe}
+          >
             No. Leave it alone.
           </Button>
         </Col>

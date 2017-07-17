@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
-import DeleteUserPage from '../common/DeleteUser';
+import DeleteUser from '../common/DeleteUser';
 import isValidName from '../../../../server/util/isValidName';
 import isValidEmail from '../../../../server/util/isValidEmail';
 import isValidPassword from '../../../../server/util/isValidPassword';
@@ -64,6 +64,11 @@ class UpdateUserPage extends Component {
     const oldTargetUserId = Number.parseInt(this.props.location.pathname.split('/')[3], 10);
     const newTargetUserId = Number.parseInt(nextProps.location.pathname.split('/')[3], 10);
     if (oldTargetUserId !== newTargetUserId) {
+      this.determineTargetUser();
+      return;
+    }
+
+    if (nextProps.user.status === 'updatedUser') {
       this.determineTargetUser();
       return;
     }
@@ -318,8 +323,7 @@ class UpdateUserPage extends Component {
         )
       ) {
         return (
-          <div>
-            {/* TODO: Move this to a separate Component. */}
+          <div id="delete-account-section">
             <h3 className="red-text">Danger zone</h3>
             <div className="divider" />
             <div className="delete-user-section red-border all-corners-rounded">
@@ -330,16 +334,20 @@ class UpdateUserPage extends Component {
                 belong to it will be gone forever.
               </p>
               <Modal
-                id="deleteAccountModal"
+                id="delete-user-modal"
                 header="Delete account"
                 trigger={
-                  <Button className="red white-text hoverable" waves="light">
+                  <Button
+                    id="delete-user-form-btn"
+                    className="red white-text hoverable"
+                    waves="light"
+                  >
                     Delete account
                     <Icon left>delete</Icon>
                   </Button>
                 }
               >
-                <DeleteUserPage
+                <DeleteUser
                   targetUser={this.state.targetUser}
                   {...this.props}
                 />
@@ -390,7 +398,7 @@ class UpdateUserPage extends Component {
             <h5
               className={
                 this.props.user.status === 'updateUserFailed' ?
-                  'red lighten-2' : 'hide'
+                  'error-msg red lighten-2' : 'hide'
               }
             >
               {this.props.user.statusMessage}
@@ -404,7 +412,7 @@ class UpdateUserPage extends Component {
             <h5
               className={
                 this.props.user.status === 'updatedUser' ?
-                  'teal lighten-3' : 'hide'
+                  'success-msg teal lighten-2' : 'hide'
               }
             >
               {this.props.user.statusMessage}

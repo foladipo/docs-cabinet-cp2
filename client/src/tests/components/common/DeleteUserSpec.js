@@ -39,8 +39,8 @@ const props = {
 const wrapper = mount(<DeleteUser {...props} />);
 
 describe('DeleteUser', () => {
-  it('should have an HTML class of delete-user-page', () => {
-    expect(wrapper).to.have.className('delete-user-page');
+  it('should have an HTML id of delete-user-form', () => {
+    expect(wrapper).to.have.id('delete-user-form');
   });
 
   it('should show a warning before deleting an account', () => {
@@ -54,7 +54,7 @@ describe('DeleteUser', () => {
   it('should confirm the deletion by asking for the target user\'s email', () => {
     const updateTargetUsernameSpy = sinon.spy(wrapper.instance(), 'updateTargetUsername');
     wrapper.update();
-    const confirmUserEmail = wrapper.find('.confirm-deletion-input');
+    const confirmUserEmail = wrapper.find('#confirm-deletion-input');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'doomedUser@example.com' }
@@ -64,17 +64,17 @@ describe('DeleteUser', () => {
   });
 
   it('should have a button for deleting a user', () => {
-    expect(wrapper.find('.delete-user-btn')).to.have.length(1);
+    expect(wrapper.find('#delete-user-btn')).to.have.length(1);
   });
 
   it('should enable the delete button once a user confirms the deletion', () => {
     wrapper.setState({ targetUsername: props.targetUser.username });
-    expect(wrapper.find('.delete-user-btn')).to.not.have.className('disabled');
+    expect(wrapper.find('#delete-user-btn')).to.not.have.className('disabled');
   });
 
   it('should be able to delete a user', () => {
     wrapper.setState({ targetUsername: props.targetUser.username });
-    const confirmBtn = wrapper.find('.delete-user-btn');
+    const confirmBtn = wrapper.find('#delete-user-btn');
     confirmBtn.simulate('click');
     expect(spy.calledOnce).to.equal(true);
   });

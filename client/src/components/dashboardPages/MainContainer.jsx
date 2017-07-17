@@ -37,7 +37,7 @@ export class MainContainer extends React.Component {
   getAdminSection() {
     if (this.props.user.user.roleId > 0) {
       return [
-        (<li key={uuid.v4()}>
+        (<li id="view-all-users-btn" key={uuid.v4()}>
           <NavLink
             exact
             to="/dashboard/users"
@@ -65,12 +65,8 @@ export class MainContainer extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (this.props.user.status === 'deletedUser'
-      && this.props.user.user.id === this.props.user.deletedUserId) {
-      window.localStorage.clear();
-      $('#deleteAccountModal').modal('close');
-      Materialize.toast(this.props.user.statusMessage, 5000);
-      return <Redirect to="/" />;
+    if (this.props.user.status === 'deletedUser') {
+      $('#delete-user-modal').modal('close');
     }
 
     if (!this.props.user.isLoggedIn) {
@@ -79,7 +75,7 @@ export class MainContainer extends React.Component {
     }
 
     if (this.props.documents.status === 'documentCreated') {
-      $('#createDocumentModal').modal('close');
+      $('#create-document-modal').modal('close');
     }
 
     const trigger = (<Button id="dashboard-menu-btn">
@@ -88,8 +84,10 @@ export class MainContainer extends React.Component {
     </Button>);
 
     return (
-      <div id="#authenticated-user-area" className="grey lighten-3">
+      // TODO: Rename this root element to #dashboard-main-container.
+      <div id="authenticated-user-area" className="grey lighten-3">
         <SideNav
+          id="dashboard-menu"
           trigger={trigger}
           options={{
             menuWidth: 300,
@@ -99,6 +97,7 @@ export class MainContainer extends React.Component {
           }}
         >
           <SideNavItem
+            id="user-view"
             userView
             className="text-black"
             user={{
@@ -111,9 +110,11 @@ export class MainContainer extends React.Component {
           <SideNavItem className="row">
             <Modal
               header="Create Document"
-              id="createDocumentModal"
+              id="create-document-modal"
               trigger={
-                <Button className="col s12">Compose</Button>
+                <Button id="compose-document-btn" className="col s12">
+                  Compose
+                </Button>
               }
             >
               <CreateDocument
@@ -136,7 +137,7 @@ export class MainContainer extends React.Component {
               Home
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="search-users-btn" key={uuid.v4()}>
             <NavLink
               exact
               to="/dashboard/searchUsers"
@@ -146,7 +147,7 @@ export class MainContainer extends React.Component {
               Search for users
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="search-documents-btn" key={uuid.v4()}>
             <NavLink
               exact
               to="/dashboard/searchDocuments"
@@ -156,7 +157,7 @@ export class MainContainer extends React.Component {
               Search for documents
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="my-documents-btn" key={uuid.v4()}>
             <NavLink
               exact
               to="/dashboard/myDocuments"
@@ -166,7 +167,7 @@ export class MainContainer extends React.Component {
               My documents
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="update-profile-btn" key={uuid.v4()}>
             <NavLink
               exact
               to={`/dashboard/profile/${this.props.user.user.id}`}

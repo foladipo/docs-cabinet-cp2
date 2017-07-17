@@ -104,7 +104,7 @@ function Document(props) {
                 <Link to={`/dashboard/updateDocument/${props.id}`}>
                   <Button
                     floating
-                    className="teal lighten-2 quarter-side-margin"
+                    className="edit-document-btn teal lighten-2 quarter-side-margin"
                     waves="light"
                     icon="mode_edit"
                   />
@@ -112,12 +112,12 @@ function Document(props) {
               </li>
               <li>
                 <Modal
-                  className="deleteDocumentModal"
+                  className="delete-document-modal"
                   header="Delete document"
                   trigger={
                     <Button
+                      className="delete-document-btn red quarter-side-margin"
                       floating
-                      className="red quarter-side-margin"
                       waves="light"
                       icon="delete_forever"
                     />
@@ -141,10 +141,12 @@ function Document(props) {
 }
 
 Document.propTypes = {
+  access: PropTypes.string.isRequired,
   categories: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   currentUserId: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
+  docImage: PropTypes.string,
   documentsStatus: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   tags: PropTypes.string.isRequired,
@@ -152,6 +154,10 @@ Document.propTypes = {
   title: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired,
   User: PropTypes.objectOf(PropTypes.any).isRequired
+};
+
+Document.defaultProps = {
+  docImage: undefined
 };
 
 export default Document;

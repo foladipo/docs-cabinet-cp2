@@ -65,19 +65,18 @@ body {
   overflow-y: scroll;
 }
 
-.user-documents-page,
-.all-documents-page {
+#all-documents-page,
+#user-documents-page,
+#update-user-page,
+#update-document-page {
   padding-bottom: 10em;
 }
 
-.all-users-page {
+#all-users-page {
   padding: 0.5em 2em 10em;
   margin-bottom: 2em;
 }
 
-#update-user-page {
-  padding-bottom: 8em;
-}
 
 .document-actions {
   margin: 0;

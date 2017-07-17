@@ -86,7 +86,7 @@ class ViewAllUsersPage extends Component {
 
     // TODO: Maybe add a 'retry' button for when a documents fetch fails?
     return (
-      <div id="all-users-page" className="scrollable-page all-users-page">
+      <div id="all-users-page" className="scrollable-page">
         <h3
           className={
             this.props.user.status === 'fetchedAllUsers' &&
