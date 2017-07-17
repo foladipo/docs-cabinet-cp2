@@ -68,6 +68,29 @@ class UpdateDocumentPage extends Component {
           tags: targetDocument.tags
         });
       }
+
+      return;
+    }
+
+    if (nextProps.documents.status === 'documentUpdated') {
+      const targetDocumentId = this.state.targetDocument.id;
+      const targetDocumentInArray =
+        nextProps.documents.userDocuments.documents.filter(doc =>
+          doc.id === targetDocumentId
+        );
+      const targetDocument = targetDocumentInArray[0];
+      if (!(_.isEqual({}, targetDocument))) {
+        this.setState({
+          hasFoundTargetDocument: true,
+          hasValidTargetDocumentId: true,
+          targetDocument,
+          title: targetDocument.title,
+          content: targetDocument.content,
+          access: targetDocument.access,
+          categories: targetDocument.categories,
+          tags: targetDocument.tags
+        });
+      }
     }
   }
 
@@ -121,7 +144,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateTitle(event) {
-    this.setState({ title: event.target.value });
+    const title = event.target.value;
+    if (typeof title !== 'string' || title.length < 2) {
+      this.setState({ title: this.state.targetDocument.title });
+      return;
+    }
+
+    this.setState({ title });
   }
 
   /**
@@ -142,7 +171,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateContent(event) {
-    this.setState({ content: event.target.value });
+    const content = event.target.value;
+    if (typeof content !== 'string' || content.length < 2) {
+      this.setState({ content: this.state.targetDocument.content });
+      return;
+    }
+
+    this.setState({ content });
   }
 
   /**
@@ -163,7 +198,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateCategories(event) {
-    this.setState({ categories: event.target.value });
+    const categories = event.target.value;
+    if (typeof categories !== 'string' || categories.length < 2) {
+      this.setState({ categories: this.state.targetDocument.categories });
+      return;
+    }
+
+    this.setState({ categories });
   }
 
   /**
@@ -184,7 +225,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateTags(event) {
-    this.setState({ tags: event.target.value });
+    const tags = event.target.value;
+    if (typeof tags !== 'string' || tags.length < 2) {
+      this.setState({ tags: this.state.targetDocument.tags });
+      return;
+    }
+
+    this.setState({ tags });
   }
 
   /**
@@ -314,8 +361,13 @@ class UpdateDocumentPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (this.props.documents.status === 'documentUpdated') {
-      Materialize.toast(this.props.documents.statusMessage, 3000);
+    if (
+      this.props.documents.status !== 'updatingDocument' &&
+      this.props.documents.status !== 'updateDocumentFailed'
+    ) {
+      $('#update-access').val(
+        this.state.access || this.state.targetDocument.access
+      );
     }
 
     return (

@@ -187,6 +187,7 @@ export default function documentsReducer(state, action) {
       newState.status = 'gotDocument';
       newState.statusMessage = action.payload.message;
       newState.documentToUpdate = action.payload.documents[0];
+      newState.userDocuments.documents.push(action.payload.documents[0]);
       break;
 
     default:
