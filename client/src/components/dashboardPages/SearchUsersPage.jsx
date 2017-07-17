@@ -80,25 +80,28 @@ class SearchUsersPage extends Component {
     );
 
     return (
-      <div className="search-users-page">
+      <div id="search-users-page">
         <h4>Search users</h4>
         <div className="row">
-          <div className="search-form-container col s12 m3">
+          <div id="search-users-form-container" className="col s12 m3">
             <h5 className="teal-text text-lighten-2">Search form</h5>
-            <h6
+            <div
               className={
                 this.state.showErrorMessage ?
-                'red lighten-2 white-text center-align' :
-                'hide'
+                'msg-container red lighten-2 center-align' :
+                'hide msg-container'
               }
             >
-              Please enter a search with at least one non-whitespace character.
-            </h6>
+              <h6 className="error-msg white-text">
+                Please enter a search with at least one&nbsp;
+                non-whitespace character.
+              </h6>
+            </div>
             <p>
-              Search for any user using part or all of his/her first name,&nbsp;
-              last name or email.
+              Search for any user using part or all of his/her&nbsp;
+              first name, last name or email.
             </p>
-            <form className="search-form">
+            <form id="search-users-form">
               <div className="row">
                 <Input
                   className="search-input"
@@ -107,10 +110,11 @@ class SearchUsersPage extends Component {
                   onChange={this.updateSearchQuery}
                 />
                 <Button
+                  id="search-btn"
                   className={
                     this.hasSearchQuery() ?
-                    'search-btn col s10 center-align' :
-                    'search-btn col s10 center-align disabled'
+                    'col s10 center-align' :
+                    'disabled col s10 center-align'
                   }
                   onClick={this.attemptUsersSearch}
                 >

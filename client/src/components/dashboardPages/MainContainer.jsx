@@ -84,6 +84,7 @@ export class MainContainer extends React.Component {
     </Button>);
 
     return (
+      // TODO: Rename this root element to #dashboard-main-container.
       <div id="authenticated-user-area" className="grey lighten-3">
         <SideNav
           id="dashboard-menu"
@@ -136,7 +137,7 @@ export class MainContainer extends React.Component {
               Home
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="search-users-btn" key={uuid.v4()}>
             <NavLink
               exact
               to="/dashboard/searchUsers"
@@ -146,7 +147,7 @@ export class MainContainer extends React.Component {
               Search for users
             </NavLink>
           </li>
-          <li key={uuid.v4()}>
+          <li id="search-documents-btn" key={uuid.v4()}>
             <NavLink
               exact
               to="/dashboard/searchDocuments"

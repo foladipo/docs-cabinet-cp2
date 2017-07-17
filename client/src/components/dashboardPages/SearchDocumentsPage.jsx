@@ -123,10 +123,10 @@ class SearchDocumentsPage extends Component {
       );
 
     return (
-      <div className="search-documents-page">
+      <div id="search-documents-page">
         <h4>Search documents</h4>
         <div className="row">
-          <div className="search-form-container col s12 m3">
+          <div id="search-documents-form-container" className="col s12 m3">
             <h5 className="teal-text text-lighten-2">Search form</h5>
             <h6
               className={
@@ -140,7 +140,7 @@ class SearchDocumentsPage extends Component {
             <p>
               Search for any document using part or all of its title.
             </p>
-            <form className="search-form">
+            <form id="search-documents-form">
               <div className="row">
                 <Input
                   className="search-input"
@@ -149,10 +149,11 @@ class SearchDocumentsPage extends Component {
                   onChange={this.updateSearchQuery}
                 />
                 <Button
+                  id="search-btn"
                   className={
                     this.hasSearchQuery() ?
-                    'search-btn col s10' :
-                    'search-btn col s10 disabled'
+                    'col s10' :
+                    'disabled col s10'
                   }
                   onClick={this.attemptDocumentsSearch}
                 >

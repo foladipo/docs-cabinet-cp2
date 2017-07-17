@@ -146,7 +146,7 @@ Document.propTypes = {
   content: PropTypes.string.isRequired,
   currentUserId: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
-  docImage: PropTypes.string.isRequired,
+  docImage: PropTypes.string,
   documentsStatus: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   tags: PropTypes.string.isRequired,
@@ -154,6 +154,10 @@ Document.propTypes = {
   title: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired,
   User: PropTypes.objectOf(PropTypes.any).isRequired
+};
+
+Document.defaultProps = {
+  docImage: undefined
 };
 
 export default Document;

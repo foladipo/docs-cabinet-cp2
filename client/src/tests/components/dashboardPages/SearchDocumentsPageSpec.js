@@ -28,16 +28,16 @@ const props = {
 const wrapper = mount(<SearchDocumentsPage {...props} />);
 
 describe('SearchDocumentsPage', () => {
-  it('should have an HTML class of search-documents-page', () => {
-    expect(wrapper).to.have.className('search-documents-page');
+  it('should have an HTML id of search-documents-page', () => {
+    expect(wrapper).to.have.id('search-documents-page');
   });
 
   it('should have a search form', () => {
-    expect(wrapper.find('.search-form')).to.have.length(1);
+    expect(wrapper.find('#search-documents-form')).to.have.length(1);
   });
 
   it('should have a search button that\'s disabled by default', () => {
-    expect(wrapper.find('.search-btn.disabled')).to.have.length(1);
+    expect(wrapper.find('#search-btn.disabled')).to.have.length(1);
   });
 
   it('should be able to receive search queries from users', () => {
@@ -53,7 +53,7 @@ describe('SearchDocumentsPage', () => {
   });
 
   it('should have an enabled search button when a query has been entered', () => {
-    expect(wrapper.find('.search-btn.disabled')).to.have.length(0);
+    expect(wrapper.find('#search-btn.disabled')).to.have.length(0);
   });
 
   it('should be able to perform searches', () => {
@@ -61,7 +61,7 @@ describe('SearchDocumentsPage', () => {
     const attemptDocumentsSearchSpy =
       sinon.spy(wrapper.instance(), 'attemptDocumentsSearch');
     wrapper.update();
-    const searchBtn = wrapper.find('.search-btn');
+    const searchBtn = wrapper.find('#search-btn');
     searchBtn.simulate('click');
     expect(attemptDocumentsSearchSpy.calledOnce).to.equal(true);
   });
