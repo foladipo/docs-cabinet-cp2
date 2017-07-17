@@ -102,6 +102,10 @@ class SignUpForm extends React.Component {
    * null if nothing is to be rendered.
    */
   render() {
+    const nameTooltip = 'Please enter a name that has two or more non-whitespace characters.';
+    const userNameTooltip = 'Please enter your email address.';
+    const passwordTootip = 'An acceptable password must at least contain one uppercase letter, one lower case letter, a number and a symbol (e.g $, *, #, @ etc).';
+
     return (
       <div id="sign-up-form">
         <h6 className="red-text text-lighten-2">**All fields are required.</h6>
@@ -122,6 +126,10 @@ class SignUpForm extends React.Component {
               id="update-first-name"
               s={6}
               label="First name"
+              className="tooltipped"
+              data-position="top"
+              data-delay="50"
+              data-tooltip={nameTooltip}
               onChange={this.updateFirstName}
             >
               <Icon>face</Icon>
@@ -130,6 +138,10 @@ class SignUpForm extends React.Component {
               id="update-last-name"
               s={6}
               label="Last name"
+              className="tooltipped"
+              data-position="top"
+              data-delay="50"
+              data-tooltip={nameTooltip}
               onChange={this.updateLastName}
             >
               <Icon>face</Icon>
@@ -140,21 +152,23 @@ class SignUpForm extends React.Component {
               label="Email"
               type="email"
               validate
+              className="tooltipped"
+              data-position="top"
+              data-delay="50"
+              data-tooltip={userNameTooltip}
               onChange={this.updateUsername}
             >
               <Icon>account_circle</Icon>
             </Input>
-            <div className="red-text text-lighten-2">
-              <p>**An acceptable password must at least contain one
-                uppercase letter, one lower case letter, a number
-                and a symbol (e.g $, *, #, @ etc).
-              </p>
-            </div>
             <Input
               id="update-password"
               s={12}
               label="Password"
               type="password"
+              className="tooltipped"
+              data-position="top"
+              data-delay="50"
+              data-tooltip={passwordTootip}
               onChange={this.updatePassword}
             >
               <Icon>lock</Icon>

@@ -384,6 +384,11 @@ class UpdateUserPage extends Component {
   showUpdateForm() {
     // TODO: Try and re-disable the 'submit' update button when an
     // update is successfully performed.
+    const firstNameTooltip = 'Please enter a new first name that has two or more non-whitespace characters.';
+    const lastNameTooltip = 'Please enter a new last name that has two or more non-whitespace characters.';
+    const userNameTooltip = 'Please enter your new email address.';
+    const passwordTootip = 'An acceptable password must at least contain one uppercase letter, one lower case letter, a number and a symbol (e.g $, *, #, @ etc).';
+
     if (this.state.targetUser) {
       return (
         <div className="container">
@@ -430,6 +435,10 @@ class UpdateUserPage extends Component {
                     id="update-first-name"
                     s={12}
                     placeholder={this.state.targetUser.firstName}
+                    className="tooltipped"
+                    data-position="top"
+                    data-delay="50"
+                    data-tooltip={firstNameTooltip}
                     onChange={this.updateFirstName}
                   >
                     <Icon>face</Icon>
@@ -441,6 +450,10 @@ class UpdateUserPage extends Component {
                     id="update-last-name"
                     s={12}
                     placeholder={this.state.targetUser.lastName}
+                    className="tooltipped"
+                    data-position="top"
+                    data-delay="50"
+                    data-tooltip={lastNameTooltip}
                     onChange={this.updateLastName}
                   >
                     <Icon>face</Icon>
@@ -453,20 +466,25 @@ class UpdateUserPage extends Component {
                     type="email"
                     s={12}
                     placeholder={this.state.targetUser.username}
+                    className="tooltipped"
+                    data-position="top"
+                    data-delay="50"
+                    data-tooltip={userNameTooltip}
                     onChange={this.updateUsername}
                   >
                     <Icon>account_circle</Icon>
                   </Input>
                 </div>
-                {/*
-                  TODO: Add a tooltip with info about acceptable passwords.
-                */}
                 <div>
                   Password
                   <Input
                     id="update-password"
                     s={12}
                     type="password"
+                    className="tooltipped"
+                    data-position="top"
+                    data-delay="50"
+                    data-tooltip={passwordTootip}
                     onChange={this.updatePassword}
                   >
                     <Icon>lock</Icon>
