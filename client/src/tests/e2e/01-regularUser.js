@@ -1,5 +1,9 @@
 const faker = require('faker');
+const dotenv = require('dotenv');
 
+dotenv.config();
+
+const port = process.env.PORT || 5000;
 const user = {
   firstName: 'Tailor',
   lastName: 'Who',
@@ -18,11 +22,11 @@ const userUpdate = {
 module.exports = {
   'Creating an account with incomplete biodata': (browser) => {
     browser
-      .url('http://localhost:5000/')
+      .url(`http://localhost:${port}/`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#sign-up-form-btn', 2000)
       .click('#sign-up-form-btn')
-      .waitForElementVisible('#sign-up-modal', 5000)
+      .waitForElementVisible('#sign-up-form', 5000)
       .setValue('#sign-up-form #update-first-name', '')
       .setValue('#sign-up-form #update-last-name', '')
       .setValue('#sign-up-form #update-username', 'xyz@example.com')
@@ -37,11 +41,11 @@ module.exports = {
   },
   'Creating an account': (browser) => {
     browser
-      .url('http://localhost:5000/')
+      .url(`http://localhost:${port}/`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#sign-up-form-btn', 2000)
       .click('#sign-up-form-btn')
-      .waitForElementVisible('#sign-up-modal', 5000)
+      .waitForElementVisible('#sign-up-form', 5000)
       .setValue('#sign-up-form #update-first-name', user.firstName)
       .setValue('#sign-up-form #update-last-name', user.lastName)
       .setValue('#sign-up-form #update-username', user.username)
@@ -50,7 +54,7 @@ module.exports = {
       .waitForElementNotPresent('#authentication-container', 3000)
       .assert
         .elementNotPresent('#authentication-container')
-      .url('http://localhost:5000/dashboard')
+      .url(`http://localhost:${port}/dashboard`)
       .waitForElementPresent('#authenticated-user-area', 3000)
       .assert
         .elementPresent('#authenticated-user-area')
@@ -59,7 +63,7 @@ module.exports = {
   },
   'Logging out': (browser) => {
     browser
-      .url('http://localhost:5000/dashboard')
+      .url(`http://localhost:${port}/dashboard`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#dashboard-menu-btn', 2000)
       .click('#dashboard-menu-btn')
@@ -73,7 +77,7 @@ module.exports = {
   },
   'Logging in without credentials': (browser) => {
     browser
-      .url('http://localhost:5000/')
+      .url(`http://localhost:${port}/`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#login-form-btn', 2000)
       .click('#login-form-btn')
@@ -90,7 +94,7 @@ module.exports = {
   },
   'Logging in with non-existent account': (browser) => {
     browser
-      .url('http://localhost:5000/')
+      .url(`http://localhost:${port}/`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#login-form-btn', 2000)
       .click('#login-form-btn')
@@ -107,7 +111,7 @@ module.exports = {
   },
   'Logging in': (browser) => {
     browser
-      .url('http://localhost:5000/')
+      .url(`http://localhost:${port}/`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#login-form-btn', 2000)
       .click('#login-form-btn')
@@ -121,7 +125,7 @@ module.exports = {
   },
   'Update account': (browser) => {
     browser
-      .url('http://localhost:5000/dashboard')
+      .url(`http://localhost:${port}/dashboard`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#dashboard-menu-btn', 2000)
       .click('#dashboard-menu-btn')
@@ -139,7 +143,7 @@ module.exports = {
   },
   'Delete account': (browser) => {
     browser
-      .url('http://localhost:5000/dashboard')
+      .url(`http://localhost:${port}/dashboard`)
       .waitForElementVisible('body', 5000)
       .waitForElementVisible('#dashboard-menu-btn', 2000)
       .click('#dashboard-menu-btn')
