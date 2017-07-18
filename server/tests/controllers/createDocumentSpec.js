@@ -37,7 +37,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
     { expiresIn: '3d' }
   );
 
-  it('should reject requests where the title is missing', (done) => {
+  it('should return an error for requests where the title is missing', (done) => {
     const noTitle = {
       content: 'something',
       access: 'private',
@@ -56,7 +56,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the title is invalid', (done) => {
+  it('should return an error for requests where the title is invalid', (done) => {
     const invalidTitle = {
       title: '         ',
       content: 'something',
@@ -76,7 +76,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the content is missing', (done) => {
+  it('should return an error for requests where the content is missing', (done) => {
     const noContent = {
       title: 'This is',
       access: 'private',
@@ -95,7 +95,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the content is invalid', (done) => {
+  it('should return an error for requests where the content is invalid', (done) => {
     const invalidContent = {
       title: 'This is',
       content: '       ',
@@ -115,7 +115,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the access type is missing', (done) => {
+  it('should return an error for requests where the access type is missing', (done) => {
     const noAccessType = {
       title: 'This is',
       content: 'something',
@@ -134,7 +134,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the access type is invalid', (done) => {
+  it('should return an error for requests where the access type is invalid', (done) => {
     const invalidAccessType = {
       title: 'This is',
       content: 'something',
@@ -154,7 +154,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that have no categories', (done) => {
+  it('should return an error for requests that have no categories', (done) => {
     const noCategories = {
       title: 'This is',
       content: 'something',
@@ -173,7 +173,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that have invalid categories ', (done) => {
+  it('should return an error for requests that have invalid categories ', (done) => {
     const invalidCategories = {
       title: 'This is',
       content: 'something',
@@ -193,7 +193,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that have no tags', (done) => {
+  it('should return an error for requests that have no tags', (done) => {
     const noTags = {
       title: 'This is',
       content: 'something',
@@ -212,7 +212,7 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that have invalid tags ', (done) => {
+  it('should return an error for requests that have invalid tags ', (done) => {
     const invalidTags = {
       title: 'This is',
       content: 'something',
@@ -245,11 +245,18 @@ describe('When POST\'ed to, the /api/documents endpoint', () => {
         expect(res.body.message).to.equal('Your document was successfully created.');
         expect(Array.isArray(res.body.documents)).to.equal(true);
         const createdDocument = res.body.documents[0];
-        expect(createdDocument.title === completeNewDocument.title).to.equal(true);
-        expect(createdDocument.content === completeNewDocument.content).to.equal(true);
-        expect(createdDocument.access === completeNewDocument.access.toLowerCase()).to.equal(true);
-        expect(createdDocument.categories === completeNewDocument.categories).to.equal(true);
-        expect(createdDocument.tags === completeNewDocument.tags).to.equal(true);
+        expect(createdDocument.title === completeNewDocument.title)
+          .to.equal(true);
+        expect(createdDocument.content === completeNewDocument.content)
+          .to.equal(true);
+        expect(
+          createdDocument.access === completeNewDocument.access.toLowerCase()
+          )
+            .to.equal(true);
+        expect(createdDocument.categories === completeNewDocument.categories)
+          .to.equal(true);
+        expect(createdDocument.tags === completeNewDocument.tags)
+          .to.equal(true);
         done();
       });
   });

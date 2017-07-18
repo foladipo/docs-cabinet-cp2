@@ -45,7 +45,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have a title', (done) => {
+  it('should return an error for the creation of documents that do NOT have a title', (done) => {
     const noTitle = {
       content: 'Lorem ipsum',
       access: 'public',
@@ -63,7 +63,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have content', (done) => {
+  it('should return an error for the creation of documents that do NOT have content', (done) => {
     const noContent = {
       title: 'Spalaxicon1',
       access: 'public',
@@ -81,7 +81,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have categories', (done) => {
+  it('should return an error for the creation of documents that do NOT have categories', (done) => {
     const noCategories = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
@@ -99,7 +99,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have tags', (done) => {
+  it('should return an error for the creation of documents that do NOT have tags', (done) => {
     const noTags = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
@@ -117,7 +117,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have an access type', (done) => {
+  it('should return an error for the creation of documents that do NOT have an access type', (done) => {
     const noAccessTypes = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
@@ -137,7 +137,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject documents that do NOT have an access type of \'public\',' +
+  it('should return an error for documents that do NOT have an access type of \'public\',' +
     ' \'private\' or \'role\'', (done) => {
     const invalidAccessType = {
       title: 'Spalaxicon1',
@@ -158,7 +158,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents that do NOT have an' +
+  it('should return an error for the creation of documents that do NOT have an' +
     ' authorId', (done) => {
     const noAuthorId = {
       title: 'Spalaxicon1',
@@ -176,7 +176,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents whose authorId (i.e author id) is NOT an integer', (done) => {
+  it('should return an error for the creation of documents whose authorId (i.e author id) is NOT an integer', (done) => {
     const invalidAuthorId = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',
@@ -194,7 +194,7 @@ describe('The Document model', () => {
       });
   });
 
-  it('should reject the creation of documents whose authorId (i.e author id) is NOT in the User model', (done) => {
+  it('should return an error for the creation of documents whose authorId (i.e author id) is NOT in the User model', (done) => {
     const nonExistentUser = {
       title: 'Spalaxicon1',
       content: 'Lorem ipsum',

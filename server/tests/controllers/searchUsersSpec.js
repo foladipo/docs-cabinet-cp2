@@ -61,7 +61,7 @@ describe('When it receives a GET request, the /api/search/users endpoint', () =>
     return validToken;
   };
 
-  it('should reject requests that don\'t specify a valid token', (done) => {
+  it('should return an error for requests that don\'t specify a valid token', (done) => {
     request.get(searchUsersEndpoint)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -72,7 +72,7 @@ describe('When it receives a GET request, the /api/search/users endpoint', () =>
       }, done);
   });
 
-  it('should reject requests that don\'t specify a search query', (done) => {
+  it('should return an error for requests that don\'t specify a search query', (done) => {
     request.get(searchUsersEndpoint)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', getValidToken())

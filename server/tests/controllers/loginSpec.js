@@ -14,7 +14,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     username: '',
     password: ''
   };
-  it('should reject requests where the username and password are missing', (done) => {
+  it('should return an error for requests where the username and password are missing', (done) => {
     request.post(loginEndpoint)
       .send(noUsernameNoPassword)
       .set('Accept', 'application/json')
@@ -30,7 +30,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     username: '',
     password: 'something'
   };
-  it('should reject requests where the username is missing', (done) => {
+  it('should return an error for requests where the username is missing', (done) => {
     request.post(loginEndpoint)
       .send(noUsername)
       .set('Accept', 'application/json')
@@ -46,7 +46,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     username: 'foo@example.com',
     password: ''
   };
-  it('should reject requests where the password is missing', (done) => {
+  it('should return an error for requests where the password is missing', (done) => {
     request.post(loginEndpoint)
       .send(noPassword)
       .set('Accept', 'application/json')
@@ -78,7 +78,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     username: 'nonexistent@user.com',
     password: 'something'
   };
-  it('should reject login attempts for a non-existent user', (done) => {
+  it('should return an error for login attempts for a non-existent user', (done) => {
     request.post(loginEndpoint)
       .send(nonExistentUser)
       .set('Accept', 'application/json')
@@ -94,7 +94,7 @@ describe('When POST\'ed to, the /api/users/login endpoint', () => {
     username: 'foo@example.com',
     password: 'incorrectPassword'
   };
-  it('should reject login attempts with an incorrect password', (done) => {
+  it('should return an error for login attempts with an incorrect password', (done) => {
     request.post(loginEndpoint)
       .send(incorrectPassword)
       .set('Accept', 'application/json')

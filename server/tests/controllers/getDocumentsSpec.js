@@ -10,7 +10,7 @@ const documentsEndpoint = '/api/documents';
 const expect = chai.expect;
 
 describe('When a user GET\'s it, the /api/documents endpoint', () => {
-  it('should reject requests that don\'t have a JWT token', (done) => {
+  it('should return an error for requests that don\'t have a JWT token', (done) => {
     request.get(documentsEndpoint)
       .expect(400)
       .expect({
@@ -19,7 +19,7 @@ describe('When a user GET\'s it, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that have an invalid JWT token', (done) => {
+  it('should return an error for requests that have an invalid JWT token', (done) => {
     request.get(documentsEndpoint)
       .set('x-docs-cabinet-authentication', 'SOME_RANDOM_INCORRECT_TOKEN')
       .expect(401)

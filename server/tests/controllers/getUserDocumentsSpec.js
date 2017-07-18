@@ -58,7 +58,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
     process.env.JWT_PRIVATE_KEY,
     { expiresIn: '3d' }
   );
-  it('should reject requests from non-admin users', (done) => {
+  it('should return an error for requests from non-admin users', (done) => {
     request.get(getUserDocumentsEndpoint)
       .set('x-docs-cabinet-authentication', regularUserToken)
       .set('Accept', 'application/json')
@@ -75,7 +75,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
     process.env.JWT_PRIVATE_KEY,
     { expiresIn: '3d' }
   );
-  it('should reject requests where the target user id is invalid', (done) => {
+  it('should return an error for requests where the target user id is invalid', (done) => {
     request.get(`${getUserDocumentsEndpoint}/INVALID_ID/documents`)
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
@@ -100,7 +100,7 @@ describe('When it receives a GET request, the /api/users/<id>/documents endpoint
       }, done);
   });
 
-  it('should reject requests where no existing user has the id supplied', (done) => {
+  it('should return an error for requests where no existing user has the id supplied', (done) => {
     request.get(`${getUserDocumentsEndpoint}/6543210/documents`)
       .set('x-docs-cabinet-authentication', validToken)
       .set('Accept', 'application/json')
