@@ -1,7 +1,7 @@
 import express from 'express';
 
 import DocumentsController from '../controllers/DocumentsController';
-import validateDocument from '../middleware/validateDocument';
+import validateNewDocument from '../middleware/validateNewDocument';
 import validateToken from '../middleware/validateToken';
 
 const documentsRouter = express.Router();
@@ -88,7 +88,7 @@ documentsRouter.route('/')
    *         schema:
    *           type: object
    */
-  .post(validateToken, validateDocument, DocumentsController.createDocument);
+  .post(validateToken, validateNewDocument, DocumentsController.createDocument);
 
 documentsRouter.route('/:id')
   /**

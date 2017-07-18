@@ -7,11 +7,11 @@ import isValidAccessType from '../util/isValidAccessType';
  * @param {Response} res - An express Response object with the info this app
  * will send back to the user e.g error messages like MissingTitleError,
  * InvalidContentError etc.
- * @param {Function} next - The next function or middleware in the callback stack
- * of express.
+ * @param {Function} next - The next function or middleware in the
+ * callback stack of express.
  * @return {void}
  */
-export default function validateDocument(req, res, next) {
+export default function validateNewDocument(req, res, next) {
   const reqBody = req.body;
 
   const title = reqBody.title;
