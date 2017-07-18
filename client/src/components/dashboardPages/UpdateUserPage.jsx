@@ -136,17 +136,19 @@ class UpdateUserPage extends Component {
       this.state.targetUser.id !== this.props.user.user.id
     ) {
       return (
-        <Input
-          id="update-role-id"
-          s={12}
-          type="select"
-          label="Account type"
-          defaultValue={this.state.targetUser.roleId}
-          onChange={this.updateRoleId}
-        >
-          <option value="0">Regular</option>
-          <option value="1">Admin</option>
-        </Input>
+        <div>
+          <span className="green-label">Account type</span>
+          <Input
+            id="update-role-id"
+            s={12}
+            type="select"
+            defaultValue={this.state.targetUser.roleId}
+            onChange={this.updateRoleId}
+          >
+            <option value="0">Regular</option>
+            <option value="1">Admin</option>
+          </Input>
+        </div>
       );
     }
   }
@@ -427,10 +429,10 @@ class UpdateUserPage extends Component {
             <h3>Update profile</h3>
             <div className="divider" />
             <form id="update-user-form">
-              {this.showRoleUpdate()}
               <Row>
+                {this.showRoleUpdate()}
                 <div>
-                  First name
+                  <span className="green-label">First name</span>
                   <Input
                     id="update-first-name"
                     s={12}
@@ -445,7 +447,7 @@ class UpdateUserPage extends Component {
                   </Input>
                 </div>
                 <div>
-                  Last Name
+                  <span className="green-label">Last Name</span>
                   <Input
                     id="update-last-name"
                     s={12}
@@ -460,7 +462,7 @@ class UpdateUserPage extends Component {
                   </Input>
                 </div>
                 <div>
-                  Email
+                  <span className="green-label">Email</span>
                   <Input
                     id="update-username"
                     type="email"
@@ -476,7 +478,7 @@ class UpdateUserPage extends Component {
                   </Input>
                 </div>
                 <div>
-                  Password
+                  <span className="green-label">Password</span>
                   <Input
                     id="update-password"
                     s={12}

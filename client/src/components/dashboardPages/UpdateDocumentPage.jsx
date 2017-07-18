@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input, ProgressBar } from 'react-materialize';
+import { Button, Icon, Input, ProgressBar, Row } from 'react-materialize';
 import _ from 'lodash';
 import { getDocument, updateDocument } from '../../actions/DocumentActions';
 
@@ -372,145 +372,150 @@ class UpdateDocumentPage extends Component {
 
     return (
       <div id="update-document-page" className="row scrollable-page">
-        <div className="msg-container">
-          <h5
-            className={
-              this.props.documents.status === 'documentUpdated' ?
-              'success-msg teal lighten-2 white-text center' :
-              'hide success-msg'
-            }
-          >
-            {this.props.documents.statusMessage}
-          </h5>
-          <h5
-            className={
-              this.props.documents.status === 'getDocumentFailed' ||
-              this.props.documents.status === 'updateDocumentFailed' ?
-              'error-msg red white-text center' :
-              'hide error-msg'
-            }
-          >
-            {this.props.documents.statusMessage}
-          </h5>
-          <h5
-            className={
-              !(this.isValidDocument() && this.isUpdate()) ?
-              'error-msg red white-text center' :
-              'hide error-msg'
-            }
-          >
-            {this.state.errorMessage}
-          </h5>
-        </div>
-        <form
-          id="update-document-form"
-          className={this.state.hasValidTargetDocumentId ? 'container' : 'hide'}
-        >
-          <h6 className="red-text text-lighten-2">
-            **All fields are required.
-          </h6>
-          <div className="row">
-            <label htmlFor="update-access">
-              <h6>Access types</h6>
-            </label>
-            <Icon s={1} left>visibility</Icon>
-            <Input
-              id="update-access"
-              s={12}
-              m={6}
-              type="select"
-              onChange={this.updateAccess}
-            >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="role">Role</option>
-            </Input>
-          </div>
-          <div>
-            <label htmlFor="update-title">Title</label>
-            <Input
-              id="update-title"
-              s={12}
-              type="text"
-              placeholder={
-                this.state.targetDocument ?
-                this.state.targetDocument.title : ''
+        <div className="container">
+          <div className="msg-container">
+            <h5
+              className={
+                this.props.documents.status === 'documentUpdated' ?
+                'success-msg teal lighten-2 white-text center' :
+                'hide success-msg'
               }
-              onChange={this.updateTitle}
             >
-              <Icon>title</Icon>
-            </Input>
-          </div>
-          <div>
-            <label htmlFor="update-categories">Categories</label>
-            <Input
-              id="update-categories"
-              s={12}
-              type="text"
-              placeholder={
-                this.state.targetDocument ?
-                this.state.targetDocument.categories : ''
+              {this.props.documents.statusMessage}
+            </h5>
+            <h5
+              className={
+                this.props.documents.status === 'getDocumentFailed' ||
+                this.props.documents.status === 'updateDocumentFailed' ?
+                'error-msg red white-text center' :
+                'hide error-msg'
               }
-              onChange={this.updateCategories}
             >
-              <Icon>bookmark_border</Icon>
-            </Input>
-          </div>
-          <div>
-            <label htmlFor="update-tags">Tags</label>
-            <Input
-              id="update-tags"
-              s={12}
-              type="text"
-              placeholder={
-                this.state.targetDocument ?
-                this.state.targetDocument.tags : ''
+              {this.props.documents.statusMessage}
+            </h5>
+            <h5
+              className={
+                !(this.isValidDocument() && this.isUpdate()) ?
+                'error-msg red white-text center' :
+                'hide error-msg'
               }
-              onChange={this.updateTags}
             >
-              <Icon>label_outline</Icon>
-            </Input>
+              {this.state.errorMessage}
+            </h5>
           </div>
-          <div>
-            <br />
-            <label htmlFor="update-content">Content</label>
-            <Icon left>mode_edit</Icon>
-            <div className="col s12">
-              <textarea
-                id="update-content"
-                rows="10"
-                className="materialize-textarea update-doc-text-input"
-                placeholder={
-                  this.state.targetDocument ?
-                  this.state.targetDocument.content : ''
+          <h3>Update document</h3>
+          <div className="divider" />
+          <form
+            id="update-document-form"
+            className={this.state.hasValidTargetDocumentId ? '' : 'hide'}
+          >
+            <Row>
+              <h5 className="red-text text-lighten-2">
+                **All fields are required.
+              </h5>
+              <div className="row">
+                <span className="col s12 green-label">
+                  Access types
+                </span>
+                <Input
+                  id="update-access"
+                  s={11}
+                  m={6}
+                  type="select"
+                  onChange={this.updateAccess}
+                >
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                  <option value="role">Role</option>
+                </Input>
+              </div>
+              <div>
+                <span className="green-label">Title</span>
+                <Input
+                  id="update-title"
+                  s={12}
+                  type="text"
+                  placeholder={
+                    this.state.targetDocument ?
+                    this.state.targetDocument.title : ''
+                  }
+                  onChange={this.updateTitle}
+                >
+                  <Icon>title</Icon>
+                </Input>
+              </div>
+              <div>
+                <span className="green-label">Categories</span>
+                <Input
+                  id="update-categories"
+                  s={12}
+                  type="text"
+                  placeholder={
+                    this.state.targetDocument ?
+                    this.state.targetDocument.categories : ''
+                  }
+                  onChange={this.updateCategories}
+                >
+                  <Icon>bookmark_border</Icon>
+                </Input>
+              </div>
+              <div>
+                <span className="green-label">Tags</span>
+                <Input
+                  id="update-tags"
+                  s={12}
+                  type="text"
+                  placeholder={
+                    this.state.targetDocument ?
+                    this.state.targetDocument.tags : ''
+                  }
+                  onChange={this.updateTags}
+                >
+                  <Icon>label_outline</Icon>
+                </Input>
+              </div>
+              <div>
+                <br />
+                <span className="green-label">Content</span>
+                <Icon left>mode_edit</Icon>
+                <div className="col s12">
+                  <textarea
+                    id="update-content"
+                    rows="10"
+                    className="materialize-textarea update-doc-text-input"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.content : ''
+                    }
+                    onChange={this.updateContent}
+                  />
+                  <br />
+                </div>
+              </div>
+              <div className="quarter-vertical-margin" />
+              <Button
+                id="update-document-btn"
+                onClick={this.attemptDocumentUpdate}
+                className={
+                  this.isValidDocument() && this.isUpdate() ?
+                  'quarter-vertical-margin' :
+                  'disabled quarter-vertical-margin'
                 }
-                onChange={this.updateContent}
-              />
-              <br />
-            </div>
-          </div>
-          <div className="quarter-vertical-margin" />
-          <Button
-            id="update-document-btn"
-            onClick={this.attemptDocumentUpdate}
+              >
+                Update
+                <Icon left>update</Icon>
+              </Button>
+            </Row>
+          </form>
+          <div
             className={
-              this.isValidDocument() && this.isUpdate() ?
-              'quarter-vertical-margin' :
-              'disabled quarter-vertical-margin'
+              this.props.documents.status === 'updatingDocument' ?
+              '' :
+              'hide'
             }
           >
-            Update
-            <Icon left>update</Icon>
-          </Button>
-        </form>
-        <div
-          className={
-            this.props.documents.status === 'updatingDocument' ?
-            '' :
-            'hide'
-          }
-        >
-          <ProgressBar />
+            <ProgressBar />
+          </div>
         </div>
       </div>
     );
