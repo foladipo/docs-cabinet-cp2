@@ -2,7 +2,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import MockHttpClient from '../../MockHttpClient';
 import MockHttpErrorClient from '../../MockHttpErrorClient';
-import * as ActionTypes from '../../../constants';
+import { ActionTypes } from '../../../constants';
 import { deleteUser } from '../../../actions/UserActions';
 
 const expect = chai.expect;

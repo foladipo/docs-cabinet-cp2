@@ -1,7 +1,7 @@
 import chai from 'chai';
 import _ from 'lodash';
 import searchReducer from '../../reducers/searchReducer';
-import * as ActionTypes from '../../constants';
+import { ActionTypes } from '../../constants';
 
 const expect = chai.expect;
 

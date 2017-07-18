@@ -1,6 +1,6 @@
 import chai from 'chai';
 import _ from 'lodash';
-import * as ActionTypes from '../../constants';
+import { ActionTypes } from '../../constants';
 import userReducer from '../../reducers/userReducer';
 
 const expect = chai.expect;

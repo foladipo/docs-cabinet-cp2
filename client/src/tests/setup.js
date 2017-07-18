@@ -26,7 +26,8 @@ global.$ = () => ({
   material_select: () => {},
   modal: () => {},
   on: () => {},
-  sideNav: () => {}
+  sideNav: () => {},
+  val: () => {}
 });
 
 global.Materialize = {
