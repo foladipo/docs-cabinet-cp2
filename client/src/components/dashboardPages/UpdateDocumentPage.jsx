@@ -503,13 +503,15 @@ class UpdateDocumentPage extends Component {
             <Icon left>update</Icon>
           </Button>
         </form>
-        <ProgressBar
+        <div
           className={
             this.props.documents.status === 'updatingDocument' ?
             '' :
             'hide'
           }
-        />
+        >
+          <ProgressBar />
+        </div>
       </div>
     );
   }

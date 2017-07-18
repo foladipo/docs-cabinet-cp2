@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Icon, Input, ProgressBar, Row } from 'react-materialize';
+import { Button, Icon, Input, ProgressBar, Row } from 'react-materialize';
 import { signUp } from '../../actions/UserActions';
 
 /**
@@ -184,7 +184,7 @@ class SignUpForm extends React.Component {
             </Button>
           </Row>
         </form>
-        <Col
+        <div
           s={12}
           className={
             this.props.user.isLoggingIn ?
@@ -193,7 +193,7 @@ class SignUpForm extends React.Component {
           }
         >
           <ProgressBar />
-        </Col>
+        </div>
       </div>
     );
   }

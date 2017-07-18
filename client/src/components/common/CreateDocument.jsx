@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input } from 'react-materialize';
+import { Button, Icon, Input, ProgressBar } from 'react-materialize';
 import { createDocument } from '../../actions/DocumentActions';
 
 /**
@@ -292,6 +292,15 @@ class CreateDocument extends Component {
             <Icon left>note_add</Icon>
           </Button>
         </form>
+        <div
+          className={
+            this.props.documentsStatus === 'creatingDocument' ?
+            '' :
+            'hide'
+          }
+        >
+          <ProgressBar />
+        </div>
       </div>
     );
   }

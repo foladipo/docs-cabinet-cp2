@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Icon, Input, ProgressBar, Row } from 'react-materialize';
+import { Button, Icon, Input, ProgressBar, Row } from 'react-materialize';
 import * as UserActions from '../../actions/UserActions';
 
 /**
@@ -85,43 +85,41 @@ class LoginForm extends React.Component {
             </p>
           </div>
           <Row>
-            <Row>
-              <Input
-                id="update-username"
-                name="email"
-                s={12}
-                type="email"
-                label="Email"
-                onChange={this.updateUsername}
-                defaultValue=""
-                validate
-              >
-                <Icon>account_circle</Icon>
-              </Input>
-              <Input
-                id="update-password"
-                name="password"
-                s={12}
-                type="password"
-                label="Password"
-                onChange={this.updatePassword}
-                validate
-              >
-                <Icon>lock</Icon>
-              </Input>
-              <Button
-                id="login-btn"
-                className={this.props.user.isLoggingIn ? 'disabled' : ''}
-                waves="light"
-                onClick={this.attemptLogin}
-              >
-                Login
-                <Icon left>send</Icon>
-              </Button>
-            </Row>
+            <Input
+              id="update-username"
+              name="email"
+              s={12}
+              type="email"
+              label="Email"
+              onChange={this.updateUsername}
+              defaultValue=""
+              validate
+            >
+              <Icon>account_circle</Icon>
+            </Input>
+            <Input
+              id="update-password"
+              name="password"
+              s={12}
+              type="password"
+              label="Password"
+              onChange={this.updatePassword}
+              validate
+            >
+              <Icon>lock</Icon>
+            </Input>
+            <Button
+              id="login-btn"
+              className={this.props.user.isLoggingIn ? 'disabled' : ''}
+              waves="light"
+              onClick={this.attemptLogin}
+            >
+              Login
+              <Icon left>send</Icon>
+            </Button>
           </Row>
         </form>
-        <Col
+        <div
           s={12}
           className={
             this.props.user.isLoggingIn ?
@@ -130,7 +128,7 @@ class LoginForm extends React.Component {
           }
         >
           <ProgressBar />
-        </Col>
+        </div>
       </div>
     );
   }
