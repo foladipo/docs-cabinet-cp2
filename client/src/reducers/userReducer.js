@@ -1,25 +1,4 @@
-import {
-  SIGN_UP_PENDING,
-  SIGN_UP_REJECTED,
-  SIGN_UP_FULFILLED,
-  LOGIN_PENDING,
-  LOGIN_REJECTED,
-  LOGIN_FULFILLED,
-  LOGOUT_PENDING,
-  LOGOUT_FULFILLED,
-  FETCH_ALL_USERS_PENDING,
-  FETCH_ALL_USERS_REJECTED,
-  FETCH_ALL_USERS_FULFILLED,
-  UPDATE_USER_PENDING,
-  UPDATE_USER_REJECTED,
-  UPDATE_USER_FULFILLED,
-  DELETE_USER_PENDING,
-  DELETE_USER_REJECTED,
-  DELETE_USER_FULFILLED,
-  GET_USER_PENDING,
-  GET_USER_REJECTED,
-  GET_USER_FULFILLED
-} from '../constants';
+import { ActionTypes } from '../constants';
 
 /**
  * Creates a new state that has info about an Action this reducer received.
@@ -32,21 +11,21 @@ export default function userReducer(state, action) {
   const newState = Object.assign({}, state);
 
   switch (action.type) {
-    case SIGN_UP_PENDING:
+    case ActionTypes.SIGN_UP_PENDING:
       newState.status = 'signingUp';
       newState.statusMessage = 'Creating your account... Please wait...';
       newState.isLoggingIn = true;
       newState.isLoggedIn = false;
       break;
 
-    case SIGN_UP_REJECTED:
+    case ActionTypes.SIGN_UP_REJECTED:
       newState.status = 'signUpFailed';
       newState.statusMessage = action.payload.message || 'Failed to sign up. Please try again.';
       newState.isLoggingIn = false;
       newState.isLoggedIn = false;
       break;
 
-    case SIGN_UP_FULFILLED:
+    case ActionTypes.SIGN_UP_FULFILLED:
       newState.status = 'signedUp';
       newState.statusMessage = action.payload.message;
       newState.isLoggingIn = false;
@@ -57,14 +36,14 @@ export default function userReducer(state, action) {
       window.localStorage.setItem('user', JSON.stringify(action.payload.user));
       break;
 
-    case LOGIN_PENDING:
+    case ActionTypes.LOGIN_PENDING:
       newState.status = 'loggingIn';
       newState.statusMessage = 'Logging in... Please wait...';
       newState.isLoggingIn = true;
       newState.isLoggedIn = false;
       break;
 
-    case LOGIN_REJECTED:
+    case ActionTypes.LOGIN_REJECTED:
       newState.status = 'loginFailed';
       newState.statusMessage = action.payload.message ||
         'Failed to login. Please try again.';
@@ -72,7 +51,7 @@ export default function userReducer(state, action) {
       newState.isLoggedIn = false;
       break;
 
-    case LOGIN_FULFILLED:
+    case ActionTypes.LOGIN_FULFILLED:
       newState.status = 'loggedIn';
       newState.statusMessage = action.payload.message;
       newState.isLoggingIn = false;
@@ -83,7 +62,7 @@ export default function userReducer(state, action) {
       window.localStorage.setItem('user', JSON.stringify(action.payload.user));
       break;
 
-    case LOGOUT_PENDING:
+    case ActionTypes.LOGOUT_PENDING:
       newState.status = 'loggingOut';
       newState.statusMessage = 'Logging out... Please wait...';
       newState.isLoggingOut = true;
@@ -100,23 +79,23 @@ export default function userReducer(state, action) {
       window.localStorage.clear();
       break;
 
-    case LOGOUT_FULFILLED:
+    case ActionTypes.LOGOUT_FULFILLED:
       newState.status = 'loggedOut';
       newState.statusMessage = action.payload.message;
       newState.isLoggingOut = false;
       break;
 
-    case FETCH_ALL_USERS_PENDING:
+    case ActionTypes.FETCH_ALL_USERS_PENDING:
       newState.status = 'fetchingAllUsers';
       newState.statusMessage = 'Loading users... Please wait...';
       break;
 
-    case FETCH_ALL_USERS_REJECTED:
+    case ActionTypes.FETCH_ALL_USERS_REJECTED:
       newState.status = 'fetchAllUsersFailed';
       newState.statusMessage = action.payload.message || 'Failed to load users. Please try again.';
       break;
 
-    case FETCH_ALL_USERS_FULFILLED:
+    case ActionTypes.FETCH_ALL_USERS_FULFILLED:
       newState.status = 'fetchedAllUsers';
       newState.statusMessage = action.payload.message;
       newState.allUsersCount =
@@ -129,19 +108,19 @@ export default function userReducer(state, action) {
         state.allUsers.users.concat(action.payload.users);
       break;
 
-    case UPDATE_USER_PENDING:
+    case ActionTypes.UPDATE_USER_PENDING:
       newState.status = 'updatingUser';
       newState.statusMessage = 'Updating profile... Please wait...';
       break;
 
-    case UPDATE_USER_REJECTED:
+    case ActionTypes.UPDATE_USER_REJECTED:
       newState.status = 'updateUserFailed';
       newState.statusMessage = action.payload.message ||
         'Failed to update this profile. Please try again.';
       break;
 
     // TODO: Update state.token etc when a user updates his/her own profile.
-    case UPDATE_USER_FULFILLED:
+    case ActionTypes.UPDATE_USER_FULFILLED:
       newState.status = 'updatedUser';
       newState.statusMessage = action.payload.message;
       newState.allUsers.users = state.allUsers.users.map((user) => {
@@ -161,17 +140,17 @@ export default function userReducer(state, action) {
       }
       break;
 
-    case DELETE_USER_PENDING:
+    case ActionTypes.DELETE_USER_PENDING:
       newState.status = 'deletingUser';
       newState.statusMessage = 'Deleting account... Please wait...';
       break;
 
-    case DELETE_USER_REJECTED:
+    case ActionTypes.DELETE_USER_REJECTED:
       newState.status = 'userDeletionFailed';
       newState.statusMessage = action.payload.message || 'Failed to delete account. Please try again.';
       break;
 
-    case DELETE_USER_FULFILLED:
+    case ActionTypes.DELETE_USER_FULFILLED:
       newState.status = 'deletedUser';
       newState.statusMessage = action.payload.message;
       newState.allUsers.users = state.allUsers.users.filter(user =>
@@ -188,18 +167,18 @@ export default function userReducer(state, action) {
       }
       break;
 
-    case GET_USER_PENDING:
+    case ActionTypes.GET_USER_PENDING:
       newState.status = 'gettingUser';
       newState.statusMessage = 'Retrieving user profile... Please wait...';
       newState.userToUpdate = {};
       break;
 
-    case GET_USER_REJECTED:
+    case ActionTypes.GET_USER_REJECTED:
       newState.status = 'getUserFailed';
       newState.statusMessage = action.payload.message || 'Failed to retrieve user profile. Please try again.';
       break;
 
-    case GET_USER_FULFILLED:
+    case ActionTypes.GET_USER_FULFILLED:
       newState.status = 'gotUser';
       newState.statusMessage = 'Successfully retrieved user profile.';
       newState.userToUpdate = action.payload.users[0];

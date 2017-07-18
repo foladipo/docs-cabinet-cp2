@@ -1,26 +1,5 @@
 import superagent from 'superagent';
-import {
-  SIGN_UP_PENDING,
-  SIGN_UP_REJECTED,
-  SIGN_UP_FULFILLED,
-  LOGIN_PENDING,
-  LOGIN_REJECTED,
-  LOGIN_FULFILLED,
-  LOGOUT_PENDING,
-  LOGOUT_FULFILLED,
-  FETCH_ALL_USERS_PENDING,
-  FETCH_ALL_USERS_REJECTED,
-  FETCH_ALL_USERS_FULFILLED,
-  UPDATE_USER_PENDING,
-  UPDATE_USER_REJECTED,
-  UPDATE_USER_FULFILLED,
-  DELETE_USER_PENDING,
-  DELETE_USER_REJECTED,
-  DELETE_USER_FULFILLED,
-  GET_USER_PENDING,
-  GET_USER_REJECTED,
-  GET_USER_FULFILLED
-} from '../constants';
+import { ActionTypes } from '../constants';
 
 /**
  * login - Starts the login process.
@@ -31,7 +10,7 @@ import {
  */
 export function login(username, password) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: LOGIN_PENDING });
+    dispatch({ type: ActionTypes.LOGIN_PENDING });
 
     const request = httpClient || superagent;
 
@@ -42,13 +21,13 @@ export function login(username, password) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: LOGIN_REJECTED,
+            type: ActionTypes.LOGIN_REJECTED,
             payload: err.response.body
           });
           return;
         }
         dispatch({
-          type: LOGIN_FULFILLED,
+          type: ActionTypes.LOGIN_FULFILLED,
           payload: res.body
         });
       });
@@ -64,11 +43,11 @@ export function login(username, password) {
 export function logout() {
   return (dispatch) => {
     dispatch({
-      type: LOGOUT_PENDING
+      type: ActionTypes.LOGOUT_PENDING
     });
 
     dispatch({
-      type: LOGOUT_FULFILLED,
+      type: ActionTypes.LOGOUT_FULFILLED,
       payload: {
         message: 'You\'re now logged out.'
       }
@@ -87,7 +66,7 @@ export function logout() {
  */
 export function signUp(firstName, lastName, username, password) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: SIGN_UP_PENDING });
+    dispatch({ type: ActionTypes.SIGN_UP_PENDING });
 
     const request = httpClient || superagent;
 
@@ -98,13 +77,13 @@ export function signUp(firstName, lastName, username, password) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: SIGN_UP_REJECTED,
+            type: ActionTypes.SIGN_UP_REJECTED,
             payload: err.response.body
           });
           return;
         }
         dispatch({
-          type: SIGN_UP_FULFILLED,
+          type: ActionTypes.SIGN_UP_FULFILLED,
           payload: res.body
         });
       });
@@ -123,7 +102,7 @@ export function signUp(firstName, lastName, username, password) {
 export function fetchAllUsers(token, limit, offset) {
   return (dispatch, getState, httpClient) => {
     dispatch({
-      type: FETCH_ALL_USERS_PENDING
+      type: ActionTypes.FETCH_ALL_USERS_PENDING
     });
 
     const request = httpClient || superagent;
@@ -134,14 +113,14 @@ export function fetchAllUsers(token, limit, offset) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: FETCH_ALL_USERS_REJECTED,
+            type: ActionTypes.FETCH_ALL_USERS_REJECTED,
             payload: err.response.body
           });
           return;
         }
 
         dispatch({
-          type: FETCH_ALL_USERS_FULFILLED,
+          type: ActionTypes.FETCH_ALL_USERS_FULFILLED,
           payload: res.body
         });
       });
@@ -158,7 +137,7 @@ export function fetchAllUsers(token, limit, offset) {
  */
 export function updateUser(token, targetUserId, updateInfo) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: UPDATE_USER_PENDING });
+    dispatch({ type: ActionTypes.UPDATE_USER_PENDING });
 
     const request = httpClient || superagent;
 
@@ -169,14 +148,14 @@ export function updateUser(token, targetUserId, updateInfo) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: UPDATE_USER_REJECTED,
+            type: ActionTypes.UPDATE_USER_REJECTED,
             payload: err.response.body
           });
           return;
         }
 
         dispatch({
-          type: UPDATE_USER_FULFILLED,
+          type: ActionTypes.UPDATE_USER_FULFILLED,
           payload: res.body
         });
       });
@@ -192,7 +171,7 @@ export function updateUser(token, targetUserId, updateInfo) {
  */
 export function deleteUser(token, targetUserId) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: DELETE_USER_PENDING });
+    dispatch({ type: ActionTypes.DELETE_USER_PENDING });
 
     const request = httpClient || superagent;
 
@@ -202,14 +181,14 @@ export function deleteUser(token, targetUserId) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: DELETE_USER_REJECTED,
+            type: ActionTypes.DELETE_USER_REJECTED,
             payload: err.response.body
           });
           return;
         }
 
         dispatch({
-          type: DELETE_USER_FULFILLED,
+          type: ActionTypes.DELETE_USER_FULFILLED,
           payload: res.body
         });
       });
@@ -225,7 +204,7 @@ export function deleteUser(token, targetUserId) {
  */
 export function getUser(token, targetUserId) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: GET_USER_PENDING });
+    dispatch({ type: ActionTypes.GET_USER_PENDING });
 
     const request = httpClient || superagent;
 
@@ -235,14 +214,14 @@ export function getUser(token, targetUserId) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: GET_USER_REJECTED,
+            type: ActionTypes.GET_USER_REJECTED,
             payload: err.response.body
           });
           return;
         }
 
         dispatch({
-          type: GET_USER_FULFILLED,
+          type: ActionTypes.GET_USER_FULFILLED,
           payload: res.body
         });
       });

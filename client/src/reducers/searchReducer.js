@@ -1,13 +1,4 @@
-import {
-  SEARCH_USERS_PENDING,
-  SEARCH_USERS_REJECTED,
-  SEARCH_USERS_FULFILLED,
-  SEARCH_DOCUMENTS_PENDING,
-  SEARCH_DOCUMENTS_REJECTED,
-  SEARCH_DOCUMENTS_FULFILLED,
-
-  LOGOUT_PENDING
-} from '../constants/';
+import { ActionTypes } from '../constants';
 
 /**
  * Creates a new state that has info about an Action this reducer received.
@@ -19,7 +10,7 @@ import {
 export default function searchReducer(state, action) {
   const newState = Object.assign({}, state);
   switch (action.type) {
-    case LOGOUT_PENDING:
+    case ActionTypes.LOGOUT_PENDING:
       newState.users = {
         lastSearchQuery: '',
         lastSearchResultsCount: 0,
@@ -32,17 +23,17 @@ export default function searchReducer(state, action) {
       };
       break;
 
-    case SEARCH_USERS_PENDING:
+    case ActionTypes.SEARCH_USERS_PENDING:
       newState.status = 'searchingUsers';
       newState.statusMessage = 'Searching... Please wait...';
       break;
 
-    case SEARCH_USERS_REJECTED:
+    case ActionTypes.SEARCH_USERS_REJECTED:
       newState.status = 'searchUsersFailed';
       newState.statusMessage = action.payload.message || 'Search failed. Please try again.';
       break;
 
-    case SEARCH_USERS_FULFILLED:
+    case ActionTypes.SEARCH_USERS_FULFILLED:
       newState.status = 'searchedUsers';
       newState.statusMessage = action.payload.message || 'Search completed.';
       newState.users = {
@@ -52,17 +43,17 @@ export default function searchReducer(state, action) {
       };
       break;
 
-    case SEARCH_DOCUMENTS_PENDING:
+    case ActionTypes.SEARCH_DOCUMENTS_PENDING:
       newState.status = 'searchingDocuments';
       newState.statusMessage = 'Searching... Please wait...';
       break;
 
-    case SEARCH_DOCUMENTS_REJECTED:
+    case ActionTypes.SEARCH_DOCUMENTS_REJECTED:
       newState.status = 'searchDocumentsFailed';
       newState.statusMessage = action.payload.message || 'Search failed. Please try again.';
       break;
 
-    case SEARCH_DOCUMENTS_FULFILLED:
+    case ActionTypes.SEARCH_DOCUMENTS_FULFILLED:
       newState.status = 'searchedDocuments';
       newState.statusMessage = action.payload.message || 'Search completed.';
       newState.documents = {

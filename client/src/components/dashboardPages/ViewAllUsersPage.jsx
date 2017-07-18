@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import { Col, Preloader, Row } from 'react-materialize';
 import { fetchAllUsers } from '../../actions/UserActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants';
+import { Pagination } from '../../constants';
 import User from '../common/User';
 
 /**
@@ -28,7 +28,7 @@ class ViewAllUsersPage extends Component {
    */
   componentDidMount() {
     if (this.props.user.allUsers.users.length < 1) {
-      this.fetchUsers(DEFAULT_LIMIT, DEFAULT_OFFSET);
+      this.fetchUsers(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
     }
 
     const userPageElement = $('#all-users-page');
@@ -48,9 +48,9 @@ class ViewAllUsersPage extends Component {
             return;
           }
 
-          const limit = DEFAULT_LIMIT;
+          const limit = Pagination.DEFAULT_LIMIT;
           const offset =
-            this.props.user.allUsers.page * DEFAULT_LIMIT;
+            this.props.user.allUsers.page * Pagination.DEFAULT_LIMIT;
           this.fetchUsers(limit, offset);
         }
       }

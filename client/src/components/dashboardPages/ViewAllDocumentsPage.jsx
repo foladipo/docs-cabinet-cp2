@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import { fetchAllDocuments } from '../../actions/DocumentActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants';
+import { Pagination } from '../../constants';
 import PlainDocument from '../common/PlainDocument';
 
 /**
@@ -33,7 +33,7 @@ class ViewAllDocumentsPage extends Component {
       this.props.documents.allDocuments.documents === undefined ||
       this.props.documents.allDocuments.documents.length < 1
     ) {
-      this.fetchDocuments(DEFAULT_LIMIT, DEFAULT_OFFSET);
+      this.fetchDocuments(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
     }
 
     const allDocsPageElement = $('#all-documents-page');
@@ -53,9 +53,9 @@ class ViewAllDocumentsPage extends Component {
             return;
           }
 
-          const limit = DEFAULT_LIMIT;
+          const limit = Pagination.DEFAULT_LIMIT;
           const offset =
-            this.props.documents.allDocuments.page * DEFAULT_LIMIT;
+            this.props.documents.allDocuments.page * Pagination.DEFAULT_LIMIT;
           this.fetchDocuments(limit, offset);
         }
       }

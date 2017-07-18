@@ -4,7 +4,7 @@ import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
 import Document from '../common/Document';
 import { fetchUserDocuments } from '../../actions/DocumentActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants/';
+import { Pagination } from '../../constants/';
 
 /**
  * ViewUserDocumentsPage - Shows a user a list of his/her own documents.
@@ -32,7 +32,9 @@ class ViewUserDocumentsPage extends Component {
       this.props.documents.userDocuments.documents.length < 1
     ) {
       this.loadUsersDocuments(
-        this.props.user.user.id, DEFAULT_LIMIT, DEFAULT_OFFSET
+        this.props.user.user.id,
+        Pagination.DEFAULT_LIMIT,
+        Pagination.DEFAULT_OFFSET
       );
     }
 
@@ -53,9 +55,9 @@ class ViewUserDocumentsPage extends Component {
             return;
           }
 
-          const limit = DEFAULT_LIMIT;
+          const limit = Pagination.DEFAULT_LIMIT;
           const offset =
-            this.props.documents.userDocuments.page * DEFAULT_LIMIT;
+            this.props.documents.userDocuments.page * Pagination.DEFAULT_LIMIT;
           this.loadUsersDocuments(this.props.user.user.id, limit, offset);
         }
       }

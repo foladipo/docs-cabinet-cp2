@@ -1,12 +1,5 @@
 import superagent from 'superagent';
-import {
-  SEARCH_USERS_PENDING,
-  SEARCH_USERS_REJECTED,
-  SEARCH_USERS_FULFILLED,
-  SEARCH_DOCUMENTS_PENDING,
-  SEARCH_DOCUMENTS_REJECTED,
-  SEARCH_DOCUMENTS_FULFILLED
-} from '../constants/';
+import { ActionTypes } from '../constants/';
 
 
 /**
@@ -18,7 +11,7 @@ import {
  */
 export function searchUsers(token, query) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: SEARCH_USERS_PENDING });
+    dispatch({ type: ActionTypes.SEARCH_USERS_PENDING });
 
     const request = httpClient || superagent;
 
@@ -28,14 +21,14 @@ export function searchUsers(token, query) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: SEARCH_USERS_REJECTED,
+            type: ActionTypes.SEARCH_USERS_REJECTED,
             payload: err.response.body
           });
           return;
         }
 
         dispatch({
-          type: SEARCH_USERS_FULFILLED,
+          type: ActionTypes.SEARCH_USERS_FULFILLED,
           payload: {
             query,
             ...res.body
@@ -54,7 +47,7 @@ export function searchUsers(token, query) {
  */
 export function searchDocuments(token, query) {
   return (dispatch, getState, httpClient) => {
-    dispatch({ type: SEARCH_DOCUMENTS_PENDING });
+    dispatch({ type: ActionTypes.SEARCH_DOCUMENTS_PENDING });
 
     const request = httpClient || superagent;
 
@@ -64,14 +57,14 @@ export function searchDocuments(token, query) {
       .end((err, res) => {
         if (err) {
           dispatch({
-            type: SEARCH_DOCUMENTS_REJECTED,
+            type: ActionTypes.SEARCH_DOCUMENTS_REJECTED,
             payload: err.response.body
           });
           return;
         }
 
         dispatch({
-          type: SEARCH_DOCUMENTS_FULFILLED,
+          type: ActionTypes.SEARCH_DOCUMENTS_FULFILLED,
           payload: {
             query,
             ...res.body
