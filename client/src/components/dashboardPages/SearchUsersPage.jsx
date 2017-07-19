@@ -80,7 +80,7 @@ class SearchUsersPage extends Component {
     );
 
     return (
-      <div id="search-users-page">
+      <div id="search-users-page" className="scrollable-page">
         <h4>Search users</h4>
         <div className="row">
           <div id="search-users-form-container" className="col s12 m3">
@@ -123,8 +123,7 @@ class SearchUsersPage extends Component {
               </div>
             </form>
           </div>
-          {/* TODO: This section below is not scrollable yet. */}
-          <div className="search-results-container col s12 m9 scrollable-page">
+          <div className="search-results-container col s12 m9">
             <h6>Search results</h6>
             <div>
               {userProfiles}
