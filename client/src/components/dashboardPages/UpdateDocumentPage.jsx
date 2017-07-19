@@ -73,6 +73,10 @@ class UpdateDocumentPage extends Component {
         });
       }
 
+      CKEDITOR.instances.update_content_editor.setData(
+        decodeURIComponent(targetDocument.content)
+      );
+
       return;
     }
 
@@ -130,6 +134,11 @@ class UpdateDocumentPage extends Component {
         categories: targetDocument.categories,
         tags: targetDocument.tags
       });
+
+      CKEDITOR.instances.update_content_editor.setData(
+        decodeURIComponent(targetDocument.content)
+      );
+
       return;
     }
 
