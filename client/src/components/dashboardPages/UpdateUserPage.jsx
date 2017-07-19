@@ -389,7 +389,7 @@ class UpdateUserPage extends Component {
     const firstNameTooltip = 'Please enter a new first name that has two or more non-whitespace characters.';
     const lastNameTooltip = 'Please enter a new last name that has two or more non-whitespace characters.';
     const userNameTooltip = 'Please enter your new email address.';
-    const passwordTootip = 'An acceptable password must at least contain one uppercase letter, one lower case letter, a number and a symbol (e.g $, *, #, @ etc).';
+    const passwordTootip = 'An acceptable password must be at least eight characters long and contain one uppercase letter, one lower case letter, a number and a symbol (e.g $, *, #, @ etc).';
 
     if (this.state.targetUser) {
       return (

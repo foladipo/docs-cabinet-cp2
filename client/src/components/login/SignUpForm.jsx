@@ -104,7 +104,7 @@ class SignUpForm extends React.Component {
   render() {
     const nameTooltip = 'Please enter a name that has two or more non-whitespace characters.';
     const userNameTooltip = 'Please enter your email address.';
-    const passwordTootip = 'An acceptable password must at least contain one uppercase letter, one lower case letter, a number and a symbol (e.g $, *, #, @ etc).';
+    const passwordTootip = 'An acceptable password must be at least eight characters long and contain one uppercase letter, one lower case letter, a number and a symbol (e.g $, *, #, @ etc).';
 
     return (
       <div id="sign-up-form">
@@ -185,11 +185,10 @@ class SignUpForm extends React.Component {
           </Row>
         </form>
         <div
-          s={12}
           className={
             this.props.user.isLoggingIn ?
-            'progress-bar-container' :
-            'hide progress-bar-container'
+            'progress-bar-container col s12' :
+            'hide progress-bar-container col s12'
           }
         >
           <ProgressBar />

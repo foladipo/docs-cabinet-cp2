@@ -120,11 +120,10 @@ class LoginForm extends React.Component {
           </Row>
         </form>
         <div
-          s={12}
           className={
             this.props.user.isLoggingIn ?
-            'progress-bar-container' :
-            'hide progress-bar-container'
+            'progress-bar-container col s12' :
+            'hide progress-bar-container col s12'
           }
         >
           <ProgressBar />
