@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input, ProgressBar, Row } from 'react-materialize';
 import _ from 'lodash';
+import striptags from 'striptags';
 import { getDocument, updateDocument } from '../../actions/DocumentActions';
 
 /**
@@ -43,6 +44,9 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
+    CKEDITOR.replace('update_content_editor');
+    CKEDITOR.instances.update_content_editor.on('change', this.updateContent);
+
     this.determineTargetDocument();
   }
 
@@ -166,17 +170,17 @@ class UpdateDocumentPage extends Component {
 
   /**
    * Updates the document content stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  updateContent(event) {
-    const content = event.target.value;
-    if (typeof content !== 'string' || content.length < 2) {
+  updateContent() {
+    const htmlContent = CKEDITOR.instances.update_content_editor.getData();
+    const bareContent = striptags(htmlContent);
+    if (bareContent.length < 2) {
       this.setState({ content: this.state.targetDocument.content });
       return;
     }
 
+    const content = encodeURIComponent(htmlContent);
     this.setState({ content });
   }
 
@@ -185,10 +189,12 @@ class UpdateDocumentPage extends Component {
    * @return {Boolean} - Whether or not a document's content is valid.
    */
   hasValidContent() {
-    const content = this.state.content;
-    if (!content) return false;
-    const strippedContent = content.replace(/(\s+)/, '');
-    return strippedContent.length > 1;
+    const htmlContent = decodeURIComponent(this.state.content);
+    const bareContent = striptags(htmlContent);
+    if (!bareContent) return false;
+
+    const contentWithoutWhitespace = bareContent.replace(/(\s+)/, '');
+    return contentWithoutWhitespace.length > 1;
   }
 
   /**
@@ -279,10 +285,10 @@ class UpdateDocumentPage extends Component {
    */
   isValidDocument() {
     return (
-      this.hasValidTitle(this.state.title) &&
-      this.hasValidContent(this.state.content) &&
-      this.hasValidCategories(this.state.categories) &&
-      this.hasValidTags(this.state.tags)
+      this.hasValidTitle() &&
+      this.hasValidContent() &&
+      this.hasValidCategories() &&
+      this.hasValidTags()
     );
   }
 
@@ -296,31 +302,27 @@ class UpdateDocumentPage extends Component {
     event.preventDefault();
 
     // Needed because a form might be submitted without using the submit button.
-    const title = this.state.title;
-    if (!this.hasValidTitle(title)) {
+    if (!this.hasValidTitle()) {
       this.setState({
         errorMessage: 'Supply a title that has two or more characters that are not whitespace.'
       });
       return;
     }
-    const content = this.state.content;
-    if (!this.hasValidContent(content)) {
+    if (!this.hasValidContent()) {
       this.setState({
         errorMessage: 'Supply a document content that has two or more characters that are not whitespace.'
       });
       return;
     }
-    const categories = this.state.categories;
-    if (!this.hasValidCategories(categories)) {
+    if (!this.hasValidCategories()) {
       this.setState({
         errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.'
       });
       return;
     }
-    const tags = this.state.tags;
-    if (!this.hasValidTags(tags)) {
-      this.setState({ errorMessage:
-        'Please supply two or more comma-separated tags that aren\'t merely whitespace.'
+    if (!this.hasValidTags()) {
+      this.setState({
+        errorMessage: 'Please supply two or more comma-separated tags that aren\'t merely whitespace.'
       });
       return;
     }
@@ -480,14 +482,7 @@ class UpdateDocumentPage extends Component {
                 <Icon left>mode_edit</Icon>
                 <div className="col s12">
                   <textarea
-                    id="update-content"
-                    rows="10"
-                    className="materialize-textarea update-doc-text-input"
-                    placeholder={
-                      this.state.targetDocument ?
-                      this.state.targetDocument.content : ''
-                    }
-                    onChange={this.updateContent}
+                    id="update_content_editor"
                   />
                   <br />
                 </div>
