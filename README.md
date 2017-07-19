@@ -6,8 +6,15 @@
 
 # Welcome to Docs Cabinet
 Docs Cabinet is a cool web app that enables you to create and save your
- documents. It's stable, intuitive and, best of all, FREE! It was also
- built using modern tech stacks like PostgreSQL, Node, React etc. You
+ documents. It's stable, intuitive and, best of all, **FREE**! It was also
+ built using modern tech stacks like
+ [PostgreSQL](https://www.postgresql.org/),
+ [Node](https://nodejs.org/en/),
+ [React](https://facebook.github.io/react/)
+ etc. One of these tools,
+ [CKEditor](http://ckeditor.com/),
+ enables you to create well-laid out documents
+ complete with **bold**/_italicized_ text, pictures and much more. You
  can also control access to your document. That is, you can make them
  public, private or accessible only to other users with the same
  role/account type as yours (e.g other admins).
@@ -31,8 +38,12 @@ This project was built using modern technology tools. These include:
  Google's Material Design philosophy.
 - [React Materialize](https://react-materialize.github.io/#/), a library of
  reusable, Material-design-themed React Components.
+- [CKEditor](http://ckeditor.com/), an awesome, free, open source HTML
+ text editor designed to simplify website content creation. In this app,
+ it enables you to create rich, multi-format documents online.
 - [PostgreSQL](https://www.postgresql.org/), an open source database.
-- [Sequelize](docs.sequelizejs.com/), a promise-based O.R.M for Node.js v4 and up. It supports PostgreSQL, MySQL, SQLite and MSSQL.
+- [Sequelize](docs.sequelizejs.com/), a promise-based O.R.M for Node.js v4
+ and up. It supports PostgreSQL, MySQL, SQLite and MSSQL.
 - [Scss](https://sass-lang.com), for writing custom styles.
 - [Swagger](https://swagger.io/), to document the app's RESTful endpoints.
 
@@ -92,7 +103,10 @@ These will create the required tables in the database and seed some of them.
 ## Limitations
 
 - You can't upload digital documents (like PDFs).
-- You can't add images to your documents or change your profile picture (yet).
+- You can't share links to documents. Other users can only search for
+ your public documents, or access them if they have the same role/account
+ type as you.
+- You can't change your profile picture (yet).
 - There is no automated password reset system. If you forget your password,
  you have to contact an admin and ask him/her to reset it for you.
 - This project doesn't use a realtime database (like Firebase DB). So, you
