@@ -54,7 +54,7 @@ class CreateDocument extends Component {
         errorMessage: '',
         title: '',
         content: '',
-        access: '',
+        access: 'public',
         categories: '',
         tags: ''
       });
