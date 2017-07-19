@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Input, ProgressBar } from 'react-materialize';
+import striptags from 'striptags';
 import { createDocument } from '../../actions/DocumentActions';
 
 /**
@@ -16,11 +17,7 @@ class CreateDocument extends Component {
 
     this.state = {
       errorMessage: '',
-      title: props.title,
-      content: props.content,
-      access: props.access,
-      categories: props.categories,
-      tags: props.tags
+      access: 'public'
     };
 
     this.hasValidTitle = this.hasValidTitle.bind(this);
@@ -36,6 +33,15 @@ class CreateDocument extends Component {
   }
 
   /**
+   * Called immediately after this Component is mounted.
+   * @return {null} - Returns nothing.
+   */
+  componentDidMount() {
+    CKEDITOR.replace('create_doc_content_editor');
+    CKEDITOR.instances.create_doc_content_editor.on('change', this.updateContent);
+  }
+
+  /**
    * Called immediately before rendering, when new props are or
    * state is being received.
    * @param {Object} nextProps - The new props this Component
@@ -46,13 +52,14 @@ class CreateDocument extends Component {
     if (nextProps.documentsStatus === 'documentCreated') {
       this.setState({
         errorMessage: '',
-        title: this.props.title,
-        content: this.props.content,
-        access: this.props.access,
-        categories: this.props.categories,
-        tags: this.props.tags
+        title: '',
+        content: '',
+        access: '',
+        categories: '',
+        tags: ''
       });
       $('#create-document-form .create-doc-text-input').val('');
+      CKEDITOR.instances.create_doc_content_editor.setData('');
       $('#create-document-form .create-doc-select-access').val('public');
     }
   }
@@ -75,8 +82,13 @@ class CreateDocument extends Component {
   hasValidContent() {
     const content = this.state.content;
     if (!content) return false;
-    const strippedContent = content.replace(/(\s+)/, '');
-    return strippedContent.length > 1;
+
+    const htmlContent = decodeURIComponent(content);
+    const bareContent = striptags(htmlContent);
+    if (!bareContent) return false;
+
+    const contentWithoutWhitespace = bareContent.replace(/(\s+)/, '');
+    return contentWithoutWhitespace.length > 1;
   }
 
   /**
@@ -123,12 +135,18 @@ class CreateDocument extends Component {
 
   /**
    * Updates the document content stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  updateContent(event) {
-    this.setState({ content: event.target.value });
+  updateContent() {
+    const htmlContent = CKEDITOR.instances.create_doc_content_editor.getData();
+    const bareContent = striptags(htmlContent);
+    if (bareContent.length < 2) {
+      this.setState({ content: '' });
+      return;
+    }
+
+    const content = encodeURIComponent(htmlContent);
+    this.setState({ content });
   }
 
   /**
@@ -161,23 +179,19 @@ class CreateDocument extends Component {
     event.preventDefault();
 
     // Needed because a form might be submitted without using the submit button.
-    const title = this.state.title;
-    if (!this.hasValidTitle(title)) {
+    if (!this.hasValidTitle()) {
       this.setState({ errorMessage: 'Supply a title that has two or more characters that are not whitespace.' });
       return;
     }
-    const content = this.state.content;
-    if (!this.hasValidContent(content)) {
+    if (!this.hasValidContent()) {
       this.setState({ errorMessage: 'Supply document content that has two or more characters that are not whitespace.' });
       return;
     }
-    const categories = this.state.categories;
-    if (!this.hasValidCategories(categories)) {
+    if (!this.hasValidCategories()) {
       this.setState({ errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.' });
       return;
     }
-    const tags = this.state.tags;
-    if (!this.hasValidTags(tags)) {
+    if (!this.hasValidTags()) {
       this.setState({ errorMessage: 'Please supply two or more comma-separated tags that aren\'t merely whitespace.' });
       return;
     }
@@ -197,13 +211,11 @@ class CreateDocument extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    // TODO: isValidDocument works fine, but why do these all become true
-    // once one of them is?
     const isValidDocument = (
-      this.hasValidTitle(this.state.title) &&
-      this.hasValidContent(this.state.content) &&
-      this.hasValidCategories(this.state.categories) &&
-      this.hasValidTags(this.state.tags)
+      this.hasValidTitle() &&
+      this.hasValidContent() &&
+      this.hasValidCategories() &&
+      this.hasValidTags()
     );
 
     return (
@@ -220,7 +232,7 @@ class CreateDocument extends Component {
           <div className="row">
             <Icon s={1} left>visibility</Icon>
             <Input
-              id="update-access"
+              id="new-document-access"
               s={12}
               m={6}
               type="select"
@@ -235,7 +247,7 @@ class CreateDocument extends Component {
             </Input>
           </div>
           <Input
-            id="update-title"
+            id="new-document-title"
             s={12}
             className="create-doc-text-input"
             label="Title"
@@ -245,7 +257,7 @@ class CreateDocument extends Component {
             <Icon>title</Icon>
           </Input>
           <Input
-            id="update-categories"
+            id="new-document-categories"
             s={12}
             className="create-doc-text-input"
             label="Categories"
@@ -255,7 +267,7 @@ class CreateDocument extends Component {
             <Icon>bookmark_border</Icon>
           </Input>
           <Input
-            id="update-tags"
+            id="new-document-tags"
             s={12}
             className="create-doc-text-input"
             label="Tags"
@@ -269,12 +281,7 @@ class CreateDocument extends Component {
           </span>
           <br />
           <div className="col s12">
-            <textarea
-              id="update-content"
-              rows="10"
-              className="materialize-textarea create-doc-text-input"
-              onChange={this.updateContent}
-            />
+            <textarea id="create_doc_content_editor" />
             <br />
           </div>
           <div className="quarter-vertical-margin" />
@@ -307,23 +314,10 @@ class CreateDocument extends Component {
 }
 
 CreateDocument.propTypes = {
-  access: PropTypes.string,
-  categories: PropTypes.string,
-  content: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   documentsStatus: PropTypes.string.isRequired,
   modeMessage: PropTypes.string.isRequired,
-  tags: PropTypes.string,
-  title: PropTypes.string,
   token: PropTypes.string.isRequired,
-};
-
-CreateDocument.defaultProps = {
-  access: 'public',
-  categories: undefined,
-  content: undefined,
-  tags: undefined,
-  title: undefined
 };
 
 export default CreateDocument;
