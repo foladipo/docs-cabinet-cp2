@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Icon, Modal, Row } from 'react-materialize';
+import striptags from 'striptags';
+import renderHTML from 'react-render-html';
 
 /**
  * PlainDocument - Renders a single document without edit/delete buttons.
@@ -27,6 +29,8 @@ function PlainDocument(props) {
     return img;
   };
 
+  const htmlContent = decodeURIComponent(props.content);
+
   return (
     <div className="plain-document">
       <div className="col s12 m6 l4 hoverable">
@@ -43,7 +47,9 @@ function PlainDocument(props) {
                 <span className="card-title black-text">{props.title}</span>
               </div>
               <div className="card-content">
-                <p>{props.content}</p>
+                <div className="flow-text">
+                  {striptags(htmlContent)}
+                </div>
               </div>
             </div>
           }
@@ -83,7 +89,9 @@ function PlainDocument(props) {
                 </span>
               </Col>
             </Row>
-            <p className="flow-text">{props.content}</p>
+            <div className="flow-text">
+              {renderHTML(htmlContent)}
+            </div>
           </div>
         </Modal>
       </div>

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Icon, Modal, Row } from 'react-materialize';
 import { Link } from 'react-router-dom';
+import striptags from 'striptags';
+import renderHTML from 'react-render-html';
 import ConfirmDocumentDeletion from './ConfirmDocumentDeletion';
 
 /**
@@ -36,6 +38,8 @@ function Document(props) {
     }
     return false;
   };
+
+  const htmlContent = decodeURIComponent(props.content);
 
   return (
     <div className={isDeletingMe() ? 'single-document disabled' : 'single-document'}>
@@ -92,11 +96,13 @@ function Document(props) {
                   </span>
                 </Col>
               </Row>
-              <p className="flow-text">{props.content}</p>
+              <div className="flow-text">
+                {renderHTML(htmlContent)}
+              </div>
             </div>
           </Modal>
           <div className="card-content">
-            <p>{props.content}</p>
+            <p>{striptags(htmlContent)}</p>
           </div>
           <div className="card-action">
             <ul className="document-actions valign-wrapper">
