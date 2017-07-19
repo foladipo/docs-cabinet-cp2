@@ -102,7 +102,7 @@ function Document(props) {
             </div>
           </Modal>
           <div className="card-content">
-            <p>{striptags(htmlContent)}</p>
+            <p>{renderHTML(striptags(htmlContent))}</p>
           </div>
           <div className="card-action">
             <ul className="document-actions valign-wrapper">

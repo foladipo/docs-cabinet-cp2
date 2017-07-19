@@ -48,7 +48,7 @@ function PlainDocument(props) {
               </div>
               <div className="card-content">
                 <div className="flow-text">
-                  {striptags(htmlContent)}
+                  {renderHTML(striptags(htmlContent))}
                 </div>
               </div>
             </div>
