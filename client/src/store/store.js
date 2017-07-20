@@ -27,7 +27,7 @@ const store = createStore(
       allUsersCount: 0,
       allUsers: {
         users: [],
-        page: 0,
+        page: 1,
         pageSize: 0,
         pageCount: 0,
         totalCount: 0
@@ -41,7 +41,7 @@ const store = createStore(
       userDocumentsCount: 0,
       userDocuments: {
         documents: [],
-        page: 0,
+        page: 1,
         pageSize: 0,
         pageCount: 0,
         totalCount: 0
@@ -49,7 +49,7 @@ const store = createStore(
       allDocumentsCount: 0,
       allDocuments: {
         documents: [],
-        page: 0,
+        page: 1,
         pageSize: 0,
         pageCount: 0,
         totalCount: 0

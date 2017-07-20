@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
+import ReactPaginate from 'react-paginate';
 import Document from '../common/Document';
 import { fetchUserDocuments } from '../../actions/DocumentActions';
 import { Pagination } from '../../constants/';
@@ -20,6 +21,7 @@ class ViewUserDocumentsPage extends Component {
     this.state = { hasFetchedAllUserDocuments: false };
 
     this.loadUsersDocuments = this.loadUsersDocuments.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
   }
 
   /**
@@ -37,37 +39,12 @@ class ViewUserDocumentsPage extends Component {
         Pagination.DEFAULT_OFFSET
       );
     }
-
-    const userDocsPageElement = $('#user-documents-page');
-    userDocsPageElement.on('scroll', () => {
-      if (
-        (userDocsPageElement.scrollTop() + userDocsPageElement.innerHeight()) >=
-        userDocsPageElement[0].scrollHeight
-      ) {
-        if (this.props.documents.status !== 'fetchingUserDocuments') {
-          if (
-            this.props.documents.userDocuments.page ===
-            this.props.documents.userDocuments.pageCount
-          ) {
-            this.setState({
-              hasFetchedAllUserDocuments: true
-            });
-            return;
-          }
-
-          const limit = Pagination.DEFAULT_LIMIT;
-          const offset =
-            this.props.documents.userDocuments.page * Pagination.DEFAULT_LIMIT;
-          this.loadUsersDocuments(this.props.user.user.id, limit, offset);
-        }
-      }
-    });
   }
 
   /**
-   * Attempts to fetch a user's documents.
-   * @param {String} targetUserId - Id of the user whose documents are to
-   * be fetched.
+   * Attempts to fetch a section/page of a user's documents.
+   * @param {String} targetUserId - Id of the user whose documents
+   * are to be fetched.
    * @param {String} limit - Number of documents to return.
    * @param {String} offset - Number of documents to skip before
    * beginning the fetch.
@@ -80,6 +57,21 @@ class ViewUserDocumentsPage extends Component {
       limit,
       offset
     ));
+  }
+
+  /**
+   * Handles requests to show the next or previous page of documents.
+   * @param {Object} data - Data about the pagination request.
+   * @return {null} - Returns nothing.
+   */
+  handlePageClick(data) {
+    const selectedPage = data.selected;
+    const offset = Math.ceil(selectedPage * Pagination.DEFAULT_LIMIT);
+    this.loadUsersDocuments(
+      this.props.user.user.id,
+      Pagination.DEFAULT_LIMIT,
+      offset
+    );
   }
 
   /**
@@ -121,6 +113,31 @@ class ViewUserDocumentsPage extends Component {
           </h5>
         </div>
         <div className="user-documents row">{documentComponents}</div>
+        <div
+          className={
+            this.props.documents.userDocuments.documents.length > 0 ?
+            'center-align' :
+            'hide'
+          }
+        >
+          <ReactPaginate
+            previousLabel="Previous"
+            nextLabel="Next"
+            breakLabel={<a href="">...</a>}
+            breakClassName="break-me"
+            pageCount={this.props.documents.userDocuments.pageCount}
+            initialPage={this.props.documents.userDocuments.page - 1}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName="pagination"
+            subContainerClassName="pages pagination"
+            activeClassName="active-pagination-btn"
+            pageClassName="pagination-btn"
+            previousClassName="pagination-previous-btn"
+            nextClassName="pagination-previous-btn"
+          />
+        </div>
         <div>
           <h5
             className={
@@ -140,15 +157,6 @@ class ViewUserDocumentsPage extends Component {
           </Col>
           <Col s={12} className="center-align">
             <h5>{this.props.documents.statusMessage.replace('Loading', 'Loading more')}</h5>
-          </Col>
-        </Row>
-        <Row
-          className={
-            this.state.hasFetchedAllUserDocuments ? 'thats-all' : 'hide'
-          }
-        >
-          <Col s={12} className="blue white-text center-align">
-            <h5>That&rsquo;s all! There are no documents left.</h5>
           </Col>
         </Row>
       </div>

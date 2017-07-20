@@ -142,3 +142,36 @@ body {
 .green-label {
   color: #26a69a;
 }
+
+.pagination-btn {
+  cursor: pointer;
+}
+
+.active-pagination-btn {
+  background-color: #26a69a;
+  cursor: not-allowed;
+}
+
+.active-pagination-btn a {
+  color: white;
+}
+
+.pagination li.active-pagination-btn a {
+  color: white;
+}
+
+.pagination-previous-btn {
+  cursor: pointer;
+}
+
+.pagination-previous-btn.disabled {
+  cursor: not-allowed;
+}
+
+.pagination-next-btn {
+  cursor: pointer;
+}
+
+.pagination-next-btn.disabled {
+  cursor: not-allowed;
+}

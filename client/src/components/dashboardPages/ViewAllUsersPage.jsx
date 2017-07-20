@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import { Col, Preloader, Row } from 'react-materialize';
+import ReactPaginate from 'react-paginate';
 import { fetchAllUsers } from '../../actions/UserActions';
 import { Pagination } from '../../constants';
 import User from '../common/User';
@@ -20,6 +21,7 @@ class ViewAllUsersPage extends Component {
     this.state = { hasFetchedAllUsers: false };
 
     this.fetchUsers = this.fetchUsers.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
   }
 
   /**
@@ -30,31 +32,6 @@ class ViewAllUsersPage extends Component {
     if (this.props.user.allUsers.users.length < 1) {
       this.fetchUsers(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
     }
-
-    const userPageElement = $('#all-users-page');
-    userPageElement.on('scroll', () => {
-      if (
-        (userPageElement.scrollTop() + userPageElement.innerHeight()) >=
-        userPageElement[0].scrollHeight
-      ) {
-        if (this.props.user.status !== 'fetchingAllUsers') {
-          if (
-            this.props.user.allUsers.page ===
-            this.props.user.allUsers.pageCount
-          ) {
-            this.setState({
-              hasFetchedAllUsers: true
-            });
-            return;
-          }
-
-          const limit = Pagination.DEFAULT_LIMIT;
-          const offset =
-            this.props.user.allUsers.page * Pagination.DEFAULT_LIMIT;
-          this.fetchUsers(limit, offset);
-        }
-      }
-    });
   }
 
   /**
@@ -70,6 +47,20 @@ class ViewAllUsersPage extends Component {
       limit,
       offset
     ));
+  }
+
+  /**
+   * Handles requests to show the next or previous page of documents.
+   * @param {Object} data - Data about the pagination request.
+   * @return {null} - Returns nothing.
+   */
+  handlePageClick(data) {
+    const selectedPage = data.selected;
+    const offset = Math.ceil(selectedPage * Pagination.DEFAULT_LIMIT);
+    this.fetchUsers(
+      Pagination.DEFAULT_LIMIT,
+      offset
+    );
   }
 
   /**
@@ -115,21 +106,37 @@ class ViewAllUsersPage extends Component {
             </h5>
           </Col>
         </Row>
+        <div
+          className={
+            this.props.user.allUsers.users.length > 0 ?
+            'center-align' :
+            'hide'
+          }
+        >
+          <ReactPaginate
+            previousLabel="Previous"
+            nextLabel="Next"
+            breakLabel={<a href="">...</a>}
+            breakClassName="break-me"
+            pageCount={this.props.user.allUsers.pageCount}
+            initialPage={this.props.user.allUsers.page - 1}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName="pagination"
+            subContainerClassName="pages pagination"
+            activeClassName="active-pagination-btn"
+            pageClassName="pagination-btn"
+            previousClassName="pagination-previous-btn"
+            nextClassName="pagination-previous-btn"
+          />
+        </div>
         <Row className={
           this.props.user.status === 'fetchAllUsersFailed' ? '' : 'hide'
           }
         >
           <Col s={12} className="red lighten-2 white-text center-align">
             <h5>{this.props.user.statusMessage}</h5>
-          </Col>
-        </Row>
-        <Row
-          className={
-            this.state.hasFetchedAllUsers ? 'thats-all' : 'hide'
-          }
-        >
-          <Col s={12} className="blue white-text center-align">
-            <h5>That&rsquo;s all! There are no users left.</h5>
           </Col>
         </Row>
       </div>

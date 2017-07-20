@@ -98,14 +98,12 @@ export default function userReducer(state, action) {
     case ActionTypes.FETCH_ALL_USERS_FULFILLED:
       newState.status = 'fetchedAllUsers';
       newState.statusMessage = action.payload.message;
-      newState.allUsersCount =
-        state.allUsersCount + action.payload.users.length;
+      newState.allUsersCount = action.payload.users.length;
       newState.allUsers.page = action.payload.page;
       newState.allUsers.pageSize = action.payload.pageSize;
       newState.allUsers.pageCount = action.payload.pageCount;
       newState.allUsers.totalCount = action.payload.totalCount;
-      newState.allUsers.users =
-        state.allUsers.users.concat(action.payload.users);
+      newState.allUsers.users = action.payload.users;
       break;
 
     case ActionTypes.UPDATE_USER_PENDING:

@@ -44,14 +44,12 @@ export default function documentsReducer(state, action) {
     case ActionTypes.FETCH_ALL_DOCUMENTS_FULFILLED:
       newState.status = 'allDocumentsFetched';
       newState.statusMessage = action.payload.message;
-      newState.allDocumentsCount =
-        state.allDocumentsCount + action.payload.documents.length;
+      newState.allDocumentsCount = action.payload.documents.length;
       newState.allDocuments.page = action.payload.page;
       newState.allDocuments.pageSize = action.payload.pageSize;
       newState.allDocuments.pageCount = action.payload.pageCount;
       newState.allDocuments.totalCount = action.payload.totalCount;
-      newState.allDocuments.documents =
-        state.allDocuments.documents.concat(action.payload.documents);
+      newState.allDocuments.documents = action.payload.documents;
       break;
 
     case ActionTypes.FETCH_USER_DOCUMENTS_PENDING:
@@ -68,14 +66,12 @@ export default function documentsReducer(state, action) {
     case ActionTypes.FETCH_USER_DOCUMENTS_FULFILLED:
       newState.status = 'userDocumentsFetched';
       newState.statusMessage = action.payload.message;
-      newState.userDocumentsCount =
-        state.userDocumentsCount + action.payload.documents.length;
+      newState.userDocumentsCount = action.payload.documents.length;
       newState.userDocuments.page = action.payload.page;
       newState.userDocuments.pageSize = action.payload.pageSize;
       newState.userDocuments.pageCount = action.payload.pageCount;
       newState.userDocuments.totalCount = action.payload.totalCount;
-      newState.userDocuments.documents =
-        state.userDocuments.documents.concat(action.payload.documents);
+      newState.userDocuments.documents = action.payload.documents;
       break;
 
     case ActionTypes.CREATE_DOCUMENT_PENDING:
