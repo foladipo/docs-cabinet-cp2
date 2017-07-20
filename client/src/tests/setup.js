@@ -33,3 +33,19 @@ global.$ = () => ({
 global.Materialize = {
   toast: () => {}
 };
+
+global.CKEDITOR = {
+  replace: () => {},
+  instances: {
+    create_doc_content_editor: {
+      on: () => {},
+      getData: () => 'Content',
+      setData: () => {}
+    },
+    update_content_editor: {
+      on: () => {},
+      getData: () => 'Content',
+      setData: () => {}
+    }
+  }
+};

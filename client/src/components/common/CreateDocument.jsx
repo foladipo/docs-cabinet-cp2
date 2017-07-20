@@ -281,7 +281,10 @@ class CreateDocument extends Component {
           </span>
           <br />
           <div className="col s12">
-            <textarea id="create_doc_content_editor" />
+            <textarea
+              id="create_doc_content_editor"
+              onChange={this.updateContent}
+            />
             <br />
           </div>
           <div className="quarter-vertical-margin" />

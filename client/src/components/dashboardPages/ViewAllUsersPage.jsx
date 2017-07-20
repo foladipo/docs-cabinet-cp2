@@ -120,6 +120,7 @@ class ViewAllUsersPage extends Component {
             breakClassName="break-me"
             pageCount={this.props.user.allUsers.pageCount}
             initialPage={this.props.user.allUsers.page - 1}
+            disableInitialCallback
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={this.handlePageClick}

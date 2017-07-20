@@ -127,6 +127,7 @@ class ViewUserDocumentsPage extends Component {
             breakClassName="break-me"
             pageCount={this.props.documents.userDocuments.pageCount}
             initialPage={this.props.documents.userDocuments.page - 1}
+            disableInitialCallback
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={this.handlePageClick}

@@ -492,6 +492,7 @@ class UpdateDocumentPage extends Component {
                 <div className="col s12">
                   <textarea
                     id="update_content_editor"
+                    onChange={this.updateContent}
                   />
                   <br />
                 </div>
