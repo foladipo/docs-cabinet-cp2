@@ -23,7 +23,7 @@ class UpdateUserPage extends Component {
     this.state = {
       hasFoundTargetUser: false,
       hasValidTargetUserId: false,
-      hasProfileChanged: false
+      targetUser: {}
     };
 
     this.determineTargetUser = this.determineTargetUser.bind(this);
@@ -69,6 +69,29 @@ class UpdateUserPage extends Component {
     }
 
     if (nextProps.user.status === 'updatedUser') {
+      let targetUser;
+      if (this.state.targetUser.id === nextProps.user.user.id) {
+        targetUser = nextProps.user.user;
+      }
+      if (targetUser === undefined) {
+        const targetUserInArray = nextProps.user.allUsers.users.filter(user =>
+          user.id === this.state.targetUser.id
+        );
+        targetUser = targetUserInArray[0];
+      }
+
+      if (targetUser !== undefined) {
+        this.setState({
+          targetUser,
+          newFirstName: targetUser.firstName,
+          newLastName: targetUser.lastName,
+          newUsername: targetUser.username,
+          newRoleId: targetUser.roleId,
+        });
+
+        return;
+      }
+
       this.determineTargetUser();
       return;
     }
@@ -506,9 +529,15 @@ class UpdateUserPage extends Component {
                 </Button>
               </Row>
             </form>
-            <ProgressBar
-              className={this.props.user.status === 'updatingUser' ? '' : 'hide'}
-            />
+            <div
+              className={
+                this.props.user.status === 'updatingUser' ?
+                '' :
+                'hide'
+              }
+            >
+              <ProgressBar />
+            </div>
           </div>
           <div className="divider" />
           {this.showDeleteAccountSection()}
