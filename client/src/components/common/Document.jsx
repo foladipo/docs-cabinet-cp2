@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import striptags from 'striptags';
 import renderHTML from 'react-render-html';
 import ConfirmDocumentDeletion from './ConfirmDocumentDeletion';
-import getFirstWords from '../../util/getFirstWords';
+import getReadableAccessType from '../../util/getReadableAccessType';
+import truncateString from '../../util/truncateString';
 
 /**
  * Document - Renders a single document.
@@ -14,24 +15,6 @@ import getFirstWords from '../../util/getFirstWords';
  * null if nothing is to be rendered.
  */
 function Document(props) {
-  const getDocImage = () => {
-    let img;
-    if (props.docImage) {
-      img = props.docImage;
-    } else {
-      if (props.access === 'public') {
-        img = '/img/public-documents.png';
-      }
-      if (props.access === 'private') {
-        img = '/img/private-documents.png';
-      }
-      if (props.access === 'role') {
-        img = '/img/role-documents.jpg';
-      }
-    }
-    return img;
-  };
-
   const isDeletingMe = () => {
     if (props.documentsStatus === 'deletingDocument' &&
       props.targetDocumentId === props.id) {
@@ -49,13 +32,16 @@ function Document(props) {
           <Modal
             fixedFooter
             trigger={
-              <div className="card-image">
-                <img
-                  className="materialboxed responsive-img"
-                  src={getDocImage()}
-                  alt={props.title}
-                />
-                <span className="card-title black-text">{props.title}</span>
+              <div className="card-content">
+                <span className="card-title teal-text">
+                  {truncateString(props.title, 30)}
+                </span>
+                <span className="chip">
+                  {getReadableAccessType(props.access, props.User.roleId)}
+                </span>
+                <p>
+                  {truncateString(renderHTML(striptags(htmlContent)), 240)}
+                </p>
               </div>
             }
           >
@@ -98,13 +84,10 @@ function Document(props) {
                 </Col>
               </Row>
               <div className="flow-text">
-                {getFirstWords(renderHTML(htmlContent))}
+                {renderHTML(htmlContent)}
               </div>
             </div>
           </Modal>
-          <div className="card-content">
-            <p>{renderHTML(striptags(htmlContent))}</p>
-          </div>
           <div className="card-action">
             <ul className="document-actions valign-wrapper">
               <li>
@@ -153,7 +136,6 @@ Document.propTypes = {
   content: PropTypes.string.isRequired,
   currentUserId: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
-  docImage: PropTypes.string,
   documentsStatus: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   tags: PropTypes.string.isRequired,
@@ -161,10 +143,6 @@ Document.propTypes = {
   title: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired,
   User: PropTypes.objectOf(PropTypes.any).isRequired
-};
-
-Document.defaultProps = {
-  docImage: undefined
 };
 
 export default Document;

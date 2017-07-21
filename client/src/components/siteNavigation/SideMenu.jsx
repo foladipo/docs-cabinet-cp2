@@ -36,7 +36,6 @@ function SideMenu(props) {
         className="text-black"
         user={{
           background: '/img/dark-mountains-small.jpg',
-          image: '/img/anonymous-user-thumbnail.png',
           name: `${props.user.user.firstName} ${props.user.user.lastName}`,
           email: props.user.user.username
         }}

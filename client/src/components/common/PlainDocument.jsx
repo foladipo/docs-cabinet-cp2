@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Col, Icon, Modal, Row } from 'react-materialize';
 import striptags from 'striptags';
 import renderHTML from 'react-render-html';
-import getFirstWords from '../../util/getFirstWords';
+import getReadableAccessType from '../../util/getReadableAccessType';
+import truncateString from '../../util/truncateString';
 
 /**
  * PlainDocument - Renders a single document without edit/delete buttons.
@@ -12,24 +13,6 @@ import getFirstWords from '../../util/getFirstWords';
  * null if nothing is to be rendered.
  */
 function PlainDocument(props) {
-  const getDocImage = () => {
-    let img;
-    if (props.docImage) {
-      img = props.docImage;
-    } else {
-      if (props.access === 'public') {
-        img = '/img/public-documents.png';
-      }
-      if (props.access === 'private') {
-        img = '/img/private-documents.png';
-      }
-      if (props.access === 'role') {
-        img = '/img/role-documents.jpg';
-      }
-    }
-    return img;
-  };
-
   const htmlContent = decodeURIComponent(props.content);
 
   return (
@@ -39,18 +22,16 @@ function PlainDocument(props) {
           fixedFooter
           trigger={
             <div className="card small">
-              <div className="card-image">
-                <img
-                  className="materialboxed responsive-img"
-                  src={getDocImage()}
-                  alt={props.title}
-                />
-                <span className="card-title black-text">{props.title}</span>
-              </div>
               <div className="card-content">
-                <div className="flow-text">
-                  {getFirstWords(renderHTML(striptags(htmlContent)))}
-                </div>
+                <span className="card-title teal-text">
+                  {truncateString(props.title, 20)}
+                </span>
+                <span className="chip">
+                  {getReadableAccessType(props.access, props.User.roleId)}
+                </span>
+                <p>
+                  {truncateString(renderHTML(striptags(htmlContent)), 200)}
+                </p>
               </div>
             </div>
           }
@@ -105,14 +86,9 @@ PlainDocument.propTypes = {
   categories: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   currentUserId: PropTypes.number.isRequired,
-  docImage: PropTypes.string,
   User: PropTypes.objectOf(PropTypes.any).isRequired,
   tags: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired
-};
-
-PlainDocument.defaultProps = {
-  docImage: undefined
 };
 
 export default PlainDocument;
