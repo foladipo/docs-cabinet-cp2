@@ -69,10 +69,10 @@ const store = createStore(
         lastSearchQuery: '',
         lastSearchResultsCount: 0,
         lastSearchResults: []
-      }
+      },
+      status: '',
+      statusMessage: ''
     },
-    status: '',
-    statusMessage: ''
   },
   middleware
 );
