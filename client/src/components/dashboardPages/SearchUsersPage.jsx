@@ -125,6 +125,18 @@ class SearchUsersPage extends Component {
           </div>
           <div className="search-results-container col s12 m9">
             <h6>Search results</h6>
+            <div
+              className={
+                this.props.search.status === 'searchedUsers' &&
+                this.props.search.users.lastSearchResults.length === 0 ?
+                'msg-container red lighten-2 center-align' :
+                'hide'
+              }
+            >
+              <h5 className="error-msg white-text">
+                There were no results for your query. Please try something else.
+              </h5>
+            </div>
             <div>
               {userProfiles}
             </div>
