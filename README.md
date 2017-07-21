@@ -97,7 +97,7 @@ Replace <DATABASE_NAME> with the name of your database. Then please replace <ADM
 ## Contributing
 
 You can send us your bug reports, suggestions feedback etc by tweeting at
- the [Lead Developer](https://google.com/search?q=folusho+oladipo), [Folusho Oladipo](https://twitter.com/folushooladipo).
+ the [Lead Developer], [Folusho Oladipo](https://twitter.com/folushooladipo).
 
 
 ## License
