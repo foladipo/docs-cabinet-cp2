@@ -41,10 +41,6 @@ describe('PlainDocument', () => {
     expect(wrapper.find('div.small.card')).to.have.length(1);
   });
 
-  it('should contain the document\'s image', () => {
-    expect(wrapper.find('.card-image')).to.have.length(1);
-  });
-
   it('should have a section for the card\'s title', () => {
     expect(wrapper.find('span.card-title')).to.have.length(1);
   });
