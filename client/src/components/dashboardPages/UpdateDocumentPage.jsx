@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input, ProgressBar, Row } from 'react-materialize';
+import { Button, Col, Icon, Input, ProgressBar, Row } from 'react-materialize';
 import _ from 'lodash';
 import striptags from 'striptags';
 import { getDocument, updateDocument } from '../../actions/DocumentActions';
@@ -383,7 +383,7 @@ class UpdateDocumentPage extends Component {
 
     return (
       <div id="update-document-page" className="row scrollable-page">
-        <div className="container">
+        <div className="centered-wrapper">
           <div className="msg-container">
             <h5
               className={
@@ -414,102 +414,109 @@ class UpdateDocumentPage extends Component {
               {this.state.errorMessage}
             </h5>
           </div>
-          <h3>Update document</h3>
+          <h4>Update document</h4>
           <div className="divider" />
           <form
             id="update-document-form"
             className={this.state.hasValidTargetDocumentId ? '' : 'hide'}
           >
             <Row>
-              <h5 className="red-text text-lighten-2">
-                **All fields are required.
-              </h5>
-              <div className="row">
-                <span className="col s12 green-label">
-                  Access types
-                </span>
-                <Input
-                  id="update-access"
-                  s={11}
-                  m={6}
-                  type="select"
-                  onChange={this.updateAccess}
-                >
-                  <option value="public">Public</option>
-                  <option value="private">Private</option>
-                  <option value="role">Role</option>
-                </Input>
-              </div>
-              <div>
-                <span className="green-label">Title</span>
-                <Input
-                  id="update-title"
-                  s={12}
-                  type="text"
-                  placeholder={
-                    this.state.targetDocument ?
-                    this.state.targetDocument.title : ''
-                  }
-                  onChange={this.updateTitle}
-                >
-                  <Icon>title</Icon>
-                </Input>
-              </div>
-              <div>
-                <span className="green-label">Categories</span>
-                <Input
-                  id="update-categories"
-                  s={12}
-                  type="text"
-                  placeholder={
-                    this.state.targetDocument ?
-                    this.state.targetDocument.categories : ''
-                  }
-                  onChange={this.updateCategories}
-                >
-                  <Icon>bookmark_border</Icon>
-                </Input>
-              </div>
-              <div>
-                <span className="green-label">Tags</span>
-                <Input
-                  id="update-tags"
-                  s={12}
-                  type="text"
-                  placeholder={
-                    this.state.targetDocument ?
-                    this.state.targetDocument.tags : ''
-                  }
-                  onChange={this.updateTags}
-                >
-                  <Icon>label_outline</Icon>
-                </Input>
-              </div>
-              <div>
-                <br />
-                <span className="green-label">Content</span>
-                <Icon left>mode_edit</Icon>
-                <div className="col s12">
-                  <textarea
-                    id="update_content_editor"
-                    onChange={this.updateContent}
-                  />
+              <Col s={12}>
+                <h6 className="red-text text-lighten-2">
+                  **All fields are required.
+                </h6>
+              </Col>
+              <Col s={12} m={5}>
+                <Col s={12}>
+                  <span className="col s12 green-label">
+                    Access types
+                  </span>
+                  <Input
+                    id="update-access"
+                    s={7}
+                    type="select"
+                    onChange={this.updateAccess}
+                  >
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="role">Role</option>
+                  </Input>
+                </Col>
+                <Col s={12}>
+                  <span className="green-label">Title</span>
+                  <Input
+                    id="update-title"
+                    s={12}
+                    type="text"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.title : ''
+                    }
+                    onChange={this.updateTitle}
+                  >
+                    <Icon>title</Icon>
+                  </Input>
+                </Col>
+                <Col s={12}>
+                  <span className="green-label">Categories</span>
+                  <Input
+                    id="update-categories"
+                    s={12}
+                    type="text"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.categories : ''
+                    }
+                    onChange={this.updateCategories}
+                  >
+                    <Icon>bookmark_border</Icon>
+                  </Input>
+                </Col>
+                <Col s={12}>
+                  <span className="green-label">Tags</span>
+                  <Input
+                    id="update-tags"
+                    s={12}
+                    type="text"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.tags : ''
+                    }
+                    onChange={this.updateTags}
+                  >
+                    <Icon>label_outline</Icon>
+                  </Input>
+                </Col>
+              </Col>
+              <Col s={12} m={7}>
+                <Col s={12}>
                   <br />
-                </div>
-              </div>
-              <div className="quarter-vertical-margin" />
-              <Button
-                id="update-document-btn"
-                onClick={this.attemptDocumentUpdate}
-                className={
-                  this.isValidDocument() && this.isUpdate() ?
-                  'quarter-vertical-margin' :
-                  'disabled quarter-vertical-margin'
-                }
-              >
-                Update
-                <Icon left>update</Icon>
-              </Button>
+                  <span className="green-label">Content</span>
+                  <Icon left>mode_edit</Icon>
+                  <div className="col s12">
+                    <textarea
+                      id="update_content_editor"
+                      onChange={this.updateContent}
+                    />
+                    <br />
+                  </div>
+                </Col>
+              </Col>
+              <Col s={12}>
+                <div className="quarter-vertical-margin" />
+                <Button
+                  id="update-document-btn"
+                  onClick={this.attemptDocumentUpdate}
+                  className={
+                    this.isValidDocument() && this.isUpdate() ?
+                    'quarter-vertical-margin' :
+                    'disabled quarter-vertical-margin'
+                  }
+                >
+                  Update
+                  <Icon left>update</Icon>
+                </Button>
+              </Col>
             </Row>
           </form>
           <div

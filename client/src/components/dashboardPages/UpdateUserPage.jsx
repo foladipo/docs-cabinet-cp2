@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
+import { Button, Col, Icon, Input, Modal, ProgressBar, Row } from 'react-materialize';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
 import DeleteUser from '../common/DeleteUser';
@@ -159,7 +159,7 @@ class UpdateUserPage extends Component {
       this.state.targetUser.id !== this.props.user.user.id
     ) {
       return (
-        <div>
+        <Col s={12} m={6}>
           <span className="green-label">Account type</span>
           <Input
             id="update-role-id"
@@ -171,7 +171,7 @@ class UpdateUserPage extends Component {
             <option value="0">Regular</option>
             <option value="1">Admin</option>
           </Input>
-        </div>
+        </Col>
       );
     }
   }
@@ -407,8 +407,6 @@ class UpdateUserPage extends Component {
    * null if nothing is to be rendered.
    */
   showUpdateForm() {
-    // TODO: Try and re-disable the 'submit' update button when an
-    // update is successfully performed.
     const firstNameTooltip = 'Please enter a new first name that has two or more non-whitespace characters.';
     const lastNameTooltip = 'Please enter a new last name that has two or more non-whitespace characters.';
     const userNameTooltip = 'Please enter your new email address.';
@@ -416,7 +414,7 @@ class UpdateUserPage extends Component {
 
     if (this.state.targetUser) {
       return (
-        <div className="container">
+        <div className="centered-wrapper">
           <div className="msg-container center-align white-text">
             <h5
               className={
@@ -453,80 +451,88 @@ class UpdateUserPage extends Component {
             <div className="divider" />
             <form id="update-user-form">
               <Row>
-                {this.showRoleUpdate()}
-                <div>
-                  <span className="green-label">First name</span>
-                  <Input
-                    id="update-first-name"
-                    s={12}
-                    placeholder={this.state.targetUser.firstName}
-                    className="tooltipped"
-                    data-position="top"
-                    data-delay="50"
-                    data-tooltip={firstNameTooltip}
-                    onChange={this.updateFirstName}
+                <Col s={12}>
+                  {this.showRoleUpdate()}
+                </Col>
+                <Col s={12}>
+                  <Col s={12} m={6}>
+                    <span className="green-label">First name</span>
+                    <Input
+                      id="update-first-name"
+                      s={12}
+                      placeholder={this.state.targetUser.firstName}
+                      className="tooltipped"
+                      data-position="top"
+                      data-delay="50"
+                      data-tooltip={firstNameTooltip}
+                      onChange={this.updateFirstName}
+                    >
+                      <Icon>face</Icon>
+                    </Input>
+                  </Col>
+                  <Col s={12} m={6}>
+                    <span className="green-label">Last Name</span>
+                    <Input
+                      id="update-last-name"
+                      s={12}
+                      placeholder={this.state.targetUser.lastName}
+                      className="tooltipped"
+                      data-position="top"
+                      data-delay="50"
+                      data-tooltip={lastNameTooltip}
+                      onChange={this.updateLastName}
+                    >
+                      <Icon>face</Icon>
+                    </Input>
+                  </Col>
+                </Col>
+                <Col s={12}>
+                  <Col s={12} m={6}>
+                    <span className="green-label">Email</span>
+                    <Input
+                      id="update-username"
+                      type="email"
+                      s={12}
+                      placeholder={this.state.targetUser.username}
+                      className="tooltipped"
+                      data-position="top"
+                      data-delay="50"
+                      data-tooltip={userNameTooltip}
+                      onChange={this.updateUsername}
+                    >
+                      <Icon>account_circle</Icon>
+                    </Input>
+                  </Col>
+                  <Col s={12} m={6}>
+                    <span className="green-label">Password</span>
+                    <Input
+                      id="update-password"
+                      s={12}
+                      type="password"
+                      className="tooltipped"
+                      data-position="top"
+                      data-delay="50"
+                      data-tooltip={passwordTootip}
+                      onChange={this.updatePassword}
+                    >
+                      <Icon>lock</Icon>
+                    </Input>
+                  </Col>
+                </Col>
+                <Col s={12}>
+                  <Button
+                    id="attempt-profile-update-btn"
+                    className={
+                      this.isUpdate() &&
+                      this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'
+                    }
+                    waves="light"
+                    onClick={this.attemptProfileUpdate}
                   >
-                    <Icon>face</Icon>
-                  </Input>
-                </div>
-                <div>
-                  <span className="green-label">Last Name</span>
-                  <Input
-                    id="update-last-name"
-                    s={12}
-                    placeholder={this.state.targetUser.lastName}
-                    className="tooltipped"
-                    data-position="top"
-                    data-delay="50"
-                    data-tooltip={lastNameTooltip}
-                    onChange={this.updateLastName}
-                  >
-                    <Icon>face</Icon>
-                  </Input>
-                </div>
-                <div>
-                  <span className="green-label">Email</span>
-                  <Input
-                    id="update-username"
-                    type="email"
-                    s={12}
-                    placeholder={this.state.targetUser.username}
-                    className="tooltipped"
-                    data-position="top"
-                    data-delay="50"
-                    data-tooltip={userNameTooltip}
-                    onChange={this.updateUsername}
-                  >
-                    <Icon>account_circle</Icon>
-                  </Input>
-                </div>
-                <div>
-                  <span className="green-label">Password</span>
-                  <Input
-                    id="update-password"
-                    s={12}
-                    type="password"
-                    className="tooltipped"
-                    data-position="top"
-                    data-delay="50"
-                    data-tooltip={passwordTootip}
-                    onChange={this.updatePassword}
-                  >
-                    <Icon>lock</Icon>
-                  </Input>
-                </div>
-                <Button
-                  id="attempt-profile-update-btn"
-                  className={
-                    this.isUpdate() &&
-                    this.props.user.status !== 'updatingUser' ? 'hoverable' : 'disabled'
-                  }
-                  waves="light"
-                  onClick={this.attemptProfileUpdate}
-                >
-                  Update
-                  <Icon left>update</Icon>
-                </Button>
+                    Update
+                    <Icon left>update</Icon>
+                  </Button>
+                </Col>
               </Row>
             </form>
             <div
