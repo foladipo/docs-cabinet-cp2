@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Col, Icon, Modal, Row } from 'react-materialize';
 import striptags from 'striptags';
 import renderHTML from 'react-render-html';
+import getFirstWords from '../../util/getFirstWords';
 
 /**
  * PlainDocument - Renders a single document without edit/delete buttons.
@@ -48,7 +49,7 @@ function PlainDocument(props) {
               </div>
               <div className="card-content">
                 <div className="flow-text">
-                  {renderHTML(striptags(htmlContent))}
+                  {getFirstWords(renderHTML(striptags(htmlContent)))}
                 </div>
               </div>
             </div>

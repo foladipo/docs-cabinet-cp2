@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import striptags from 'striptags';
 import renderHTML from 'react-render-html';
 import ConfirmDocumentDeletion from './ConfirmDocumentDeletion';
+import getFirstWords from '../../util/getFirstWords';
 
 /**
  * Document - Renders a single document.
@@ -97,7 +98,7 @@ function Document(props) {
                 </Col>
               </Row>
               <div className="flow-text">
-                {renderHTML(htmlContent)}
+                {getFirstWords(renderHTML(htmlContent))}
               </div>
             </div>
           </Modal>
