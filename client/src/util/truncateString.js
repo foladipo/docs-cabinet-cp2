@@ -7,8 +7,7 @@
  * if its length is less than desiredLength.
  */
 export default function truncateString(longText, desiredLength) {
-  if (typeof longText !== 'string') return;
-  if (desiredLength < 0) return;
+  if (typeof longText !== 'string' || desiredLength < 0) return;
 
   if (longText.length < desiredLength) {
     return longText;

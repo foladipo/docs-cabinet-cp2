@@ -74,18 +74,19 @@ describe('UpdateDocumentPage', () => {
 
   it('should validate all its input fields', () => {
     const newWrapper = mount(<UpdateDocumentPage {...props} />);
+    const newInstance = newWrapper.instance();
 
     newWrapper.setState({ ...oldDocument, title: '' });
-    expect(newWrapper.instance().hasValidTitle()).to.equal(false);
+    expect(newInstance.hasValidTitle()).to.equal(false);
 
     newWrapper.setState({ ...oldDocument, categories: '' });
-    expect(newWrapper.instance().hasValidCategories()).to.equal(false);
+    expect(newInstance.hasValidCategories()).to.equal(false);
 
     newWrapper.setState({ ...oldDocument, tags: '' });
-    expect(newWrapper.instance().hasValidTags()).to.equal(false);
+    expect(newInstance.hasValidTags()).to.equal(false);
 
     newWrapper.setState({ ...oldDocument, content: '' });
-    expect(newWrapper.instance().hasValidContent()).to.equal(false);
+    expect(newInstance.hasValidContent()).to.equal(false);
   });
 
   it('should be able to update a document\'s access type', () => {

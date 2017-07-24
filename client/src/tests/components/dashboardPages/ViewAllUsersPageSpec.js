@@ -35,7 +35,7 @@ const props = {
   }
 };
 
-const wrapper = mount(<MockRouter><ViewAllUsersPage {...props} /></MockRouter>);
+const wrapper = mount(<ViewAllUsersPage {...props} />);
 
 describe('ViewAllUsersPage', () => {
   it('should have an HTML id of all-users-page', () => {
@@ -44,6 +44,14 @@ describe('ViewAllUsersPage', () => {
 
   it('should auto-fetch a list of users', () => {
     expect(dispatchSpy.calledOnce).to.equal(true);
+  });
+
+  it('should have a method that fetches pages/sections of the list of users', () => {
+    const handlePageClick = wrapper.instance().handlePageClick;
+    expect(handlePageClick).to.not.equal(undefined);
+    const data = { selected: 1 };
+    handlePageClick(data);
+    expect(dispatchSpy.calledTwice).to.equal(true);
   });
 
   it('should show a list of all the users of this project', () => {
