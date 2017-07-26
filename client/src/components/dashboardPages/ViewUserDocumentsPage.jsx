@@ -29,16 +29,11 @@ class ViewUserDocumentsPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
-    if (
-      this.props.documents.userDocuments.documents === undefined ||
-      this.props.documents.userDocuments.documents.length < 1
-    ) {
-      this.loadUsersDocuments(
-        this.props.user.user.id,
-        Pagination.DEFAULT_LIMIT,
-        Pagination.DEFAULT_OFFSET
-      );
-    }
+    this.loadUsersDocuments(
+      this.props.user.user.id,
+      Pagination.DEFAULT_LIMIT,
+      Pagination.DEFAULT_OFFSET
+    );
   }
 
   /**

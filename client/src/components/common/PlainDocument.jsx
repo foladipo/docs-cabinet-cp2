@@ -30,7 +30,7 @@ function PlainDocument(props) {
                   {getReadableAccessType(props.access, props.User.roleId)}
                 </span>
                 <p>
-                  {truncateString(renderHTML(striptags(htmlContent)), 200)}
+                  {truncateString(renderHTML(striptags(htmlContent)), 350)}
                 </p>
               </div>
             </div>

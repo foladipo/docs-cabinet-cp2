@@ -29,9 +29,7 @@ class ViewAllUsersPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
-    if (this.props.user.allUsers.users.length < 1) {
-      this.fetchUsers(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
-    }
+    this.fetchUsers(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
   }
 
   /**

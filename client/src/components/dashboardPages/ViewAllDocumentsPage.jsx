@@ -31,12 +31,7 @@ class ViewAllDocumentsPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
-    if (
-      this.props.documents.allDocuments.documents === undefined ||
-      this.props.documents.allDocuments.documents.length < 1
-    ) {
-      this.fetchDocuments(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
-    }
+    this.fetchDocuments(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
   }
 
   /**
