@@ -585,7 +585,7 @@ export default class UsersController {
               limit,
               offset,
               attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
-              order: [['createdAt', 'DESC']]
+              order: [['updatedAt', 'DESC']]
             })
             .then((docsAndMetadata) => {
               const pageSize = limit;

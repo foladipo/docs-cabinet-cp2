@@ -92,6 +92,10 @@ export default function documentsReducer(state, action) {
         state.userDocumentsCount + action.payload.documents.length;
       newState.userDocuments.documents =
         action.payload.documents.concat(state.userDocuments.documents);
+      newState.allDocumentsCount =
+        state.allDocumentsCount + action.payload.documents.length;
+      newState.allDocuments.documents =
+        action.payload.documents.concat(state.allDocuments.documents);
       break;
 
     case ActionTypes.DELETE_DOCUMENT_PENDING:
@@ -135,13 +139,19 @@ export default function documentsReducer(state, action) {
       newState.status = 'documentUpdated';
       newState.statusMessage = action.payload.message;
       newState.userDocuments.documents =
-        state.userDocuments.documents.map((doc) => {
-          if (doc.id === action.payload.documents[0].id) {
-            return action.payload.documents[0];
-          }
-          return doc;
-        });
+        action.payload.documents.concat(
+          state.userDocuments.documents.filter(doc =>
+            doc.id !== action.payload.documents[0].id
+          )
+        );
       newState.userDocumentsCount = newState.userDocuments.documents.length;
+      newState.allDocuments.documents =
+        action.payload.documents.concat(
+          state.allDocuments.documents.filter(doc =>
+            doc.id !== action.payload.documents[0].id
+          )
+        );
+      newState.allDocumentsCount = newState.allDocuments.documents.length;
       newState.targetDocumentId = -1;
       break;
 

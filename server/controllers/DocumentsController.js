@@ -25,7 +25,8 @@ export default class DocumentsController {
     const categories = reqBody.categories;
     const tags = reqBody.tags;
 
-    const authorId = req.decodedUserProfile.id;
+    const author = req.decodedUserProfile;
+    const authorId = author.id;
 
     const newDocument = {
       title,
@@ -49,7 +50,13 @@ export default class DocumentsController {
               categories: createdDocument.categories,
               tags: createdDocument.tags,
               createdAt: createdDocument.createdAt,
-              authorId: createdDocument.authorId
+              authorId: createdDocument.authorId,
+              User: {
+                id: authorId,
+                firstName: author.firstName,
+                lastName: author.lastName,
+                roleId: author.roleId
+              }
             }]
           });
       });
@@ -153,7 +160,7 @@ export default class DocumentsController {
           ]
         },
         attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
-        order: [['createdAt', 'DESC']],
+        order: [['updatedAt', 'DESC']],
         limit,
         offset
       })
@@ -219,7 +226,10 @@ export default class DocumentsController {
     }
 
     Document
-      .findById(documentId)
+      .find({
+        include: [{ model: User, attributes: ['id', 'firstName', 'lastName', 'roleId'] }],
+        where: { id: documentId }
+      })
       .then((foundDocument) => {
         if (foundDocument) {
           const updaterId = userProfile.id;
@@ -241,6 +251,7 @@ export default class DocumentsController {
               document.tags = documentUpdate.tags;
             }
 
+            const authorProfile = foundDocument.User;
             Document
               .update(document, {
                 where: {
@@ -262,6 +273,7 @@ export default class DocumentsController {
                       tags: updatedDocument.tags,
                       createdAt: updatedDocument.createdAt,
                       authorId: updatedDocument.authorId,
+                      User: authorProfile
                     }]
                   });
               });
