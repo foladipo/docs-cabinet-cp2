@@ -34,7 +34,7 @@ module.exports = {
       .setValue('#sign-up-form #update-password', user.password)
       .click('#sign-up-btn')
       .waitForElementNotPresent('#authentication-container', 3000)
-      .waitForElementPresent('#authenticated-user-area', 3000)
+      .waitForElementPresent('#main-container', 3000)
       .assert
         .urlEquals(`http://localhost:${port}/dashboard`);
   },
@@ -120,9 +120,9 @@ module.exports = {
         .cssClassPresent('#delete-user-btn', 'disabled')
       .setValue('#confirm-deletion-input', user.username)
       .click('#delete-user-btn')
-      .waitForElementNotPresent('#authenticated-user-area', 3000)
+      .waitForElementNotPresent('#main-container', 3000)
       .assert
-        .elementNotPresent('#authenticated-user-area')
+        .elementNotPresent('#main-container')
       .assert
         .elementPresent('#authentication-container')
       .pause(5000)

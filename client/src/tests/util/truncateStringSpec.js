@@ -3,7 +3,7 @@ import truncateString from '../../util/truncateString';
 
 const expect = chai.expect;
 
-describe('getReadableAccessType', () => {
+describe('truncateStringSpec', () => {
   it('should return nothing when fed with invalid arguments (a non-string argument or a truncation length that\'s less than 0)', () => {
     let text = { random: 'foo' };
     let truncationLength = 6;

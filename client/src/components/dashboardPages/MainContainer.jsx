@@ -79,8 +79,7 @@ export class MainContainer extends React.Component {
     }
 
     return (
-      // TODO: Rename this root element to #dashboard-main-container.
-      <div id="authenticated-user-area" className="grey lighten-3">
+      <div id="main-container" className="grey lighten-3">
         <SideMenu
           handleLogout={this.handleLogout}
           getAdminSection={this.getAdminSection}
