@@ -130,7 +130,6 @@ Lastly, you can send your
  [Lead Developer](https://google.com/search?q=folusho+oladipo),
  [Folusho Oladipo](https://twitter.com/folushooladipo).
 
-
 ## License
 
 This project is authored by [Folusho Oladipo](https://google.com/search?q=Folusho+Oladipo)
