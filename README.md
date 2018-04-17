@@ -87,7 +87,7 @@ Note: `npm` is a component of NodeJS that serves as its package manager.
 ```bash
 npm run db:migrate
 
-npm run db:seed
+npm run db:seed:all
 ```
 
 These will create the required tables in the database and seed some of them.
