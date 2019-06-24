@@ -59,7 +59,7 @@ describe('When it gets a DELETE request, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that specify an invalid id for the document to be deleted', (done) => {
+  it('should return an error for requests that specify an invalid id for the document to be deleted', (done) => {
     request.delete(`${deleteDocumentEndpoint}/foo`)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', validToken)
@@ -71,7 +71,7 @@ describe('When it gets a DELETE request, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that try to delete a non-existent document', (done) => {
+  it('should return an error for requests that try to delete a non-existent document', (done) => {
     request.delete(`${deleteDocumentEndpoint}/6543210`)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', validToken)

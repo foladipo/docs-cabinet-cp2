@@ -72,7 +72,7 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       }, done);
   });
 
-  it('should reject requests where the id of the user to delete is not' +
+  it('should return an error for requests where the id of the user to delete is not' +
     ' numeric', (done) => {
     const validToken = getValidToken();
     request.delete(`${deleteUserEndpoint}/foo`)
@@ -86,7 +86,7 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       }, done);
   });
 
-  it('should reject requests where no existing user has the id supplied', (done) => {
+  it('should return an error for requests where no existing user has the id supplied', (done) => {
     const validToken = getValidToken();
     request.delete(`${deleteUserEndpoint}/6543210`)
       .set('x-docs-cabinet-authentication', validToken)
@@ -99,7 +99,7 @@ describe('When it receives a DELETE request, the /api/users/<id> endpoint', () =
       }, done);
   });
 
-  it('should reject requests where a non-admin user is trying to delete' +
+  it('should return an error for requests where a non-admin user is trying to delete' +
   ' another user\'s account', (done) => {
     const validToken = getValidToken();
     request.delete(`${deleteUserEndpoint}/0`)

@@ -46,7 +46,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject the creation of duplicate accounts', (done) => {
+  it('should return an error for the creation of duplicate accounts', (done) => {
     User.create(duplicateUser)
       .catch((errors) => {
         expect(errors.name).to.equal('SequelizeUniqueConstraintError');
@@ -54,7 +54,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject the creation of accounts that do NOT have a username', (done) => {
+  it('should return an error for the creation of accounts that do NOT have a username', (done) => {
     const noUsername = {
       firstName: 'Huckleberry',
       lastName: 'Finn',
@@ -71,7 +71,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject the creation of accounts that do NOT have a first name', (done) => {
+  it('should return an error for the creation of accounts that do NOT have a first name', (done) => {
     const noFirstName = {
       lastName: 'Finn',
       username: 'dfinn@example.com',
@@ -88,7 +88,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject the creation of accounts that do NOT have a last name', (done) => {
+  it('should return an error for the creation of accounts that do NOT have a last name', (done) => {
     const noLastName = {
       firstName: 'Huckleberry',
       username: 'dfinn@example.com',
@@ -105,7 +105,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject the creation of accounts that do NOT have a password', (done) => {
+  it('should return an error for the creation of accounts that do NOT have a password', (done) => {
     const noPassword = {
       firstName: 'Huckleberry',
       lastName: 'Finn',
@@ -122,7 +122,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject the use of non-integer values for role id\'s', (done) => {
+  it('should return an error for the use of non-integer values for role id\'s', (done) => {
     const invalidRoleId = {
       firstName: 'Huckleberry',
       lastName: 'Finn',
@@ -139,7 +139,7 @@ describe('The User model', () => {
       });
   });
 
-  it('should reject role id\'s that are not defined in the Role model', (done) => {
+  it('should return an error for role id\'s that are not defined in the Role model', (done) => {
     const nonExistentRoleId = {
       firstName: 'Huckleberry',
       lastName: 'Finn',

@@ -328,11 +328,10 @@ export default class UsersController {
       return;
     }
 
-    if (targetUserId !== profileOfUpdater.id
-      && profileOfUpdater.roleId < 1) {
+    if (targetUserId !== profileOfUpdater.id && profileOfUpdater.roleId < 1) {
       res.status(403)
         .json({
-          message: 'You\'re not permitted to update this account.',
+          message: 'You cannot update another user\'s account.',
           error: 'ForbiddenOperationError'
         });
       return;
@@ -357,6 +356,18 @@ export default class UsersController {
     // Not doing so introduces some (almost) latent bugs.
     if (newProfile.roleId !== undefined) {
       if (typeof newProfile.roleId === 'number') {
+        if (
+          profileOfUpdater.id === targetUserId &&
+          profileOfUpdater.roleId !== newProfile.roleId
+        ) {
+          res.status(403)
+            .json({
+              message: 'You can\'t change your own role, even as an admin.',
+              error: 'ForbiddenOperationError'
+            });
+          return;
+        }
+
         if (profileOfUpdater.roleId < 1) {
           res.status(403)
             .json({
@@ -574,7 +585,7 @@ export default class UsersController {
               limit,
               offset,
               attributes: ['id', 'title', 'content', 'access', 'categories', 'tags', 'createdAt', 'authorId'],
-              order: [['createdAt', 'DESC']]
+              order: [['updatedAt', 'DESC']]
             })
             .then((docsAndMetadata) => {
               const pageSize = limit;

@@ -1,11 +1,12 @@
 import express from 'express';
 
 import UsersController from '../controllers/UsersController';
-import adminsOnly from '../middleware/adminsOnly';
-import accountOwnerOrAdminsOnly from '../middleware/accountOwnerOrAdminsOnly';
+import RestrictAccess from '../middleware/RestrictAccess';
 import validateToken from '../middleware/validateToken';
 
 const usersRouter = express.Router();
+const adminsOnly = RestrictAccess.adminsOnly;
+const accountOwnerOrAdminsOnly = RestrictAccess.accountOwnerOrAdminsOnly;
 
 /**
  * @swagger

@@ -45,7 +45,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: newPassword
   };
-  it('should reject requests where the first name is missing', (done) => {
+  it('should return an error for requests where the first name is missing', (done) => {
     request.post(signUpEndpoint)
       .send(noFirstName)
       .set('Accept', 'application/json')
@@ -63,7 +63,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: newPassword
   };
-  it('should reject requests where the first name is empty', (done) => {
+  it('should return an error for requests where the first name is empty', (done) => {
     request.post(signUpEndpoint)
       .send(emptyFirstName)
       .set('Accept', 'application/json')
@@ -81,7 +81,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: newPassword
   };
-  it('should reject requests where the first name is invalid', (done) => {
+  it('should return an error for requests where the first name is invalid', (done) => {
     request.post(signUpEndpoint)
       .send(invalidFirstName)
       .set('Accept', 'application/json')
@@ -98,7 +98,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: newPassword
   };
-  it('should reject requests where the last name is missing', (done) => {
+  it('should return an error for requests where the last name is missing', (done) => {
     request.post(signUpEndpoint)
       .send(noLastName)
       .set('Accept', 'application/json')
@@ -116,7 +116,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: newPassword
   };
-  it('should reject requests where the last name is empty', (done) => {
+  it('should return an error for requests where the last name is empty', (done) => {
     request.post(signUpEndpoint)
       .send(emptyLastName)
       .set('Accept', 'application/json')
@@ -134,7 +134,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: newPassword
   };
-  it('should reject requests where the last name is invalid', (done) => {
+  it('should return an error for requests where the last name is invalid', (done) => {
     request.post(signUpEndpoint)
       .send(invalidLastName)
       .set('Accept', 'application/json')
@@ -151,7 +151,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     lastName: newLastName,
     password: newPassword
   };
-  it('should reject requests where the username is missing', (done) => {
+  it('should return an error for requests where the username is missing', (done) => {
     request.post(signUpEndpoint)
       .send(noUsername)
       .set('Accept', 'application/json')
@@ -169,7 +169,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: '',
     password: newPassword
   };
-  it('should reject requests where the username is empty', (done) => {
+  it('should return an error for requests where the username is empty', (done) => {
     request.post(signUpEndpoint)
       .send(emptyUsername)
       .set('Accept', 'application/json')
@@ -187,7 +187,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: '@example',
     password: newPassword
   };
-  it('should reject requests where the username is NOT a valid email' +
+  it('should return an error for requests where the username is NOT a valid email' +
     ' address', (done) => {
     request.post(signUpEndpoint)
       .send(invalidUsername)
@@ -206,7 +206,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: 'foo@example.com',
     password: '1Very&&Hard$@3'
   };
-  it('should reject the use of one username for multiple accounts', (done) => {
+  it('should return an error for the use of one username for multiple accounts', (done) => {
     request.post(signUpEndpoint)
       .send(existingUser)
       .set('Accept', 'application/json')
@@ -223,7 +223,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     lastName: newLastName,
     username: newUsername,
   };
-  it('should reject requests where the password is missing', (done) => {
+  it('should return an error for requests where the password is missing', (done) => {
     request.post(signUpEndpoint)
       .send(noPassword)
       .set('Accept', 'application/json')
@@ -241,7 +241,7 @@ describe('When POST\'ed to, the /api/users endpoint', () => {
     username: newUsername,
     password: ''
   };
-  it('should reject requests where the password is empty', (done) => {
+  it('should return an error for requests where the password is empty', (done) => {
     request.post(signUpEndpoint)
       .send(emptyPassword)
       .set('Accept', 'application/json')

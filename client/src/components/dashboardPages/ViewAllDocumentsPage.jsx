@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Preloader, Row } from 'react-materialize';
 import uuid from 'uuid';
+import ReactPaginate from 'react-paginate';
 import { fetchAllDocuments } from '../../actions/DocumentActions';
-import { DEFAULT_LIMIT, DEFAULT_OFFSET } from '../../constants';
+import { Pagination } from '../../constants';
 import PlainDocument from '../common/PlainDocument';
 
 /**
@@ -22,6 +23,7 @@ class ViewAllDocumentsPage extends Component {
     };
 
     this.fetchDocuments = this.fetchDocuments.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
   }
 
   /**
@@ -29,44 +31,14 @@ class ViewAllDocumentsPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
-    if (
-      this.props.documents.allDocuments.documents === undefined ||
-      this.props.documents.allDocuments.documents.length < 1
-    ) {
-      this.fetchDocuments(DEFAULT_LIMIT, DEFAULT_OFFSET);
-    }
-
-    const allDocsPageElement = $('#all-documents-page');
-    allDocsPageElement.on('scroll', () => {
-      if (
-        (allDocsPageElement.scrollTop() + allDocsPageElement.innerHeight()) >=
-        allDocsPageElement[0].scrollHeight
-      ) {
-        if (this.props.documents.status !== 'fetchingAllDocuments') {
-          if (
-            this.props.documents.allDocuments.page ===
-            this.props.documents.allDocuments.pageCount
-          ) {
-            this.setState({
-              hasFetchedAllDocuments: true
-            });
-            return;
-          }
-
-          const limit = DEFAULT_LIMIT;
-          const offset =
-            this.props.documents.allDocuments.page * DEFAULT_LIMIT;
-          this.fetchDocuments(limit, offset);
-        }
-      }
-    });
+    this.fetchDocuments(Pagination.DEFAULT_LIMIT, Pagination.DEFAULT_OFFSET);
   }
 
   /**
-   * Attempts to fetch all the documents in this app that this user is
-   * permitted to see.
-   * @param {String} limit - Number of documents to return.
-   * @param {String} offset - Number of documents to skip before
+   * Attempts to fetch a section/page of all the documents in this app
+   * that this user is permitted to see.
+   * @param {Number} limit - Number of documents to return.
+   * @param {Number} offset - Number of documents to skip before
    * beginning the fetch.
    * @return {null} - Returns nothing.
    */
@@ -76,6 +48,17 @@ class ViewAllDocumentsPage extends Component {
       limit,
       offset
     ));
+  }
+
+  /**
+   * Handles requests to show the next or previous page of documents.
+   * @param {Object} data - Data about the pagination request.
+   * @return {null} - Returns nothing.
+   */
+  handlePageClick(data) {
+    const selectedPage = data.selected;
+    const offset = Math.ceil(selectedPage * Pagination.DEFAULT_LIMIT);
+    this.fetchDocuments(Pagination.DEFAULT_LIMIT, offset);
   }
 
   /**
@@ -120,6 +103,31 @@ class ViewAllDocumentsPage extends Component {
           </h5>
         </div>
         <div className="row">{documentComponents}</div>
+        <div
+          className={
+            this.props.documents.allDocuments.documents.length > 0 ?
+            'center-align' :
+            'hide'
+          }
+        >
+          <ReactPaginate
+            previousLabel="Previous"
+            nextLabel="Next"
+            breakLabel={<a href="">...</a>}
+            breakClassName="break-me"
+            pageCount={this.props.documents.allDocuments.pageCount}
+            initialPage={this.props.documents.allDocuments.page - 1}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName="pagination"
+            subContainerClassName="pages pagination"
+            activeClassName="active-pagination-btn"
+            pageClassName="pagination-btn"
+            previousClassName="pagination-previous-btn"
+            nextClassName="pagination-previous-btn"
+          />
+        </div>
         <Row className={
           this.props.documents.status === 'fetchingAllDocuments' ? '' : 'hide'
           }
@@ -134,15 +142,6 @@ class ViewAllDocumentsPage extends Component {
                 this.props.documents.statusMessage.replace('Loading', 'Loading more') : ''
               }
             </h5>
-          </Col>
-        </Row>
-        <Row
-          className={
-            this.state.hasFetchedAllDocuments ? 'thats-all' : 'hide'
-          }
-        >
-          <Col s={12} className="blue white-text center-align">
-            <h5>That&rsquo;s all! There are no documents left.</h5>
           </Col>
         </Row>
       </div>

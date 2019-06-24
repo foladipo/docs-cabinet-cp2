@@ -74,29 +74,30 @@ describe('UpdateDocumentPage', () => {
 
   it('should validate all its input fields', () => {
     const newWrapper = mount(<UpdateDocumentPage {...props} />);
+    const newInstance = newWrapper.instance();
 
     newWrapper.setState({ ...oldDocument, title: '' });
-    expect(newWrapper.instance().hasValidTitle()).to.equal(false);
+    expect(newInstance.hasValidTitle()).to.equal(false);
 
     newWrapper.setState({ ...oldDocument, categories: '' });
-    expect(newWrapper.instance().hasValidCategories()).to.equal(false);
+    expect(newInstance.hasValidCategories()).to.equal(false);
 
     newWrapper.setState({ ...oldDocument, tags: '' });
-    expect(newWrapper.instance().hasValidTags()).to.equal(false);
+    expect(newInstance.hasValidTags()).to.equal(false);
 
     newWrapper.setState({ ...oldDocument, content: '' });
-    expect(newWrapper.instance().hasValidContent()).to.equal(false);
+    expect(newInstance.hasValidContent()).to.equal(false);
   });
 
   it('should be able to update a document\'s access type', () => {
     const updateAccessSpy = sinon.spy(wrapper.instance(), 'updateAccess');
     wrapper.update();
-    const filterInput = wrapper.find('#update-access');
+    const accessInput = wrapper.find('#update-access');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'role' }
     };
-    filterInput.simulate('change', mockEvent);
+    accessInput.simulate('change', mockEvent);
 
     expect(updateAccessSpy.calledOnce).to.equal(true);
   });
@@ -104,12 +105,12 @@ describe('UpdateDocumentPage', () => {
   it('should be able to update a document\'s title', () => {
     const updateTitleSpy = sinon.spy(wrapper.instance(), 'updateTitle');
     wrapper.update();
-    const filterInput = wrapper.find('#update-title');
+    const titleInput = wrapper.find('#update-title');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New title' }
     };
-    filterInput.simulate('change', mockEvent);
+    titleInput.simulate('change', mockEvent);
 
     expect(updateTitleSpy.calledOnce).to.equal(true);
   });
@@ -117,12 +118,12 @@ describe('UpdateDocumentPage', () => {
   it('should be able to update a document\'s categories', () => {
     const updateCategoriesSpy = sinon.spy(wrapper.instance(), 'updateCategories');
     wrapper.update();
-    const filterInput = wrapper.find('#update-categories');
+    const categoriesInput = wrapper.find('#update-categories');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New category' }
     };
-    filterInput.simulate('change', mockEvent);
+    categoriesInput.simulate('change', mockEvent);
 
     expect(updateCategoriesSpy.calledOnce).to.equal(true);
   });
@@ -130,12 +131,12 @@ describe('UpdateDocumentPage', () => {
   it('should be able to update a document\'s tags', () => {
     const updateTagsSpy = sinon.spy(wrapper.instance(), 'updateTags');
     wrapper.update();
-    const filterInput = wrapper.find('#update-tags');
+    const tagsInput = wrapper.find('#update-tags');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New tag' }
     };
-    filterInput.simulate('change', mockEvent);
+    tagsInput.simulate('change', mockEvent);
 
     expect(updateTagsSpy.calledOnce).to.equal(true);
   });
@@ -143,12 +144,12 @@ describe('UpdateDocumentPage', () => {
   it('should be able to update a document\'s content', () => {
     const updateContentSpy = sinon.spy(wrapper.instance(), 'updateContent');
     wrapper.update();
-    const filterInput = wrapper.find('#update-content');
+    const contentInput = wrapper.find('#update_content_editor');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New content' }
     };
-    filterInput.simulate('change', mockEvent);
+    contentInput.simulate('change', mockEvent);
 
     expect(updateContentSpy.calledOnce).to.equal(true);
   });

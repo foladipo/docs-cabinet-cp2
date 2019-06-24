@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Input, ProgressBar } from 'react-materialize';
+import { Button, Col, Icon, Input, ProgressBar, Row } from 'react-materialize';
 import _ from 'lodash';
+import striptags from 'striptags';
 import { getDocument, updateDocument } from '../../actions/DocumentActions';
 
 /**
@@ -43,6 +44,9 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   componentDidMount() {
+    CKEDITOR.replace('update_content_editor');
+    CKEDITOR.instances.update_content_editor.on('change', this.updateContent);
+
     this.determineTargetDocument();
   }
 
@@ -56,6 +60,33 @@ class UpdateDocumentPage extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.documents.status === 'gotDocument') {
       const targetDocument = nextProps.documents.documentToUpdate;
+      if (!(_.isEqual({}, targetDocument))) {
+        this.setState({
+          hasFoundTargetDocument: true,
+          hasValidTargetDocumentId: true,
+          targetDocument,
+          title: targetDocument.title,
+          content: targetDocument.content,
+          access: targetDocument.access,
+          categories: targetDocument.categories,
+          tags: targetDocument.tags
+        });
+      }
+
+      CKEDITOR.instances.update_content_editor.setData(
+        decodeURIComponent(targetDocument.content)
+      );
+
+      return;
+    }
+
+    if (nextProps.documents.status === 'documentUpdated') {
+      const targetDocumentId = this.state.targetDocument.id;
+      const targetDocumentInArray =
+        nextProps.documents.userDocuments.documents.filter(doc =>
+          doc.id === targetDocumentId
+        );
+      const targetDocument = targetDocumentInArray[0];
       if (!(_.isEqual({}, targetDocument))) {
         this.setState({
           hasFoundTargetDocument: true,
@@ -103,6 +134,11 @@ class UpdateDocumentPage extends Component {
         categories: targetDocument.categories,
         tags: targetDocument.tags
       });
+
+      CKEDITOR.instances.update_content_editor.setData(
+        decodeURIComponent(targetDocument.content)
+      );
+
       return;
     }
 
@@ -121,7 +157,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateTitle(event) {
-    this.setState({ title: event.target.value });
+    const title = event.target.value;
+    if (typeof title !== 'string' || title.length < 2) {
+      this.setState({ title: this.state.targetDocument.title });
+      return;
+    }
+
+    this.setState({ title });
   }
 
   /**
@@ -137,12 +179,18 @@ class UpdateDocumentPage extends Component {
 
   /**
    * Updates the document content stored in this Component's state.
-   * @param {JqueryEvent} event - Info about the event that occurred on the
-   * DOM element this is attached to.
    * @return {null} - Returns nothing.
    */
-  updateContent(event) {
-    this.setState({ content: event.target.value });
+  updateContent() {
+    const htmlContent = CKEDITOR.instances.update_content_editor.getData();
+    const bareContent = striptags(htmlContent);
+    if (bareContent.length < 2) {
+      this.setState({ content: this.state.targetDocument.content });
+      return;
+    }
+
+    const content = encodeURIComponent(htmlContent);
+    this.setState({ content });
   }
 
   /**
@@ -150,10 +198,12 @@ class UpdateDocumentPage extends Component {
    * @return {Boolean} - Whether or not a document's content is valid.
    */
   hasValidContent() {
-    const content = this.state.content;
-    if (!content) return false;
-    const strippedContent = content.replace(/(\s+)/, '');
-    return strippedContent.length > 1;
+    const htmlContent = decodeURIComponent(this.state.content);
+    const bareContent = striptags(htmlContent);
+    if (!bareContent) return false;
+
+    const contentWithoutWhitespace = bareContent.replace(/(\s+)/, '');
+    return contentWithoutWhitespace.length > 1;
   }
 
   /**
@@ -163,7 +213,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateCategories(event) {
-    this.setState({ categories: event.target.value });
+    const categories = event.target.value;
+    if (typeof categories !== 'string' || categories.length < 2) {
+      this.setState({ categories: this.state.targetDocument.categories });
+      return;
+    }
+
+    this.setState({ categories });
   }
 
   /**
@@ -184,7 +240,13 @@ class UpdateDocumentPage extends Component {
    * @return {null} - Returns nothing.
    */
   updateTags(event) {
-    this.setState({ tags: event.target.value });
+    const tags = event.target.value;
+    if (typeof tags !== 'string' || tags.length < 2) {
+      this.setState({ tags: this.state.targetDocument.tags });
+      return;
+    }
+
+    this.setState({ tags });
   }
 
   /**
@@ -232,10 +294,10 @@ class UpdateDocumentPage extends Component {
    */
   isValidDocument() {
     return (
-      this.hasValidTitle(this.state.title) &&
-      this.hasValidContent(this.state.content) &&
-      this.hasValidCategories(this.state.categories) &&
-      this.hasValidTags(this.state.tags)
+      this.hasValidTitle() &&
+      this.hasValidContent() &&
+      this.hasValidCategories() &&
+      this.hasValidTags()
     );
   }
 
@@ -249,31 +311,27 @@ class UpdateDocumentPage extends Component {
     event.preventDefault();
 
     // Needed because a form might be submitted without using the submit button.
-    const title = this.state.title;
-    if (!this.hasValidTitle(title)) {
+    if (!this.hasValidTitle()) {
       this.setState({
         errorMessage: 'Supply a title that has two or more characters that are not whitespace.'
       });
       return;
     }
-    const content = this.state.content;
-    if (!this.hasValidContent(content)) {
+    if (!this.hasValidContent()) {
       this.setState({
         errorMessage: 'Supply a document content that has two or more characters that are not whitespace.'
       });
       return;
     }
-    const categories = this.state.categories;
-    if (!this.hasValidCategories(categories)) {
+    if (!this.hasValidCategories()) {
       this.setState({
         errorMessage: 'Add two or more comma-separated categories that aren\'t merely whitespace.'
       });
       return;
     }
-    const tags = this.state.tags;
-    if (!this.hasValidTags(tags)) {
-      this.setState({ errorMessage:
-        'Please supply two or more comma-separated tags that aren\'t merely whitespace.'
+    if (!this.hasValidTags()) {
+      this.setState({
+        errorMessage: 'Please supply two or more comma-separated tags that aren\'t merely whitespace.'
       });
       return;
     }
@@ -314,150 +372,163 @@ class UpdateDocumentPage extends Component {
    * null if nothing is to be rendered.
    */
   render() {
-    if (this.props.documents.status === 'documentUpdated') {
-      Materialize.toast(this.props.documents.statusMessage, 3000);
+    if (
+      this.props.documents.status !== 'updatingDocument' &&
+      this.props.documents.status !== 'updateDocumentFailed'
+    ) {
+      $('#update-access').val(
+        this.state.access || this.state.targetDocument.access
+      );
     }
 
     return (
       <div id="update-document-page" className="row scrollable-page">
-        <div className="msg-container">
-          <h5
+        <div className="centered-wrapper">
+          <div className="msg-container">
+            <h5
+              className={
+                this.props.documents.status === 'documentUpdated' ?
+                'success-msg teal lighten-2 white-text center' :
+                'hide success-msg'
+              }
+            >
+              {this.props.documents.statusMessage}
+            </h5>
+            <h5
+              className={
+                this.props.documents.status === 'getDocumentFailed' ||
+                this.props.documents.status === 'updateDocumentFailed' ?
+                'error-msg red white-text center' :
+                'hide error-msg'
+              }
+            >
+              {this.props.documents.statusMessage}
+            </h5>
+            <h5
+              className={
+                !(this.isValidDocument() && this.isUpdate()) ?
+                'error-msg red white-text center' :
+                'hide error-msg'
+              }
+            >
+              {this.state.errorMessage}
+            </h5>
+          </div>
+          <h4>Update document</h4>
+          <div className="divider" />
+          <form
+            id="update-document-form"
+            className={this.state.hasValidTargetDocumentId ? '' : 'hide'}
+          >
+            <Row>
+              <Col s={12}>
+                <h6 className="red-text text-lighten-2">
+                  **All fields are required.
+                </h6>
+              </Col>
+              <Col s={12} m={5}>
+                <Col s={12}>
+                  <span className="col s12 green-label">
+                    Access types
+                  </span>
+                  <Input
+                    id="update-access"
+                    s={7}
+                    type="select"
+                    onChange={this.updateAccess}
+                  >
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="role">Role</option>
+                  </Input>
+                </Col>
+                <Col s={12}>
+                  <span className="green-label">Title</span>
+                  <Input
+                    id="update-title"
+                    s={12}
+                    type="text"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.title : ''
+                    }
+                    onChange={this.updateTitle}
+                  >
+                    <Icon>title</Icon>
+                  </Input>
+                </Col>
+                <Col s={12}>
+                  <span className="green-label">Categories</span>
+                  <Input
+                    id="update-categories"
+                    s={12}
+                    type="text"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.categories : ''
+                    }
+                    onChange={this.updateCategories}
+                  >
+                    <Icon>bookmark_border</Icon>
+                  </Input>
+                </Col>
+                <Col s={12}>
+                  <span className="green-label">Tags</span>
+                  <Input
+                    id="update-tags"
+                    s={12}
+                    type="text"
+                    placeholder={
+                      this.state.targetDocument ?
+                      this.state.targetDocument.tags : ''
+                    }
+                    onChange={this.updateTags}
+                  >
+                    <Icon>label_outline</Icon>
+                  </Input>
+                </Col>
+              </Col>
+              <Col s={12} m={7}>
+                <Col s={12}>
+                  <br />
+                  <span className="green-label">Content</span>
+                  <Icon left>mode_edit</Icon>
+                  <div className="col s12">
+                    <textarea
+                      id="update_content_editor"
+                      onChange={this.updateContent}
+                    />
+                    <br />
+                  </div>
+                </Col>
+              </Col>
+              <Col s={12}>
+                <div className="quarter-vertical-margin" />
+                <Button
+                  id="update-document-btn"
+                  onClick={this.attemptDocumentUpdate}
+                  className={
+                    this.isValidDocument() && this.isUpdate() ?
+                    'quarter-vertical-margin' :
+                    'disabled quarter-vertical-margin'
+                  }
+                >
+                  Update
+                  <Icon left>update</Icon>
+                </Button>
+              </Col>
+            </Row>
+          </form>
+          <div
             className={
-              this.props.documents.status === 'documentUpdated' ?
-              'success-msg teal lighten-2 white-text center' :
-              'hide success-msg'
+              this.props.documents.status === 'updatingDocument' ?
+              '' :
+              'hide'
             }
           >
-            {this.props.documents.statusMessage}
-          </h5>
-          <h5
-            className={
-              this.props.documents.status === 'getDocumentFailed' ||
-              this.props.documents.status === 'updateDocumentFailed' ?
-              'error-msg red white-text center' :
-              'hide error-msg'
-            }
-          >
-            {this.props.documents.statusMessage}
-          </h5>
-          <h5
-            className={
-              !(this.isValidDocument() && this.isUpdate()) ?
-              'error-msg red white-text center' :
-              'hide error-msg'
-            }
-          >
-            {this.state.errorMessage}
-          </h5>
+            <ProgressBar />
+          </div>
         </div>
-        <form
-          id="update-document-form"
-          className={this.state.hasValidTargetDocumentId ? 'container' : 'hide'}
-        >
-          <h6 className="red-text text-lighten-2">
-            **All fields are required.
-          </h6>
-          <div className="row">
-            <label htmlFor="update-access">
-              <h6>Access types</h6>
-            </label>
-            <Icon s={1} left>visibility</Icon>
-            <Input
-              id="update-access"
-              s={12}
-              m={6}
-              type="select"
-              onChange={this.updateAccess}
-            >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="role">Role</option>
-            </Input>
-          </div>
-          <div>
-            <label htmlFor="update-title">Title</label>
-            <Input
-              id="update-title"
-              s={12}
-              type="text"
-              placeholder={
-                this.state.targetDocument ?
-                this.state.targetDocument.title : ''
-              }
-              onChange={this.updateTitle}
-            >
-              <Icon>title</Icon>
-            </Input>
-          </div>
-          <div>
-            <label htmlFor="update-categories">Categories</label>
-            <Input
-              id="update-categories"
-              s={12}
-              type="text"
-              placeholder={
-                this.state.targetDocument ?
-                this.state.targetDocument.categories : ''
-              }
-              onChange={this.updateCategories}
-            >
-              <Icon>bookmark_border</Icon>
-            </Input>
-          </div>
-          <div>
-            <label htmlFor="update-tags">Tags</label>
-            <Input
-              id="update-tags"
-              s={12}
-              type="text"
-              placeholder={
-                this.state.targetDocument ?
-                this.state.targetDocument.tags : ''
-              }
-              onChange={this.updateTags}
-            >
-              <Icon>label_outline</Icon>
-            </Input>
-          </div>
-          <div>
-            <br />
-            <label htmlFor="update-content">Content</label>
-            <Icon left>mode_edit</Icon>
-            <div className="col s12">
-              <textarea
-                id="update-content"
-                rows="10"
-                className="materialize-textarea update-doc-text-input"
-                placeholder={
-                  this.state.targetDocument ?
-                  this.state.targetDocument.content : ''
-                }
-                onChange={this.updateContent}
-              />
-              <br />
-            </div>
-          </div>
-          <div className="quarter-vertical-margin" />
-          <Button
-            id="update-document-btn"
-            onClick={this.attemptDocumentUpdate}
-            className={
-              this.isValidDocument() && this.isUpdate() ?
-              'quarter-vertical-margin' :
-              'disabled quarter-vertical-margin'
-            }
-          >
-            Update
-            <Icon left>update</Icon>
-          </Button>
-        </form>
-        <ProgressBar
-          className={
-            this.props.documents.status === 'updatingDocument' ?
-            '' :
-            'hide'
-          }
-        />
       </div>
     );
   }

@@ -38,7 +38,7 @@ describe('The Role model', () => {
       });
   });
 
-  it('should reject the creation of duplicate roles', (done) => {
+  it('should return an error for the creation of duplicate roles', (done) => {
     Role.create(duplicateRole)
       .catch((errors) => {
         expect(errors.name).to.equal('SequelizeUniqueConstraintError');
@@ -46,7 +46,7 @@ describe('The Role model', () => {
       });
   });
 
-  it('should reject the creation of roles that don\'t have a name', (done) => {
+  it('should return an error for the creation of roles that don\'t have a name', (done) => {
     const noRoleName = {};
     Role.create(noRoleName)
       .catch((errors) => {
@@ -58,7 +58,7 @@ describe('The Role model', () => {
       });
   });
 
-  it('should reject new roles with the same role name as the "admin" role', (done) => {
+  it('should return an error for new roles with the same role name as the "admin" role', (done) => {
     const adminRoleName = { roleName: 'admin' };
     Role.create(adminRoleName)
       .catch((errors) => {
@@ -69,7 +69,7 @@ describe('The Role model', () => {
       });
   });
 
-  it('should reject new roles with the same role name as the "regular" role', (done) => {
+  it('should return an error for new roles with the same role name as the "regular" role', (done) => {
     const regularRoleName = { roleName: 'regular' };
     Role.create(regularRoleName)
       .catch((errors) => {

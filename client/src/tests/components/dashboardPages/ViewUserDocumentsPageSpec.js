@@ -50,6 +50,14 @@ describe('ViewUserDocumentsPage', () => {
     expect(dispatchSpy.calledOnce).to.equal(true);
   });
 
+  it('should have a method that fetches pages/sections of a user\'s documents', () => {
+    const handlePageClick = wrapper.instance().handlePageClick;
+    expect(handlePageClick).to.not.equal(undefined);
+    const data = { selected: 1 };
+    handlePageClick(data);
+    expect(dispatchSpy.calledTwice).to.equal(true);
+  });
+
   it('should show a list of a user\'s documents', () => {
     const newProps = Object.assign({}, props);
     newProps.documents.userDocuments = {

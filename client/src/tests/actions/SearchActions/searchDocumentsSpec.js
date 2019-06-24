@@ -1,6 +1,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import * as ActionTypes from '../../../constants';
+import { ActionTypes } from '../../../constants';
 import MockHttpClient from '../../MockHttpClient';
 import MockHttpErrorClient from '../../MockHttpErrorClient';
 import { searchDocuments } from '../../../actions/SearchActions';

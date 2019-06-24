@@ -67,7 +67,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
     return validToken;
   };
 
-  it('should reject requests where the token header is missing', (done) => {
+  it('should return an error for requests where the token header is missing', (done) => {
     request.put(`${updateUserProfileEndpoint}/foo`)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
@@ -78,7 +78,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the token header is empty', (done) => {
+  it('should return an error for requests where the token header is empty', (done) => {
     const emptyToken = '';
     request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', emptyToken)
@@ -91,7 +91,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the token supplied is invalid', (done) => {
+  it('should return an error for requests where the token supplied is invalid', (done) => {
     const invalidToken = 'AN_INVALID_TOKEN';
     request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', invalidToken)
@@ -104,7 +104,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the token supplied has expired', (done) => {
+  it('should return an error for requests where the token supplied has expired', (done) => {
     // This token expires after 1ms.
     const payload = {
       random: 'stuff'
@@ -138,7 +138,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where the id of the user to update is not numeric', (done) => {
+  it('should return an error for requests where the id of the user to update is not numeric', (done) => {
     const validToken = getValidToken();
     request.put(`${updateUserProfileEndpoint}/foo`)
       .set('x-docs-cabinet-authentication', validToken)
@@ -151,7 +151,7 @@ describe('When it receives a PUT request, the /api/users endpoint', () => {
       }, done);
   });
 
-  it('should reject requests where a non-admin user is trying to delete another user\'s account', (done) => {
+  it('should return an error for requests where a non-admin user is trying to delete another user\'s account', (done) => {
     const validToken = getValidToken();
     request.put(`${updateUserProfileEndpoint}/6543210`)
       .set('x-docs-cabinet-authentication', validToken)

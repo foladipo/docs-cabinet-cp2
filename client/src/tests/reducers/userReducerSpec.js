@@ -1,6 +1,6 @@
 import chai from 'chai';
 import _ from 'lodash';
-import * as ActionTypes from '../../constants';
+import { ActionTypes } from '../../constants';
 import userReducer from '../../reducers/userReducer';
 
 const expect = chai.expect;
@@ -186,7 +186,10 @@ describe('userReducer', () => {
     expect(newState.status).to.equal('fetchedAllUsers');
     expect(newState.statusMessage).to.equal(action.payload.message);
     expect(Array.isArray(newState.allUsers.users)).to.equal(true);
-    expect(newState.allUsers.users.length === 2).to.equal(true);
+    expect(
+      newState.allUsers.users.length === action.payload.users.length
+    )
+      .to.equal(true);
   });
 
   it('should update the store when a user\'s profile update starts', () => {

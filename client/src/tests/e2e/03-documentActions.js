@@ -34,7 +34,7 @@ module.exports = {
       .setValue('#sign-up-form #update-password', user.password)
       .click('#sign-up-btn')
       .waitForElementNotPresent('#authentication-container', 3000)
-      .waitForElementPresent('#authenticated-user-area', 3000)
+      .waitForElementPresent('#main-container', 3000)
       .assert
         .urlEquals(`http://localhost:${port}/dashboard`);
   },
@@ -48,14 +48,14 @@ module.exports = {
       .waitForElementVisible('#create-document-form', 2000)
       .assert
         .cssClassPresent('#create-document-btn', 'disabled')
-      .setValue('#create-document-form #update-access', document.access)
-      .setValue('#create-document-form #update-title', document.title)
-      .setValue('#create-document-form #update-content', document.content)
-      .setValue('#create-document-form #update-categories', document.categories)
-      .setValue('#create-document-form #update-tags', document.tags)
+      .setValue('#create-document-form #new-document-access', document.access)
+      .setValue('#create-document-form #new-document-title', document.title)
+      .execute('CKEDITOR.instances.create_doc_content_editor.setData("Random text")')
+      .setValue('#create-document-form #new-document-categories', document.categories)
+      .setValue('#create-document-form #new-document-tags', document.tags)
+      .pause(5000)
       .assert
         .cssClassNotPresent('#create-document-btn', 'disabled')
-      .pause(5000)
       .click('#create-document-btn')
       .waitForElementNotVisible('#create-document-form', 2000);
   },
@@ -66,8 +66,8 @@ module.exports = {
       .click('#dashboard-menu-btn')
       .waitForElementVisible('#dashboard-menu', 2000)
       .click('#my-documents-btn')
-      .waitForElementNotPresent('#all-documents-page', 2000)
-      .waitForElementPresent('#user-documents-page', 2000)
+      .waitForElementNotPresent('#all-documents-page', 4000)
+      .waitForElementPresent('#user-documents-page', 4000)
       .assert
         .urlEquals(`http://localhost:${port}/dashboard/myDocuments`)
       .click('.edit-document-btn')
@@ -79,7 +79,7 @@ module.exports = {
         .cssClassPresent('#update-document-btn', 'disabled')
       .setValue('#update-document-form #update-access', 'public')
       .setValue('#update-document-form #update-title', faker.lorem.words())
-      .setValue('#update-document-form #update-content', faker.lorem.lines())
+      .execute('CKEDITOR.instances.update_content_editor.setData("Stuffs")')
       .setValue('#update-document-form #update-categories', faker.lorem.words())
       .setValue('#update-document-form #update-tags', faker.lorem.words())
       // TODO: Why isn't Selenium ACTUALLY clicking this button?
@@ -102,7 +102,7 @@ module.exports = {
       .waitForElementVisible('#confirm-document-deletion', 2000)
       .pause(2000)
       .click('.confirm-deletion-btn')
-      .waitForElementNotPresent('#confirm-document-deletion', 2000)
+      .waitForElementNotPresent('#confirm-document-deletion', 4000)
       .pause(5000);
   },
   'Delete account': (browser) => {
@@ -120,9 +120,9 @@ module.exports = {
         .cssClassPresent('#delete-user-btn', 'disabled')
       .setValue('#confirm-deletion-input', user.username)
       .click('#delete-user-btn')
-      .waitForElementNotPresent('#authenticated-user-area', 3000)
+      .waitForElementNotPresent('#main-container', 3000)
       .assert
-        .elementNotPresent('#authenticated-user-area')
+        .elementNotPresent('#main-container')
       .assert
         .elementPresent('#authentication-container')
       .pause(5000)

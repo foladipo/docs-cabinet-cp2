@@ -66,7 +66,7 @@ describe('When it receives a GET request, the /api/users endpoint', () => {
     process.env.JWT_PRIVATE_KEY,
     { expiresIn: '3d' }
   );
-  it('should reject requests from non-admin users', (done) => {
+  it('should return an error for requests from non-admin users', (done) => {
     request.get(getAllUsersEndpoint)
       .set('x-docs-cabinet-authentication', regularUserToken)
       .set('Accept', 'application/json')

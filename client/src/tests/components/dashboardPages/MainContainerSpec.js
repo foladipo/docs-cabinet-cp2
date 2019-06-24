@@ -65,8 +65,8 @@ const wrapper = mount(
 );
 
 describe('MainContainer', () => {
-  it('should have an HTML id of authenticated-user-area', () => {
-    expect(wrapper).to.have.id('authenticated-user-area');
+  it('should have an HTML id of main-container', () => {
+    expect(wrapper).to.have.id('main-container');
   });
 
   it('should have a menu', () => {

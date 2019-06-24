@@ -46,11 +46,12 @@ body {
   cursor: not-allowed;
 }
 
-#authenticated-user-area {
+#main-container {
   width: 100%;
   height: 110%;
   margin: -1% auto 0;
   padding: 2%;
+  padding-bottom: 5em;
   top: 0;
   left: 0;
 }
@@ -62,13 +63,16 @@ body {
 .scrollable-page {
   width: 100%;
   height: 100%;
+  padding-bottom: 10em;
   overflow-y: scroll;
 }
 
 #all-documents-page,
 #user-documents-page,
 #update-user-page,
-#update-document-page {
+#update-document-page,
+#search-documents-page,
+#search-users-page {
   padding-bottom: 10em;
 }
 
@@ -85,6 +89,10 @@ body {
     display: inline-block;
     margin-right: 1em;
   }
+}
+
+#dashboard-menu {
+  padding-bottom: 10em;
 }
 
 #dashboard-menu-btn {
@@ -135,4 +143,50 @@ body {
 .thats-all {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+.green-label {
+  color: #26a69a;
+}
+
+.pagination {
+  margin-bottom: 10em;
+}
+
+.pagination-btn {
+  cursor: pointer;
+}
+
+.active-pagination-btn {
+  background-color: #26a69a;
+  cursor: not-allowed;
+}
+
+.active-pagination-btn a {
+  color: white;
+}
+
+.pagination li.active-pagination-btn a {
+  color: white;
+}
+
+.pagination-previous-btn {
+  cursor: pointer;
+}
+
+.pagination-previous-btn.disabled {
+  cursor: not-allowed;
+}
+
+.pagination-next-btn {
+  cursor: pointer;
+}
+
+.pagination-next-btn.disabled {
+  cursor: not-allowed;
+}
+
+.centered-wrapper {
+  width: 90%;
+  margin: 1em auto;
 }

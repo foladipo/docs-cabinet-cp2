@@ -111,7 +111,11 @@ class DeleteUser extends Component {
               Delete
             </Button>
           </form>
-          <ProgressBar className={this.props.user.status === 'deletingUser' ? '' : 'hide'} />
+          <div
+            className={this.props.user.status === 'deletingUser' ? '' : 'hide'}
+          >
+            <ProgressBar />
+          </div>
         </div>
       </div>
     );

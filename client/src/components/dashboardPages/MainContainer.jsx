@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Modal, SideNav, SideNavItem } from 'react-materialize';
+import { Icon, SideNavItem } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
@@ -8,11 +8,11 @@ import { logout } from '../../actions/UserActions';
 import ViewUserDocumentsPage from './ViewUserDocumentsPage';
 import UpdateUserPage from './UpdateUserPage';
 import ViewAllUsersPage from './ViewAllUsersPage';
-import CreateDocument from '../common/CreateDocument';
 import UpdateDocumentPage from './UpdateDocumentPage';
 import ViewAllDocumentsPage from './ViewAllDocumentsPage';
 import SearchUsersPage from './SearchUsersPage';
 import SearchDocumentsPage from './SearchDocumentsPage';
+import SideMenu from '../siteNavigation/SideMenu';
 
 /**
  * MainContainer - Renders all the Components of the dashboard.
@@ -26,7 +26,7 @@ export class MainContainer extends React.Component {
     super(props);
 
     this.getAdminSection = this.getAdminSection.bind(this);
-    this.logout = this.logout.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   /**
@@ -56,7 +56,7 @@ export class MainContainer extends React.Component {
    * Attempts to log a user out.
    * @return {null} - Returns nothing.
    */
-  logout() {
+  handleLogout() {
     this.props.dispatch(logout());
   }
 
@@ -78,117 +78,13 @@ export class MainContainer extends React.Component {
       $('#create-document-modal').modal('close');
     }
 
-    const trigger = (<Button id="dashboard-menu-btn">
-      Menu
-      <Icon left>menu</Icon>
-    </Button>);
-
     return (
-      // TODO: Rename this root element to #dashboard-main-container.
-      <div id="authenticated-user-area" className="grey lighten-3">
-        <SideNav
-          id="dashboard-menu"
-          trigger={trigger}
-          options={{
-            menuWidth: 300,
-            closeOnClick: true,
-            edge: 'right',
-            draggable: true
-          }}
-        >
-          <SideNavItem
-            id="user-view"
-            userView
-            className="text-black"
-            user={{
-              background: '/img/dark-mountains-small.jpg',
-              image: '/img/anonymous-user-thumbnail.png',
-              name: `${this.props.user.user.firstName} ${this.props.user.user.lastName}`,
-              email: this.props.user.user.username
-            }}
-          />
-          <SideNavItem className="row">
-            <Modal
-              header="Create Document"
-              id="create-document-modal"
-              trigger={
-                <Button id="compose-document-btn" className="col s12">
-                  Compose
-                </Button>
-              }
-            >
-              <CreateDocument
-                mode="create"
-                modeMessage="Create document"
-                token={this.props.user.token}
-                dispatch={this.props.dispatch}
-                documentsStatus={this.props.documents.status}
-              />
-            </Modal>
-          </SideNavItem>
-          <SideNavItem divider />
-          <li key={uuid.v4()}>
-            <NavLink
-              exact
-              to="/dashboard"
-              activeClassName="teal lighten-2 white-text disabled"
-            >
-              <Icon left>home</Icon>
-              Home
-            </NavLink>
-          </li>
-          <li id="search-users-btn" key={uuid.v4()}>
-            <NavLink
-              exact
-              to="/dashboard/searchUsers"
-              activeClassName="teal lighten-2 white-text disabled"
-            >
-              <Icon left>search</Icon>
-              Search for users
-            </NavLink>
-          </li>
-          <li id="search-documents-btn" key={uuid.v4()}>
-            <NavLink
-              exact
-              to="/dashboard/searchDocuments"
-              activeClassName="teal lighten-2 white-text disabled"
-            >
-              <Icon left>search</Icon>
-              Search for documents
-            </NavLink>
-          </li>
-          <li id="my-documents-btn" key={uuid.v4()}>
-            <NavLink
-              exact
-              to="/dashboard/myDocuments"
-              activeClassName="teal lighten-2 white-text disabled"
-            >
-              <Icon left>library_books</Icon>
-              My documents
-            </NavLink>
-          </li>
-          <li id="update-profile-btn" key={uuid.v4()}>
-            <NavLink
-              exact
-              to={`/dashboard/profile/${this.props.user.user.id}`}
-              activeClassName="teal lighten-2 white-text disabled"
-            >
-              <Icon left>person_outline</Icon>
-              Update profile
-            </NavLink>
-          </li>
-          <SideNavItem divider />
-          {this.getAdminSection()}
-          <SideNavItem
-            id="logout-btn"
-            waves
-            onClick={this.logout}
-            icon="directions_run"
-          >
-            Logout
-          </SideNavItem>
-        </SideNav>
-
+      <div id="main-container" className="grey lighten-3">
+        <SideMenu
+          handleLogout={this.handleLogout}
+          getAdminSection={this.getAdminSection}
+          {...this.props}
+        />
         <Switch>
           <Route
             path="/dashboard/updateDocument"

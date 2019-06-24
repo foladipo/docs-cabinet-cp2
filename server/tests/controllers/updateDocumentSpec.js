@@ -59,7 +59,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that specify an invalid id for the document to be updated', (done) => {
+  it('should return an error for requests that specify an invalid id for the document to be updated', (done) => {
     request.put(`${updateDocumentEndpoint}/foo`)
       .set('Accept', 'application/json')
       .set('x-docs-cabinet-authentication', validToken)
@@ -71,7 +71,7 @@ describe('When PUT to, the /api/documents endpoint', () => {
       }, done);
   });
 
-  it('should reject requests that do not specify anything to be updated', (done) => {
+  it('should return an error for requests that do not specify anything to be updated', (done) => {
     const noUpdate = {};
     request.put(`${updateDocumentEndpoint}/${id}`)
       .send(noUpdate)
@@ -156,7 +156,8 @@ describe('When PUT to, the /api/documents endpoint', () => {
         const resBody = res.body;
         expect(resBody.message).to.equal('Document updated.');
         expect(Array.isArray(resBody.documents)).to.equal(true);
-        expect(resBody.documents[0].categories).to.equal(categoriesUpdate.categories);
+        expect(resBody.documents[0].categories)
+          .to.equal(categoriesUpdate.categories);
         done();
       });
   });

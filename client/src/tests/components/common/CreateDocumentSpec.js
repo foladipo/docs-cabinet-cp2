@@ -36,11 +36,12 @@ describe('CreateDocument', () => {
   });
 
   it('should have a field for choosing access type', () => {
-    expect(wrapper.find('select.create-doc-select-access')).to.have.length(1);
+    expect(wrapper.find('#create_doc_content_editor'))
+      .to.have.length(1);
   });
 
   it('should have fields for stating the title, content etc of the document', () => {
-    expect(wrapper.find('.create-doc-text-input')).to.have.length(4);
+    expect(wrapper.find('.create-doc-text-input')).to.have.length(3);
   });
 
   it('should show a button for creating the document', () => {
@@ -50,12 +51,12 @@ describe('CreateDocument', () => {
   it('should be able to receive a document\'s access type', () => {
     const updateAccessSpy = sinon.spy(wrapper.instance(), 'updateAccess');
     wrapper.update();
-    const filterInput = wrapper.find('#update-access');
+    const accessInput = wrapper.find('#new-document-access');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'role' }
     };
-    filterInput.simulate('change', mockEvent);
+    accessInput.simulate('change', mockEvent);
 
     expect(updateAccessSpy.calledOnce).to.equal(true);
   });
@@ -63,12 +64,12 @@ describe('CreateDocument', () => {
   it('should be able to receive a document\'s title', () => {
     const updateTitleSpy = sinon.spy(wrapper.instance(), 'updateTitle');
     wrapper.update();
-    const filterInput = wrapper.find('#update-title');
+    const titleInput = wrapper.find('#new-document-title');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New title' }
     };
-    filterInput.simulate('change', mockEvent);
+    titleInput.simulate('change', mockEvent);
 
     expect(updateTitleSpy.calledOnce).to.equal(true);
   });
@@ -76,12 +77,12 @@ describe('CreateDocument', () => {
   it('should be able to receive a document\'s categories', () => {
     const updateCategoriesSpy = sinon.spy(wrapper.instance(), 'updateCategories');
     wrapper.update();
-    const filterInput = wrapper.find('#update-categories');
+    const categoriesInput = wrapper.find('#new-document-categories');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New category' }
     };
-    filterInput.simulate('change', mockEvent);
+    categoriesInput.simulate('change', mockEvent);
 
     expect(updateCategoriesSpy.calledOnce).to.equal(true);
   });
@@ -89,12 +90,12 @@ describe('CreateDocument', () => {
   it('should be able to receive a document\'s tags', () => {
     const updateTagsSpy = sinon.spy(wrapper.instance(), 'updateTags');
     wrapper.update();
-    const filterInput = wrapper.find('#update-tags');
+    const tagsInput = wrapper.find('#new-document-tags');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New tag' }
     };
-    filterInput.simulate('change', mockEvent);
+    tagsInput.simulate('change', mockEvent);
 
     expect(updateTagsSpy.calledOnce).to.equal(true);
   });
@@ -102,14 +103,14 @@ describe('CreateDocument', () => {
   it('should be able to receive a document\'s content', () => {
     const updateContentSpy = sinon.spy(wrapper.instance(), 'updateContent');
     wrapper.update();
-    const filterInput = wrapper.find('#update-content');
+    const contentInput = wrapper.find('#create_doc_content_editor');
     const mockEvent = {
       preventDefault: () => {},
       target: { value: 'New content' }
     };
-    filterInput.simulate('change', mockEvent);
+    contentInput.simulate('change', mockEvent);
 
-    expect(updateContentSpy.calledOnce).to.equal(true);
+    expect(updateContentSpy.called).to.equal(true);
   });
 
 

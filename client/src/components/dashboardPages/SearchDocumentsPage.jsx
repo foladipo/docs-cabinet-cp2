@@ -123,7 +123,7 @@ class SearchDocumentsPage extends Component {
       );
 
     return (
-      <div id="search-documents-page">
+      <div id="search-documents-page" className="scrollable-page">
         <h4>Search documents</h4>
         <div className="row">
           <div id="search-documents-form-container" className="col s12 m3">
@@ -178,9 +178,20 @@ class SearchDocumentsPage extends Component {
               />
             </div>
           </div>
-          {/* TODO: This section below is not scrollable yet. */}
-          <div className="search-results-container col s12 m9 scrollable-page">
+          <div className="search-results-container col s12 m9">
             <h6>Search results</h6>
+            <div
+              className={
+                this.props.search.status === 'searchedDocuments' &&
+                this.props.search.documents.lastSearchResults.length === 0 ?
+                'msg-container red lighten-2 center-align' :
+                'hide'
+              }
+            >
+              <h5 className="error-msg white-text">
+                There were no results for your query. Please try something else.
+              </h5>
+            </div>
             <div>
               {documentProfiles}
             </div>

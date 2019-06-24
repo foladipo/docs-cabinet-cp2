@@ -55,9 +55,9 @@ module.exports = {
       .assert
         .elementNotPresent('#authentication-container')
       .url(`http://localhost:${port}/dashboard`)
-      .waitForElementPresent('#authenticated-user-area', 3000)
+      .waitForElementPresent('#main-container', 3000)
       .assert
-        .elementPresent('#authenticated-user-area')
+        .elementPresent('#main-container')
       .assert
         .elementNotPresent('#view-all-users-btn');
   },
@@ -69,9 +69,9 @@ module.exports = {
       .click('#dashboard-menu-btn')
       .waitForElementVisible('#dashboard-menu', 2000)
       .click('#logout-btn')
-      .waitForElementNotPresent('#authenticated-user-area', 3000)
+      .waitForElementNotPresent('#main-container', 3000)
       .assert
-        .elementNotPresent('#authenticated-user-area')
+        .elementNotPresent('#main-container')
       .assert
         .elementPresent('#authentication-container');
   },
@@ -119,9 +119,9 @@ module.exports = {
       .setValue('#login-form #update-username', user.username)
       .setValue('#login-form #update-password', user.password)
       .click('#login-btn')
-      .waitForElementPresent('#authenticated-user-area', 3000)
+      .waitForElementPresent('#main-container', 3000)
       .assert
-        .elementPresent('#authenticated-user-area');
+        .elementPresent('#main-container');
   },
   'Update account': (browser) => {
     browser
@@ -156,9 +156,9 @@ module.exports = {
         .cssClassPresent('#delete-user-btn', 'disabled')
       .setValue('#confirm-deletion-input', user.username)
       .click('#delete-user-btn')
-      .waitForElementNotPresent('#authenticated-user-area', 3000)
+      .waitForElementNotPresent('#main-container', 3000)
       .assert
-        .elementNotPresent('#authenticated-user-area')
+        .elementNotPresent('#main-container')
       .assert
         .elementPresent('#authentication-container')
       .end();
